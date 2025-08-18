@@ -1,0 +1,51 @@
+{
+  "@@locale": "en",
+  "appTitle": "ASIM Platform",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "welcome": "Welcome",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "login": "Login",
+  "@login": {
+    "description": "Login button text"
+  },
+  "register": "Register",
+  "@register": {
+    "description": "Register button text"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Email field label"
+  },
+  "password": "Password",
+  "@password": {
+    "description": "Password field label"
+  },
+  "forgotPassword": "Forgot Password?",
+  "@forgotPassword": {
+    "description": "Forgot password link text"
+  },
+  "home": "Home",
+  "@home": {
+    "description": "Home navigation item"
+  },
+  "plans": "Plans",
+  "@plans": {
+    "description": "Plans navigation item"
+  },
+  "orders": "Orders",
+  "@orders": {
+    "description": "Orders navigation item"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile navigation item"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings navigation item"
+  }
+}

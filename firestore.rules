@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read/write their own user document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Countries collection is publicly readable
+    match /countries/{countryId} {
+      allow read: if true;
+      allow write: if false; // Only through admin SDK
+    }
+    
+    // Orders can only be accessed by the user who created them
+    match /orders/{orderId} {
+      allow read, write: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+    }
+    
+    // eSIM plans are publicly readable
+    match /plans/{planId} {
+      allow read: if true;
+      allow write: if false; // Only through admin SDK or functions
+    }
+    
+    // Admin access (for functions and admin operations)
+    match /{document=**} {
+      allow read, write: if false; // Deny all other access
+    }
+  }
+}

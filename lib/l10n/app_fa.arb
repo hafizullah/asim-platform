@@ -1,0 +1,15 @@
+{
+  "@@locale": "fa",
+  "appTitle": "پلتفرم آسیم",
+  "welcome": "خوش آمدید",
+  "login": "ورود",
+  "register": "ثبت نام",
+  "email": "ایمیل",
+  "password": "رمز عبور",
+  "forgotPassword": "رمز عبور را فراموش کرده‌اید؟",
+  "home": "خانه",
+  "plans": "طرح‌ها",
+  "orders": "سفارشات",
+  "profile": "پروفایل",
+  "settings": "تنظیمات"
+}
