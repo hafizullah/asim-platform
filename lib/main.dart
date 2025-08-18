@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 // import 'firebase_options.dart';
 import 'core/theme/app_theme.dart';
@@ -418,19 +419,10 @@ class PlansScreenContent extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('${plan.name} added to cart!'),
-                  action: SnackBarAction(
-                    label: 'Checkout',
-                    onPressed: () {
-                      // Future: Navigate to checkout
-                    },
-                  ),
-                ),
-              );
+              // Navigate to checkout
+              context.go('/checkout/${plan.id}');
             },
-            child: const Text('Add to Cart'),
+            child: const Text('Buy Now'),
           ),
         ],
       ),
