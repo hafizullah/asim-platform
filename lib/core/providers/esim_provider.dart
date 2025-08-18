@@ -72,4 +72,94 @@ class ESimProvider extends ChangeNotifier {
   void clearError() {
     _setError(null);
   }
+  
+  Future<void> loadPlansForCountry(String countryCode) async {
+    try {
+      _setLoading(true);
+      _setError(null);
+      
+      // Demo data for plans
+      _plans = [
+        ESimPlan(
+          id: 'plan_1_$countryCode',
+          name: '5GB - 30 Days',
+          countryCode: countryCode,
+          countryName: _selectedCountry?.name ?? 'Unknown',
+          dataAmountGB: 5,
+          durationDays: 30,
+          price: 25.0,
+          currency: 'USD',
+          description: 'Perfect for travelers',
+          supportedNetworks: ['4G', '5G'],
+          isPopular: true,
+          provider: 'TelecomProvider',
+          coverage: 'Nationwide',
+          activationPolicy: 'Instant',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+        ESimPlan(
+          id: 'plan_2_$countryCode',
+          name: '10GB - 30 Days',
+          countryCode: countryCode,
+          countryName: _selectedCountry?.name ?? 'Unknown',
+          dataAmountGB: 10,
+          durationDays: 30,
+          price: 45.0,
+          currency: 'USD',
+          description: 'For heavy users',
+          supportedNetworks: ['4G', '5G'],
+          isPopular: false,
+          provider: 'TelecomProvider',
+          coverage: 'Nationwide',
+          activationPolicy: 'Instant',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+        ESimPlan(
+          id: 'plan_3_$countryCode',
+          name: '1GB - 7 Days',
+          countryCode: countryCode,
+          countryName: _selectedCountry?.name ?? 'Unknown',
+          dataAmountGB: 1,
+          durationDays: 7,
+          price: 9.99,
+          currency: 'USD',
+          description: 'Short stay option',
+          supportedNetworks: ['4G'],
+          isPopular: false,
+          provider: 'TelecomProvider',
+          coverage: 'Major cities',
+          activationPolicy: 'Instant',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        ),
+      ];
+      
+      _plans.sort((a, b) => a.price.compareTo(b.price));
+      
+    } catch (e) {
+      _setError('Failed to load plans: \$e');
+      _plans = [];
+    } finally {
+      _setLoading(false);
+    }
+  }
+  
+  void selectPlan(ESimPlan plan) {
+    _selectedPlan = plan;
+    notifyListeners();
+  }
+  
+  void selectCountry(Country country) {
+    _selectedCountry = country;
+    _selectedPlan = null;
+    notifyListeners();
+  }
+  
+  void clearSelection() {
+    _selectedPlan = null;
+    _selectedCountry = null;
+    notifyListeners();
+  }
 }
