@@ -101,9 +101,9 @@ class _LandingPageState extends State<LandingPage> {
           slivers: [
             _buildCupertinoHeroSection(context, localization),
             _buildCupertinoPlansSection(context, localization),
+            _buildCupertinoOtherCountriesSection(context, localization),
             _buildCupertinoFeaturesSection(context, localization),
             _buildCupertinoContactSection(context, localization),
-            _buildCupertinoOtherCountriesSection(context, localization),
           ],
         ),
       ),
@@ -173,9 +173,9 @@ class _LandingPageState extends State<LandingPage> {
 
           _buildMaterialHeroSection(context, localization),
           _buildMaterialPlansSection(context, localization),
+          _buildMaterialOtherCountriesSection(context, localization),
           _buildMaterialFeaturesSection(context, localization),
           _buildMaterialContactSection(context, localization),
-          _buildMaterialOtherCountriesSection(context, localization),
         ],
       ),
     );
