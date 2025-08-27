@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 import '../core/providers/language_provider.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/services/esim_plan_service.dart';
 import '../core/models/esim_plan.dart';
+import 'webview_screen.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -25,7 +28,13 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> _loadAfghanistanPlans() async {
     try {
+      // Clear cache to ensure fresh data
+      EsimPlanService.clearCache();
+      print('DEBUG: Cache cleared, loading fresh plans...');
+      
       final plans = await EsimPlanService.getFeaturedAfghanistanPlans();
+      print('DEBUG: Loaded ${plans.length} plans in landing page');
+      
       if (mounted) {
         setState(() {
           _afghanistanPlans = plans;
@@ -45,6 +54,61 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context);
+    
+    if (Platform.isIOS) {
+      return _buildCupertinoLayout(context, localization);
+    } else {
+      return _buildMaterialLayout(context, localization);
+    }
+  }
+
+  Widget _buildCupertinoLayout(BuildContext context, AppLocalizations localization) {
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        middle: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              CupertinoIcons.antenna_radiowaves_left_right,
+              color: Color(0xFF2E7D32),
+              size: 28,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              localization.appName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2E7D32),
+              ),
+            ),
+          ],
+        ),
+        trailing: Consumer<LanguageProvider>(
+          builder: (context, languageProvider, child) {
+            return CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: const Icon(CupertinoIcons.globe),
+              onPressed: () {
+                _showLanguageSelector(context, languageProvider, localization);
+              },
+            );
+          },
+        ),
+      ),
+      child: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            _buildCupertinoHeroSection(context, localization),
+            _buildCupertinoPlansSection(context, localization),
+            _buildCupertinoFeaturesSection(context, localization),
+            _buildCupertinoContactSection(context, localization),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMaterialLayout(BuildContext context, AppLocalizations localization) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -105,219 +169,10 @@ class _LandingPageState extends State<LandingPage> {
             ],
           ),
 
-          // Hero Section
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    colorScheme.primaryContainer,
-                    colorScheme.secondaryContainer,
-                  ],
-                ),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  Icon(
-                    Icons.public,
-                    size: 80,
-                    color: colorScheme.primary,
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Stay Connected in Afghanistan',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Get instant eSIM data plans for Afghanistan. No physical SIM required.',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onPrimaryContainer.withOpacity(0.8),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  FilledButton.icon(
-                    onPressed: () {
-                      if (_afghanistanPlans.isNotEmpty) {
-                        _launchURL(_afghanistanPlans.first.directLink);
-                      } else {
-                        _launchURL('https://asim.esimqr.link/');
-                      }
-                    },
-                    icon: const Icon(Icons.shopping_cart),
-                    label: Text(localization.getStarted),
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ),
-
-          // Plans Section
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Afghanistan eSIM Plans',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Stay connected in Afghanistan with our reliable data plans',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onSurface.withOpacity(0.7),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Horizontal scrollable plans
-                  SizedBox(
-                    height: 380,
-                    child: _isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : _afghanistanPlans.isEmpty
-                            ? Center(
-                                child: Text(
-                                  'No plans available',
-                                  style: theme.textTheme.bodyLarge,
-                                ),
-                              )
-                            : ListView.separated(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: _afghanistanPlans.length,
-                                separatorBuilder: (context, index) => const SizedBox(width: 16),
-                                itemBuilder: (context, index) {
-                                  final plan = _afghanistanPlans[index];
-                                  return _buildAfghanistanPlanCard(
-                                    context: context,
-                                    plan: plan,
-                                  );
-                                },
-                              ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Features Section
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.all(24),
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceVariant,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    localization.features,
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  _buildFeatureItem(
-                    context: context,
-                    icon: Icons.flash_on,
-                    title: localization.instantActivation,
-                    description: localization.instantActivationDesc,
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFeatureItem(
-                    context: context,
-                    icon: Icons.location_on,
-                    title: 'Afghanistan Coverage',
-                    description: 'Reliable network coverage across Afghanistan',
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFeatureItem(
-                    context: context,
-                    icon: Icons.attach_money,
-                    title: localization.affordablePrices,
-                    description: 'Competitive rates for Afghanistan data plans',
-                  ),
-                  const SizedBox(height: 16),
-                  _buildFeatureItem(
-                    context: context,
-                    icon: Icons.no_accounts,
-                    title: localization.noContracts,
-                    description: localization.noContractsDesc,
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // Contact Section
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.all(24),
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Text(
-                    'Ready to stay connected in Afghanistan?',
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Choose your Afghanistan eSIM plan and stay connected anywhere in the country.',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      color: colorScheme.onSurface.withOpacity(0.7),
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 16,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      FilledButton.icon(
-                        onPressed: () {
-                          if (_afghanistanPlans.isNotEmpty) {
-                            _launchURL(_afghanistanPlans.first.directLink);
-                          } else {
-                            _launchURL('https://asim.esimqr.link/');
-                          }
-                        },
-                        icon: const Icon(Icons.shopping_cart),
-                        label: Text(localization.buyNow),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: () => _launchURL('https://asim.esimqr.link/'),
-                        icon: const Icon(Icons.support_agent),
-                        label: Text(localization.contact),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ),
+          _buildMaterialHeroSection(context, localization),
+          _buildMaterialPlansSection(context, localization),
+          _buildMaterialFeaturesSection(context, localization),
+          _buildMaterialContactSection(context, localization),
         ],
       ),
     );
@@ -341,7 +196,7 @@ class _LandingPageState extends State<LandingPage> {
     ];
 
     return Container(
-      width: 280,
+      width: double.infinity, // Full width instead of fixed 280
       child: Card(
         elevation: plan.isPopular ? 8 : 2,
         child: Container(
@@ -487,12 +342,669 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> _launchURL(String url) async {
     try {
-      final Uri uri = Uri.parse(url);
-      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-        throw Exception('Could not launch $url');
+      // Use in-app WebView for purchase links
+      if (url.contains('esimqr.link') || url.contains('payment') || url.contains('buy')) {
+        Navigator.of(context).push(
+          Platform.isIOS
+              ? CupertinoPageRoute(
+                  builder: (context) => WebViewScreen(
+                    url: url,
+                    title: 'Purchase eSIM',
+                  ),
+                )
+              : MaterialPageRoute(
+                  builder: (context) => WebViewScreen(
+                    url: url,
+                    title: 'Purchase eSIM',
+                  ),
+                ),
+        );
+      } else {
+        // Use external browser for other links
+        final Uri uri = Uri.parse(url);
+        if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+          throw Exception('Could not launch $url');
+        }
       }
     } catch (e) {
       debugPrint('Error launching URL: $e');
     }
+  }
+
+  void _showLanguageSelector(BuildContext context, LanguageProvider languageProvider, AppLocalizations localization) {
+    if (Platform.isIOS) {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (context) => CupertinoActionSheet(
+          title: const Text('Select Language'),
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () {
+                languageProvider.setLanguage('en');
+                Navigator.pop(context);
+              },
+              child: Text(localization.english),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                languageProvider.setLanguage('fa');
+                Navigator.pop(context);
+              },
+              child: Text(localization.dari),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                languageProvider.setLanguage('ps');
+                Navigator.pop(context);
+              },
+              child: Text(localization.pashto),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ),
+      );
+    }
+  }
+
+  // Cupertino Sections
+  Widget _buildCupertinoHeroSection(BuildContext context, AppLocalizations localization) {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFE8F5E8),
+              Color(0xFFF1F8E9),
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            const Icon(
+              CupertinoIcons.globe,
+              size: 80,
+              color: Color(0xFF2E7D32),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Stay Connected in Afghanistan',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF2E7D32),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Get instant eSIM data plans for Afghanistan. No physical SIM required.',
+              style: TextStyle(
+                fontSize: 16,
+                color: CupertinoColors.secondaryLabel.resolveFrom(context),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            CupertinoButton.filled(
+              onPressed: () {
+                if (_afghanistanPlans.isNotEmpty) {
+                  _launchURL(_afghanistanPlans.first.directLink);
+                } else {
+                  _launchURL('https://asim.esimqr.link/');
+                }
+              },
+              child: Text(localization.getStarted),
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCupertinoPlansSection(BuildContext context, AppLocalizations localization) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Afghanistan eSIM Plans',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Stay connected in Afghanistan with our reliable data plans',
+              style: TextStyle(
+                fontSize: 16,
+                color: CupertinoColors.secondaryLabel.resolveFrom(context),
+              ),
+            ),
+            const SizedBox(height: 24),
+            _isLoading
+                ? const Center(child: CupertinoActivityIndicator())
+                : _afghanistanPlans.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No plans available',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                    : Column(
+                        children: _afghanistanPlans.map((plan) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _buildCupertinoPlanCard(
+                              context: context, 
+                              plan: plan, 
+                              localization: localization,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCupertinoFeaturesSection(BuildContext context, AppLocalizations localization) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: CupertinoColors.systemGroupedBackground.resolveFrom(context),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              localization.features,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildCupertinoFeatureItem(
+              context: context,
+              icon: CupertinoIcons.bolt_fill,
+              title: localization.instantActivation,
+              description: localization.instantActivationDesc,
+            ),
+            const SizedBox(height: 16),
+            _buildCupertinoFeatureItem(
+              context: context,
+              icon: CupertinoIcons.location_fill,
+              title: 'Afghanistan Coverage',
+              description: 'Reliable network coverage across Afghanistan',
+            ),
+            const SizedBox(height: 16),
+            _buildCupertinoFeatureItem(
+              context: context,
+              icon: CupertinoIcons.money_dollar_circle_fill,
+              title: localization.affordablePrices,
+              description: 'Competitive rates for Afghanistan data plans',
+            ),
+            const SizedBox(height: 16),
+            _buildCupertinoFeatureItem(
+              context: context,
+              icon: CupertinoIcons.checkmark_shield_fill,
+              title: localization.noContracts,
+              description: localization.noContractsDesc,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCupertinoContactSection(BuildContext context, AppLocalizations localization) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            const Text(
+              'Ready to stay connected in Afghanistan?',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Choose your Afghanistan eSIM plan and stay connected anywhere in the country.',
+              style: TextStyle(
+                fontSize: 16,
+                color: CupertinoColors.secondaryLabel.resolveFrom(context),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: CupertinoButton.filled(
+                    onPressed: () {
+                      if (_afghanistanPlans.isNotEmpty) {
+                        _launchURL(_afghanistanPlans.first.directLink);
+                      } else {
+                        _launchURL('https://asim.esimqr.link/');
+                      }
+                    },
+                    child: Text(localization.buyNow),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: CupertinoButton(
+                    onPressed: () => _launchURL('https://asim.esimqr.link/'),
+                    child: Text(localization.contact),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Material Sections
+  Widget _buildMaterialHeroSection(BuildContext context, AppLocalizations localization) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              colorScheme.primaryContainer,
+              colorScheme.secondaryContainer,
+            ],
+          ),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            Icon(
+              Icons.public,
+              size: 80,
+              color: colorScheme.primary,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Stay Connected in Afghanistan',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onPrimaryContainer,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Get instant eSIM data plans for Afghanistan. No physical SIM required.',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onPrimaryContainer.withOpacity(0.8),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            FilledButton.icon(
+              onPressed: () {
+                if (_afghanistanPlans.isNotEmpty) {
+                  _launchURL(_afghanistanPlans.first.directLink);
+                } else {
+                  _launchURL('https://asim.esimqr.link/');
+                }
+              },
+              icon: const Icon(Icons.shopping_cart),
+              label: Text(localization.getStarted),
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              ),
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMaterialPlansSection(BuildContext context, AppLocalizations localization) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Afghanistan eSIM Plans',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Stay connected in Afghanistan with our reliable data plans',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurface.withOpacity(0.7),
+              ),
+            ),
+            const SizedBox(height: 24),
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _afghanistanPlans.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No plans available',
+                          style: theme.textTheme.bodyLarge,
+                        ),
+                      )
+                    : Column(
+                        children: _afghanistanPlans.map((plan) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: _buildAfghanistanPlanCard(
+                              context: context,
+                              plan: plan,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMaterialFeaturesSection(BuildContext context, AppLocalizations localization) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              localization.features,
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            _buildFeatureItem(
+              context: context,
+              icon: Icons.flash_on,
+              title: localization.instantActivation,
+              description: localization.instantActivationDesc,
+            ),
+            const SizedBox(height: 16),
+            _buildFeatureItem(
+              context: context,
+              icon: Icons.location_on,
+              title: 'Afghanistan Coverage',
+              description: 'Reliable network coverage across Afghanistan',
+            ),
+            const SizedBox(height: 16),
+            _buildFeatureItem(
+              context: context,
+              icon: Icons.attach_money,
+              title: localization.affordablePrices,
+              description: 'Competitive rates for Afghanistan data plans',
+            ),
+            const SizedBox(height: 16),
+            _buildFeatureItem(
+              context: context,
+              icon: Icons.no_accounts,
+              title: localization.noContracts,
+              description: localization.noContractsDesc,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMaterialContactSection(BuildContext context, AppLocalizations localization) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          children: [
+            Text(
+              'Ready to stay connected in Afghanistan?',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Choose your Afghanistan eSIM plan and stay connected anywhere in the country.',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurface.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Wrap(
+              spacing: 16,
+              runSpacing: 16,
+              alignment: WrapAlignment.center,
+              children: [
+                FilledButton.icon(
+                  onPressed: () {
+                    if (_afghanistanPlans.isNotEmpty) {
+                      _launchURL(_afghanistanPlans.first.directLink);
+                    } else {
+                      _launchURL('https://asim.esimqr.link/');
+                    }
+                  },
+                  icon: const Icon(Icons.shopping_cart),
+                  label: Text(localization.buyNow),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => _launchURL('https://asim.esimqr.link/'),
+                  icon: const Icon(Icons.support_agent),
+                  label: Text(localization.contact),
+                ),
+              ],
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCupertinoPlanCard({
+    required BuildContext context,
+    required EsimPlan plan,
+    required AppLocalizations localization,
+  }) {
+    // Generate features for Afghanistan plans
+    final features = <String>[
+      '${plan.dataAmount} data ${plan.duration}',
+      'Afghanistan coverage',
+      'Instant activation',
+      '24/7 support',
+      if (plan.name.contains('GB')) 'High-speed data',
+    ];
+
+    return Container(
+      decoration: BoxDecoration(
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        borderRadius: BorderRadius.circular(12),
+        border: plan.isPopular
+            ? Border.all(color: const Color(0xFF2E7D32), width: 2)
+            : Border.all(color: CupertinoColors.separator.resolveFrom(context)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+              if (plan.isPopular)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E7D32),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    localization.popular,
+                    style: const TextStyle(
+                      color: CupertinoColors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              if (plan.isPopular) const SizedBox(height: 12),
+              Text(
+                '${plan.dataAmount} Afghanistan',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    plan.formattedPrice,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2E7D32),
+                    ),
+                  ),
+                  if (plan.duration.isNotEmpty)
+                    Text(
+                      ' / ${plan.duration}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ...features.take(5).map((feature) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    const Icon(
+                      CupertinoIcons.checkmark_circle_fill,
+                      size: 16,
+                      color: Color(0xFF2E7D32),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        feature,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: CupertinoButton.filled(
+                  onPressed: () => _launchURL(plan.directLink),
+                  child: Text(localization.buyNow),
+                ),
+              ),
+            ],
+          ),
+        ),
+    );
+  }
+
+  Widget _buildCupertinoFeatureItem({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String description,
+  }) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF2E7D32).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(
+            icon,
+            color: const Color(0xFF2E7D32),
+            size: 24,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

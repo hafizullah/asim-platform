@@ -9,15 +9,18 @@ class EsimPlanService {
   /// Load and parse Afghanistan plans from CSV
   static Future<List<EsimPlan>> getAfghanistanPlans() async {
     if (_cachedAfghanistanPlans != null) {
+      print('DEBUG: Returning cached Afghanistan plans: ${_cachedAfghanistanPlans!.length}');
       return _cachedAfghanistanPlans!;
     }
 
     try {
       final String csvContent = await rootBundle.loadString(_csvAssetPath);
       final List<String> lines = csvContent.split('\n');
+      print('DEBUG: Loaded CSV with ${lines.length} lines');
       
       // Skip header row and filter Afghanistan plans
       final afghanistanPlans = <EsimPlan>[];
+      int afghanistanLinesFound = 0;
       
       for (int i = 1; i < lines.length; i++) {
         final line = lines[i].trim();
@@ -25,9 +28,12 @@ class EsimPlanService {
         
         // Check if this line contains Afghanistan plans
         if (line.toLowerCase().contains('afghanistan')) {
+          afghanistanLinesFound++;
+          print('DEBUG: Found Afghanistan line $afghanistanLinesFound: ${line.substring(0, 50)}...');
           try {
             final plan = EsimPlan.fromCsv(line);
             afghanistanPlans.add(plan);
+            print('DEBUG: Successfully parsed plan: ${plan.name}');
           } catch (e) {
             print('Error parsing plan from line: $line');
             print('Error: $e');
@@ -37,6 +43,8 @@ class EsimPlanService {
 
       // Sort plans by price (ascending)
       afghanistanPlans.sort((a, b) => a.retailUsd.compareTo(b.retailUsd));
+      
+      print('DEBUG: Found ${afghanistanPlans.length} Afghanistan plans total');
       
       _cachedAfghanistanPlans = afghanistanPlans;
       return afghanistanPlans;
@@ -49,6 +57,7 @@ class EsimPlanService {
   /// Get featured Afghanistan plans (top 3-4 most popular)
   static Future<List<EsimPlan>> getFeaturedAfghanistanPlans() async {
     final allPlans = await getAfghanistanPlans();
+    print('DEBUG: getFeaturedAfghanistanPlans called, found ${allPlans.length} plans');
     
     // Select a good mix of plans for display
     final featured = <EsimPlan>[];
@@ -75,6 +84,7 @@ class EsimPlanService {
       }
     }
     
+    print('DEBUG: Returning ${featured.length} featured plans');
     return featured;
   }
 
