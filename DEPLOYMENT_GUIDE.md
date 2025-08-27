@@ -55,8 +55,8 @@ firebase deploy --only hosting
 Add these secrets in your GitHub repository (Settings → Secrets and variables → Actions):
 
 ### Firebase Secrets:
-- `FIREBASE_TOKEN`: The token from `firebase login:ci`
-- `FIREBASE_PROJECT_ID`: Your Firebase project ID
+- `FIREBASE_TOKEN`: Your CI token (copy from above output)
+- `FIREBASE_PROJECT_ID`: `asim-24e42`
 - `FIREBASE_PROJECT_ID_STAGING`: (Optional) Staging project ID
 
 ### iOS Secrets:
