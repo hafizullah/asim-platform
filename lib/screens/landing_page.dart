@@ -569,56 +569,69 @@ class _LandingPageState extends State<LandingPage> {
   Widget _buildCupertinoContactSection(BuildContext context, AppLocalizations localization) {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.all(24),
-        padding: const EdgeInsets.all(24),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        decoration: BoxDecoration(
+          color: CupertinoColors.systemBackground.resolveFrom(context),
+          border: Border(
+            top: BorderSide(
+              color: CupertinoColors.separator.resolveFrom(context),
+              width: 0.5,
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              localization.readyStayConnectedAfghanistan,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+            _buildCupertinoFooterLink(
+              context: context,
+              text: 'Terms & Conditions',
+              onTap: () => _launchURL('https://asim.esimqr.link/terms'),
             ),
-            const SizedBox(height: 16),
-            Text(
-              localization.chooseAfghanistanPlan,
-              style: TextStyle(
-                fontSize: 16,
-                color: CupertinoColors.secondaryLabel.resolveFrom(context),
-              ),
-              textAlign: TextAlign.center,
+            _buildCupertinoFooterDivider(context),
+            _buildCupertinoFooterLink(
+              context: context,
+              text: localization.about,
+              onTap: () => _launchURL('https://asim.esimqr.link/about'),
             ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: CupertinoButton.filled(
-                    onPressed: () {
-                      if (_afghanistanPlans.isNotEmpty) {
-                        _launchURL(_afghanistanPlans.first.directLink);
-                      } else {
-                        _launchURL('https://asim.esimqr.link/');
-                      }
-                    },
-                    child: Text(localization.buyNow),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: CupertinoButton(
-                    onPressed: () => _launchURL('https://asim.esimqr.link/'),
-                    child: Text(localization.contact),
-                  ),
-                ),
-              ],
+            _buildCupertinoFooterDivider(context),
+            _buildCupertinoFooterLink(
+              context: context,
+              text: localization.contact,
+              onTap: () => _launchURL('https://asim.esimqr.link/contact'),
             ),
-            const SizedBox(height: 40),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCupertinoFooterLink({
+    required BuildContext context,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 14,
+            color: CupertinoColors.systemBlue.resolveFrom(context),
+            decoration: TextDecoration.underline,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCupertinoFooterDivider(BuildContext context) {
+    return Container(
+      width: 1,
+      height: 16,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      color: CupertinoColors.separator.resolveFrom(context),
     );
   }
 
@@ -794,53 +807,72 @@ class _LandingPageState extends State<LandingPage> {
     
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.all(24),
-        padding: const EdgeInsets.all(24),
-        child: Column(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          border: Border(
+            top: BorderSide(
+              color: colorScheme.outline.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              localization.readyStayConnectedAfghanistan,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+            _buildFooterLink(
+              context: context,
+              text: 'Terms & Conditions',
+              onTap: () => _launchURL('https://asim.esimqr.link/terms'),
             ),
-            const SizedBox(height: 16),
-            Text(
-              localization.chooseAfghanistanPlan,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onSurface.withOpacity(0.7),
-              ),
-              textAlign: TextAlign.center,
+            _buildFooterDivider(colorScheme),
+            _buildFooterLink(
+              context: context,
+              text: localization.about,
+              onTap: () => _launchURL('https://asim.esimqr.link/about'),
             ),
-            const SizedBox(height: 24),
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              alignment: WrapAlignment.center,
-              children: [
-                FilledButton.icon(
-                  onPressed: () {
-                    if (_afghanistanPlans.isNotEmpty) {
-                      _launchURL(_afghanistanPlans.first.directLink);
-                    } else {
-                      _launchURL('https://asim.esimqr.link/');
-                    }
-                  },
-                  icon: const Icon(Icons.shopping_cart),
-                  label: Text(localization.buyNow),
-                ),
-                OutlinedButton.icon(
-                  onPressed: () => _launchURL('https://asim.esimqr.link/'),
-                  icon: const Icon(Icons.support_agent),
-                  label: Text(localization.contact),
-                ),
-              ],
+            _buildFooterDivider(colorScheme),
+            _buildFooterLink(
+              context: context,
+              text: localization.contact,
+              onTap: () => _launchURL('https://asim.esimqr.link/contact'),
             ),
-            const SizedBox(height: 40),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFooterLink({
+    required BuildContext context,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(4),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Text(
+          text,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.primary,
+            decoration: TextDecoration.underline,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFooterDivider(ColorScheme colorScheme) {
+    return Container(
+      width: 1,
+      height: 16,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      color: colorScheme.outline.withOpacity(0.3),
     );
   }
 
@@ -1051,51 +1083,4 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 
-  Widget _buildCupertinoOtherCountriesSection(BuildContext context, AppLocalizations localization) {
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: CupertinoColors.systemGroupedBackground.resolveFrom(context),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          children: [
-            const Icon(
-              CupertinoIcons.globe,
-              size: 48,
-              color: Color(0xFF2E7D32),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              localization.needEsimOtherCountries,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              localization.otherCountriesDescription,
-              style: TextStyle(
-                fontSize: 16,
-                color: CupertinoColors.secondaryLabel.resolveFrom(context),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: CupertinoButton.filled(
-                onPressed: () => _launchURL('https://asim.esimqr.link/'),
-                child: Text(localization.browseAllCountries),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
