@@ -94,27 +94,36 @@ class _LandingPageState extends State<LandingPage> {
             actions: [
               Consumer<LanguageProvider>(
                 builder: (context, languageProvider, child) {
-                  return PopupMenuButton<String>(
-                    icon: Icon(
-                      Icons.language,
-                      color: colorScheme.primary,
-                    ),
-                    onSelected: (String languageCode) {
-                      languageProvider.setLanguage(languageCode);
-                    },
-                    itemBuilder: (BuildContext context) => [
-                      PopupMenuItem(
-                        value: 'en',
-                        child: Text(localization.english),
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildLanguageButton(
+                        context: context,
+                        languageCode: 'en',
+                        languageLabel: localization.english,
+                        isSelected: languageProvider.locale.languageCode == 'en',
+                        onPressed: () => languageProvider.setLanguage('en'),
+                        colorScheme: colorScheme,
                       ),
-                      PopupMenuItem(
-                        value: 'fa',
-                        child: Text(localization.dari),
+                      const SizedBox(width: 4),
+                      _buildLanguageButton(
+                        context: context,
+                        languageCode: 'fa',
+                        languageLabel: localization.dari,
+                        isSelected: languageProvider.locale.languageCode == 'fa',
+                        onPressed: () => languageProvider.setLanguage('fa'),
+                        colorScheme: colorScheme,
                       ),
-                      PopupMenuItem(
-                        value: 'ps',
-                        child: Text(localization.pashto),
+                      const SizedBox(width: 4),
+                      _buildLanguageButton(
+                        context: context,
+                        languageCode: 'ps',
+                        languageLabel: localization.pashto,
+                        isSelected: languageProvider.locale.languageCode == 'ps',
+                        onPressed: () => languageProvider.setLanguage('ps'),
+                        colorScheme: colorScheme,
                       ),
+                      const SizedBox(width: 8),
                     ],
                   );
                 },
@@ -317,6 +326,42 @@ class _LandingPageState extends State<LandingPage> {
     } catch (e) {
       debugPrint('Error launching URL: $e');
     }
+  }
+
+  Widget _buildLanguageButton({
+    required BuildContext context,
+    required String languageCode,
+    required String languageLabel,
+    required bool isSelected,
+    required VoidCallback onPressed,
+    required ColorScheme colorScheme,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: isSelected ? colorScheme.primary : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected ? colorScheme.primary : colorScheme.outline,
+              width: 1,
+            ),
+          ),
+          child: Text(
+            languageLabel,
+            style: TextStyle(
+              color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   void _showLanguageSelector(BuildContext context, LanguageProvider languageProvider, AppLocalizations localization) {
