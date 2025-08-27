@@ -9,6 +9,7 @@ import '../core/services/esim_plan_service.dart';
 import '../core/models/esim_plan.dart';
 import '../core/widgets/asim_svg_logo.dart';
 import 'webview_screen.dart';
+import 'terms_conditions_screen.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -584,8 +585,14 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             _buildCupertinoFooterLink(
               context: context,
-              text: 'Terms & Conditions',
-              onTap: () => _launchURL('https://asim.esimqr.link/terms'),
+              text: localization.termsAndConditions,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TermsConditionsScreen(),
+                  ),
+                );
+              },
             ),
             _buildCupertinoFooterDivider(context),
             _buildCupertinoFooterLink(
@@ -822,8 +829,14 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             _buildFooterLink(
               context: context,
-              text: 'Terms & Conditions',
-              onTap: () => _launchURL('https://asim.esimqr.link/terms'),
+              text: localization.termsAndConditions,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TermsConditionsScreen(),
+                  ),
+                );
+              },
             ),
             _buildFooterDivider(colorScheme),
             _buildFooterLink(

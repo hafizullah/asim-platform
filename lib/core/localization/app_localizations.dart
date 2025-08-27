@@ -98,6 +98,10 @@ abstract class AppLocalizations {
   
   // Country name
   String get afghanistan;
+  
+  // Terms and Conditions
+  String get termsAndConditions;
+  String get termsAndConditionsTitle;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -297,6 +301,13 @@ class AppLocalizationsEn extends AppLocalizations {
   // Country name
   @override
   String get afghanistan => 'Afghanistan';
+  
+  // Terms and Conditions
+  @override
+  String get termsAndConditions => 'Terms & Conditions';
+  
+  @override
+  String get termsAndConditionsTitle => 'Terms and Conditions';
 }
 
 // Dari/Farsi
@@ -464,6 +475,13 @@ class AppLocalizationsFa extends AppLocalizations {
   // Country name
   @override
   String get afghanistan => 'افغانستان';
+  
+  // Terms and Conditions
+  @override
+  String get termsAndConditions => 'Terms & Conditions';
+  
+  @override
+  String get termsAndConditionsTitle => 'Terms and Conditions';
 }
 
 // Pashto
@@ -631,4 +649,11 @@ class AppLocalizationsPs extends AppLocalizations {
   // Country name
   @override
   String get afghanistan => 'افغانستان';
+  
+  // Terms and Conditions
+  @override
+  String get termsAndConditions => 'Terms & Conditions';
+  
+  @override
+  String get termsAndConditionsTitle => 'Terms and Conditions';
 }
