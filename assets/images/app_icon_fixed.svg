@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with rounded corners -->
+  <rect x="0" y="0" width="1024" height="1024" rx="180" ry="180" 
+        fill="#FFFFFF" stroke="#E0E0E0" stroke-width="4"/>
+  
+  <!-- Main signal design centered -->
+  <g transform="translate(512, 512)">
+    
+    <!-- Signal bars - using solid colors instead of gradients -->
+    <!-- Bar 1 (shortest) -->
+    <rect x="-160" y="80" width="60" height="120" rx="12" ry="12" 
+          fill="#228B22"/>
+    <rect x="-156" y="84" width="52" height="112" rx="8" ry="8" 
+          fill="#32CD32" opacity="0.7"/>
+    
+    <!-- Bar 2 -->
+    <rect x="-60" y="0" width="60" height="200" rx="12" ry="12" 
+          fill="#228B22"/>
+    <rect x="-56" y="4" width="52" height="192" rx="8" ry="8" 
+          fill="#32CD32" opacity="0.7"/>
+    
+    <!-- Bar 3 -->
+    <rect x="40" y="-80" width="60" height="280" rx="12" ry="12" 
+          fill="#228B22"/>
+    <rect x="44" y="-76" width="52" height="272" rx="8" ry="8" 
+          fill="#32CD32" opacity="0.7"/>
+    
+    <!-- Bar 4 (tallest) -->
+    <rect x="140" y="-160" width="60" height="360" rx="12" ry="12" 
+          fill="#228B22"/>
+    <rect x="144" y="-156" width="52" height="352" rx="8" ry="8" 
+          fill="#32CD32" opacity="0.7"/>
+    
+    <!-- Central SIM card element -->
+    <rect x="-40" y="-220" width="80" height="60" rx="16" ry="16" 
+          fill="#CC0000"/>
+    <rect x="-36" y="-216" width="72" height="52" rx="12" ry="12" 
+          fill="#FF3333" opacity="0.8"/>
+    
+    <!-- Signal transmission waves -->
+    <path d="M -80 -240 Q 0 -280 80 -240" stroke="#CC0000" 
+          stroke-width="8" fill="none" opacity="0.8" stroke-linecap="round"/>
+    <path d="M -120 -280 Q 0 -330 120 -280" stroke="#FF3333" 
+          stroke-width="6" fill="none" opacity="0.6" stroke-linecap="round"/>
+    <path d="M -160 -320 Q 0 -380 160 -320" stroke="#CC0000" 
+          stroke-width="4" fill="none" opacity="0.4" stroke-linecap="round"/>
+    
+    <!-- Base decorative element -->
+    <rect x="-180" y="220" width="360" height="20" rx="10" ry="10" 
+          fill="#1a1a1a" opacity="0.15"/>
+    
+  </g>
+</svg>
