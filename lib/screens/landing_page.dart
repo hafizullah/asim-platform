@@ -3,9 +3,44 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../core/providers/language_provider.dart';
 import '../core/localization/app_localizations.dart';
+import '../core/services/esim_plan_service.dart';
+import '../core/models/esim_plan.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
+
+  @override
+  State<LandingPage> createState() => _LandingPageState();
+}
+
+class _LandingPageState extends State<LandingPage> {
+  List<EsimPlan> _afghanistanPlans = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAfghanistanPlans();
+  }
+
+  Future<void> _loadAfghanistanPlans() async {
+    try {
+      final plans = await EsimPlanService.getFeaturedAfghanistanPlans();
+      if (mounted) {
+        setState(() {
+          _afghanistanPlans = plans;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+      debugPrint('Error loading Afghanistan plans: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +129,7 @@ class LandingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Text(
-                    localization.welcomeTitle,
+                    'Stay Connected in Afghanistan',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onPrimaryContainer,
@@ -103,7 +138,7 @@ class LandingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    localization.welcomeSubtitle,
+                    'Get instant eSIM data plans for Afghanistan. No physical SIM required.',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: colorScheme.onPrimaryContainer.withOpacity(0.8),
                     ),
@@ -111,7 +146,13 @@ class LandingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   FilledButton.icon(
-                    onPressed: () => _launchURL('https://example.com/purchase'),
+                    onPressed: () {
+                      if (_afghanistanPlans.isNotEmpty) {
+                        _launchURL(_afghanistanPlans.first.directLink);
+                      } else {
+                        _launchURL('https://asim.esimqr.link/');
+                      }
+                    },
                     icon: const Icon(Icons.shopping_cart),
                     label: Text(localization.getStarted),
                     style: FilledButton.styleFrom(
@@ -132,14 +173,14 @@ class LandingPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    localization.chooseYourPlan,
+                    'Afghanistan eSIM Plans',
                     style: theme.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    localization.planDescription,
+                    'Stay connected in Afghanistan with our reliable data plans',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: colorScheme.onSurface.withOpacity(0.7),
                     ),
@@ -147,59 +188,28 @@ class LandingPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   // Horizontal scrollable plans
                   SizedBox(
-                    height: 350,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        _buildPlanCard(
-                          context: context,
-                          title: '5GB Starter',
-                          price: '\$15',
-                          duration: '7 days',
-                          features: [
-                            '5GB high-speed data',
-                            '190+ countries',
-                            'Instant activation',
-                            '24/7 support'
-                          ],
-                          isPopular: false,
-                          purchaseUrl: 'https://example.com/purchase/starter',
-                        ),
-                        const SizedBox(width: 16),
-                        _buildPlanCard(
-                          context: context,
-                          title: '15GB Explorer',
-                          price: '\$35',
-                          duration: '30 days',
-                          features: [
-                            '15GB high-speed data',
-                            '190+ countries',
-                            'Instant activation',
-                            '24/7 support',
-                            'Hotspot sharing'
-                          ],
-                          isPopular: true,
-                          purchaseUrl: 'https://example.com/purchase/explorer',
-                        ),
-                        const SizedBox(width: 16),
-                        _buildPlanCard(
-                          context: context,
-                          title: '50GB Business',
-                          price: '\$89',
-                          duration: '30 days',
-                          features: [
-                            '50GB high-speed data',
-                            '190+ countries',
-                            'Instant activation',
-                            'Priority support',
-                            'Hotspot sharing',
-                            'Multi-device support'
-                          ],
-                          isPopular: false,
-                          purchaseUrl: 'https://example.com/purchase/business',
-                        ),
-                      ],
-                    ),
+                    height: 380,
+                    child: _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : _afghanistanPlans.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'No plans available',
+                                  style: theme.textTheme.bodyLarge,
+                                ),
+                              )
+                            : ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: _afghanistanPlans.length,
+                                separatorBuilder: (context, index) => const SizedBox(width: 16),
+                                itemBuilder: (context, index) {
+                                  final plan = _afghanistanPlans[index];
+                                  return _buildAfghanistanPlanCard(
+                                    context: context,
+                                    plan: plan,
+                                  );
+                                },
+                              ),
                   ),
                 ],
               ),
@@ -234,16 +244,16 @@ class LandingPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   _buildFeatureItem(
                     context: context,
-                    icon: Icons.public,
-                    title: localization.globalCoverage,
-                    description: localization.globalCoverageDesc,
+                    icon: Icons.location_on,
+                    title: 'Afghanistan Coverage',
+                    description: 'Reliable network coverage across Afghanistan',
                   ),
                   const SizedBox(height: 16),
                   _buildFeatureItem(
                     context: context,
                     icon: Icons.attach_money,
                     title: localization.affordablePrices,
-                    description: localization.affordablePricesDesc,
+                    description: 'Competitive rates for Afghanistan data plans',
                   ),
                   const SizedBox(height: 16),
                   _buildFeatureItem(
@@ -265,7 +275,7 @@ class LandingPage extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Ready to get started?',
+                    'Ready to stay connected in Afghanistan?',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -273,7 +283,7 @@ class LandingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Choose your plan and stay connected anywhere in the world.',
+                    'Choose your Afghanistan eSIM plan and stay connected anywhere in the country.',
                     style: theme.textTheme.bodyLarge?.copyWith(
                       color: colorScheme.onSurface.withOpacity(0.7),
                     ),
@@ -286,12 +296,18 @@ class LandingPage extends StatelessWidget {
                     alignment: WrapAlignment.center,
                     children: [
                       FilledButton.icon(
-                        onPressed: () => _launchURL('https://example.com/purchase'),
+                        onPressed: () {
+                          if (_afghanistanPlans.isNotEmpty) {
+                            _launchURL(_afghanistanPlans.first.directLink);
+                          } else {
+                            _launchURL('https://asim.esimqr.link/');
+                          }
+                        },
                         icon: const Icon(Icons.shopping_cart),
                         label: Text(localization.buyNow),
                       ),
                       OutlinedButton.icon(
-                        onPressed: () => _launchURL('https://example.com/support'),
+                        onPressed: () => _launchURL('https://asim.esimqr.link/'),
                         icon: const Icon(Icons.support_agent),
                         label: Text(localization.contact),
                       ),
@@ -307,27 +323,31 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPlanCard({
+  Widget _buildAfghanistanPlanCard({
     required BuildContext context,
-    required String title,
-    required String price,
-    required String duration,
-    required List<String> features,
-    required bool isPopular,
-    required String purchaseUrl,
+    required EsimPlan plan,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localization = AppLocalizations.of(context);
 
+    // Generate features for Afghanistan plans
+    final features = <String>[
+      '${plan.dataAmount} data ${plan.duration}',
+      'Afghanistan coverage',
+      'Instant activation',
+      '24/7 support',
+      if (plan.name.contains('GB')) 'High-speed data',
+    ];
+
     return Container(
       width: 280,
       child: Card(
-        elevation: isPopular ? 8 : 2,
+        elevation: plan.isPopular ? 8 : 2,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: isPopular
+            border: plan.isPopular
                 ? Border.all(color: colorScheme.primary, width: 2)
                 : null,
           ),
@@ -336,7 +356,7 @@ class LandingPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (isPopular)
+                if (plan.isPopular)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -351,9 +371,9 @@ class LandingPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (isPopular) const SizedBox(height: 12),
+                if (plan.isPopular) const SizedBox(height: 12),
                 Text(
-                  title,
+                  '${plan.dataAmount} Afghanistan',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -363,22 +383,23 @@ class LandingPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      price,
+                      plan.formattedPrice,
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: colorScheme.primary,
                       ),
                     ),
-                    Text(
-                      ' / $duration',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.7),
+                    if (plan.duration.isNotEmpty)
+                      Text(
+                        ' / ${plan.duration}',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurface.withOpacity(0.7),
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
-                ...features.map((feature) => Padding(
+                ...features.take(5).map((feature) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     children: [
@@ -401,9 +422,9 @@ class LandingPage extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: () => _launchURL(purchaseUrl),
+                    onPressed: () => _launchURL(plan.directLink),
                     style: FilledButton.styleFrom(
-                      backgroundColor: isPopular ? colorScheme.primary : null,
+                      backgroundColor: plan.isPopular ? colorScheme.primary : null,
                     ),
                     child: Text(localization.buyNow),
                   ),
