@@ -428,35 +428,117 @@ class _LandingPageState extends State<LandingPage> {
               size: 80,
               color: Color(0xFF2E7D32),
             ),
-            const SizedBox(height: 24),
-            Text(
-              '🇦🇫 ${localization.stayConnectedAfghanistan}',
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2E7D32),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              localization.afghanistanDataPlans,
-              style: TextStyle(
-                fontSize: 16,
-                color: CupertinoColors.secondaryLabel.resolveFrom(context),
-              ),
-              textAlign: TextAlign.center,
-            ),
             const SizedBox(height: 32),
-            CupertinoButton.filled(
-              onPressed: () {
-                if (_afghanistanPlans.isNotEmpty) {
-                  _launchURL(_afghanistanPlans.first.directLink);
-                } else {
-                  _launchURL('https://asim.esimqr.link/');
-                }
-              },
-              child: Text(localization.getStarted),
+            
+            // First Customer Scenario - Travelers
+            Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: CupertinoColors.systemBackground.resolveFrom(context).withOpacity(0.9),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF2E7D32).withOpacity(0.3)),
+              ),
+              child: Column(
+                children: [
+                  const Icon(
+                    CupertinoIcons.airplane,
+                    size: 32,
+                    color: Color(0xFF2E7D32),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    '✈️ Flying to Afghanistan?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Get instant internet connectivity the moment you land! No SIM swapping, no waiting in lines.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+
+            // Second Customer Scenario - Family Helper
+            Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.only(bottom: 24),
+              decoration: BoxDecoration(
+                color: CupertinoColors.systemBackground.resolveFrom(context).withOpacity(0.9),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF2E7D32).withOpacity(0.3)),
+              ),
+              child: Column(
+                children: [
+                  const Icon(
+                    CupertinoIcons.person_3_fill,
+                    size: 32,
+                    color: Color(0xFF2E7D32),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    '👨‍👩‍👧‍👦 Have family in Afghanistan?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Help them stay connected easily! Send data plans instantly - no complicated setup required.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: CupertinoColors.secondaryLabel.resolveFrom(context),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+
+            // Call to Action pointing to plans below
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2E7D32).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFF2E7D32).withOpacity(0.5)),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    CupertinoIcons.chevron_down,
+                    color: Color(0xFF2E7D32),
+                    size: 24,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Choose your perfect plan below',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2E7D32),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(
+                    CupertinoIcons.chevron_down,
+                    color: Color(0xFF2E7D32),
+                    size: 24,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 40),
           ],
@@ -671,36 +753,113 @@ class _LandingPageState extends State<LandingPage> {
           children: [
             const SizedBox(height: 40),
             AsimSvgLogo.large(),
-            const SizedBox(height: 24),
-            Text(
-              '🇦🇫 ${localization.stayConnectedAfghanistan}',
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onPrimaryContainer,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              localization.afghanistanDataPlans,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onPrimaryContainer.withOpacity(0.8),
-              ),
-              textAlign: TextAlign.center,
-            ),
             const SizedBox(height: 32),
-            FilledButton.icon(
-              onPressed: () {
-                if (_afghanistanPlans.isNotEmpty) {
-                  _launchURL(_afghanistanPlans.first.directLink);
-                } else {
-                  _launchURL('https://asim.esimqr.link/');
-                }
-              },
-              icon: const Icon(Icons.shopping_cart),
-              label: Text(localization.getStarted),
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            
+            // First Customer Scenario - Travelers
+            Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: colorScheme.surface.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: colorScheme.primary.withOpacity(0.3)),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.flight_takeoff,
+                    size: 32,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '✈️ Flying to Afghanistan?',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Get instant internet connectivity the moment you land! No SIM swapping, no waiting in lines.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+
+            // Second Customer Scenario - Family Helper
+            Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.only(bottom: 24),
+              decoration: BoxDecoration(
+                color: colorScheme.surface.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: colorScheme.primary.withOpacity(0.3)),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.family_restroom,
+                    size: 32,
+                    color: colorScheme.primary,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '👨‍👩‍👧‍👦 Have family in Afghanistan?',
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Help them stay connected easily! Send data plans instantly - no complicated setup required.',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+
+            // Call to Action pointing to plans below
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: colorScheme.primary.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: colorScheme.primary.withOpacity(0.5)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    color: colorScheme.primary,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Choose your perfect plan below',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(
+                    Icons.keyboard_arrow_down,
+                    color: colorScheme.primary,
+                    size: 24,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 40),
