@@ -182,7 +182,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 if (plan.isPopular) const SizedBox(height: 12),
                 Text(
-                  '🇦🇫 ${plan.dataAmount} Afghanistan',
+                  '🇦🇫 ${plan.dataAmount} ${localization.afghanistan}',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -386,7 +386,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              '🇦🇫 Stay Connected in Afghanistan',
+              '🇦🇫 ${localization.stayConnectedAfghanistan}',
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -608,7 +608,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              '🇦🇫 Stay Connected in Afghanistan',
+              '🇦🇫 ${localization.stayConnectedAfghanistan}',
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onPrimaryContainer,
@@ -851,7 +851,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               if (plan.isPopular) const SizedBox(height: 12),
               Text(
-                '🇦🇫 ${plan.dataAmount} Afghanistan',
+                '🇦🇫 ${plan.dataAmount} ${localization.afghanistan}',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -981,7 +981,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Need eSIM for Other Countries? 🌍',
+              localization.needEsimOtherCountries,
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -989,7 +989,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'We offer eSIM plans for 180+ countries and regions worldwide. Find the perfect plan for your destination.',
+              localization.otherCountriesDescription,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
@@ -1001,7 +1001,7 @@ class _LandingPageState extends State<LandingPage> {
               child: FilledButton.icon(
                 onPressed: () => _launchURL('https://asim.esimqr.link/'),
                 icon: const Icon(Icons.explore),
-                label: const Text('Browse All Countries'),
+                label: Text(localization.browseAllCountries),
                 style: FilledButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                 ),
@@ -1030,9 +1030,9 @@ class _LandingPageState extends State<LandingPage> {
               color: Color(0xFF2E7D32),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Need eSIM for Other Countries? 🌍',
-              style: TextStyle(
+            Text(
+              localization.needEsimOtherCountries,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -1040,7 +1040,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'We offer eSIM plans for 180+ countries and regions worldwide. Find the perfect plan for your destination.',
+              localization.otherCountriesDescription,
               style: TextStyle(
                 fontSize: 16,
                 color: CupertinoColors.secondaryLabel.resolveFrom(context),
@@ -1052,7 +1052,7 @@ class _LandingPageState extends State<LandingPage> {
               width: double.infinity,
               child: CupertinoButton.filled(
                 onPressed: () => _launchURL('https://asim.esimqr.link/'),
-                child: const Text('Browse All Countries'),
+                child: Text(localization.browseAllCountries),
               ),
             ),
           ],

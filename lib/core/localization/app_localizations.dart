@@ -90,6 +90,14 @@ abstract class AppLocalizations {
   String get competitiveAfghanistanRates;
   String get noPlansAvailable;
   String get purchaseEsim;
+  
+  // Other countries section
+  String get needEsimOtherCountries;
+  String get browseAllCountries;
+  String get otherCountriesDescription;
+  
+  // Country name
+  String get afghanistan;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -275,6 +283,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get purchaseEsim => 'Purchase eSIM';
+  
+  // Other countries section
+  @override
+  String get needEsimOtherCountries => 'Need eSIM for Other Countries? 🌍';
+
+  @override
+  String get browseAllCountries => 'Browse All Countries';
+
+  @override
+  String get otherCountriesDescription => 'We offer eSIM plans for 180+ countries and regions worldwide. Find the perfect plan for your destination.';
+  
+  // Country name
+  @override
+  String get afghanistan => 'Afghanistan';
 }
 
 // Dari/Farsi
@@ -428,6 +450,20 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get purchaseEsim => 'خرید ای‌سیم';
+  
+  // Other countries section
+  @override
+  String get needEsimOtherCountries => 'ای‌سیم برای کشورهای دیگر می‌خواهید؟ 🌍';
+
+  @override
+  String get browseAllCountries => 'مرور همه کشورها';
+
+  @override
+  String get otherCountriesDescription => 'ما طرح‌های ای‌سیم برای ۱۸۰+ کشور و منطقه در سراسر جهان ارائه می‌دهیم. طرح مناسب برای مقصد خود را پیدا کنید.';
+  
+  // Country name
+  @override
+  String get afghanistan => 'افغانستان';
 }
 
 // Pashto
@@ -581,4 +617,18 @@ class AppLocalizationsPs extends AppLocalizations {
 
   @override
   String get purchaseEsim => 'ای‌سیم وپېرئ';
+  
+  // Other countries section
+  @override
+  String get needEsimOtherCountries => 'د نورو هیوادونو لپاره ای‌سیم غواړئ؟ 🌍';
+
+  @override
+  String get browseAllCountries => 'ټول هیوادونه وګورئ';
+
+  @override
+  String get otherCountriesDescription => 'موږ د نړۍ د ۱۸۰+ هیوادونو او سیمو لپاره د ای‌سیم پلانونه وړاندې کوو. د خپل منزل لپاره مناسب پلان ومومئ.';
+  
+  // Country name
+  @override
+  String get afghanistan => 'افغانستان';
 }
