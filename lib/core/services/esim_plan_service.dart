@@ -54,31 +54,39 @@ class EsimPlanService {
     }
   }
 
-  /// Get featured Afghanistan plans (top 3-4 most popular)
+  /// Get featured Afghanistan plans (top 4-5 most popular)
   static Future<List<EsimPlan>> getFeaturedAfghanistanPlans() async {
     final allPlans = await getAfghanistanPlans();
     print('DEBUG: getFeaturedAfghanistanPlans called, found ${allPlans.length} plans');
     
-    // Select a good mix of plans for display
+    // Select a good mix of plans for display, starting with 500MB daily plan
     final featured = <EsimPlan>[];
+    
+    // First, add the 500MB daily plan at the top (most affordable option)
+    for (final plan in allPlans) {
+      if (plan.name.contains('500MB/Day') && featured.length < 5) {
+        featured.add(plan);
+        break;
+      }
+    }
     
     // Add some variety: daily, weekly, and monthly plans
     for (final plan in allPlans) {
-      if (plan.name.contains('1GB 7Days') && featured.length < 4) {
+      if (plan.name.contains('1GB 7Days') && featured.length < 5) {
         featured.add(plan);
-      } else if (plan.name.contains('3GB 30Days') && featured.length < 4) {
+      } else if (plan.name.contains('3GB 30Days') && featured.length < 5) {
         featured.add(plan);
-      } else if (plan.name.contains('5GB 30Days') && featured.length < 4) {
+      } else if (plan.name.contains('5GB 30Days') && featured.length < 5) {
         featured.add(plan);
-      } else if (plan.name.contains('1GB/Day') && featured.length < 4) {
+      } else if (plan.name.contains('1GB/Day') && featured.length < 5) {
         featured.add(plan);
       }
     }
     
     // If we don't have enough, add more plans
-    if (featured.length < 3) {
+    if (featured.length < 4) {
       for (final plan in allPlans) {
-        if (!featured.contains(plan) && featured.length < 4) {
+        if (!featured.contains(plan) && featured.length < 5) {
           featured.add(plan);
         }
       }

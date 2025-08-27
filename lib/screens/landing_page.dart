@@ -32,7 +32,8 @@ class _LandingPageState extends State<LandingPage> {
       EsimPlanService.clearCache();
       print('DEBUG: Cache cleared, loading fresh plans...');
       
-      final plans = await EsimPlanService.getFeaturedAfghanistanPlans();
+      // Load ALL Afghanistan plans instead of just featured ones
+      final plans = await EsimPlanService.getAfghanistanPlans();
       print('DEBUG: Loaded ${plans.length} plans in landing page');
       
       if (mounted) {
@@ -102,6 +103,7 @@ class _LandingPageState extends State<LandingPage> {
             _buildCupertinoPlansSection(context, localization),
             _buildCupertinoFeaturesSection(context, localization),
             _buildCupertinoContactSection(context, localization),
+            _buildCupertinoOtherCountriesSection(context, localization),
           ],
         ),
       ),
@@ -173,6 +175,7 @@ class _LandingPageState extends State<LandingPage> {
           _buildMaterialPlansSection(context, localization),
           _buildMaterialFeaturesSection(context, localization),
           _buildMaterialContactSection(context, localization),
+          _buildMaterialOtherCountriesSection(context, localization),
         ],
       ),
     );
@@ -228,7 +231,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 if (plan.isPopular) const SizedBox(height: 12),
                 Text(
-                  '${plan.dataAmount} Afghanistan',
+                  '🇦🇫 ${plan.dataAmount} Afghanistan',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -435,7 +438,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              localization.stayConnectedAfghanistan,
+              '🇦🇫 Stay Connected in Afghanistan',
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -657,7 +660,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              localization.stayConnectedAfghanistan,
+              '🇦🇫 Stay Connected in Afghanistan',
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onPrimaryContainer,
@@ -900,7 +903,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               if (plan.isPopular) const SizedBox(height: 12),
               Text(
-                '${plan.dataAmount} Afghanistan',
+                '🇦🇫 ${plan.dataAmount} Afghanistan',
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -1006,6 +1009,107 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildMaterialOtherCountriesSection(BuildContext context, AppLocalizations localization) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Icon(
+              Icons.public,
+              size: 48,
+              color: colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Need eSIM for Other Countries? 🌍',
+              style: theme.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'We offer eSIM plans for 180+ countries and regions worldwide. Find the perfect plan for your destination.',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurface.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: () => _launchURL('https://asim.esimqr.link/'),
+                icon: const Icon(Icons.explore),
+                label: const Text('Browse All Countries'),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCupertinoOtherCountriesSection(BuildContext context, AppLocalizations localization) {
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: CupertinoColors.systemGroupedBackground.resolveFrom(context),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            const Icon(
+              CupertinoIcons.globe,
+              size: 48,
+              color: Color(0xFF2E7D32),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Need eSIM for Other Countries? 🌍',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'We offer eSIM plans for 180+ countries and regions worldwide. Find the perfect plan for your destination.',
+              style: TextStyle(
+                fontSize: 16,
+                color: CupertinoColors.secondaryLabel.resolveFrom(context),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: CupertinoButton.filled(
+                onPressed: () => _launchURL('https://asim.esimqr.link/'),
+                child: const Text('Browse All Countries'),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

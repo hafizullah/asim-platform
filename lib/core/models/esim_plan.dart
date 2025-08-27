@@ -51,7 +51,7 @@ class EsimPlan {
 
   // Check if this plan is popular (example logic)
   bool get isPopular {
-    return name.contains('5GB 30Days') || name.contains('3GB 30Days');
+    return name.contains('500MB/Day') || name.contains('5GB 30Days') || name.contains('3GB 30Days');
   }
 
   factory EsimPlan.fromCsv(String csvRow) {
@@ -60,11 +60,20 @@ class EsimPlan {
       throw ArgumentError('Invalid CSV row: $csvRow');
     }
 
+    // Use the 5th column (index 4) for the latest retail price if available,
+    // otherwise fall back to the 4th column (index 3)
+    double retailPrice;
+    if (fields.length > 4 && fields[4].isNotEmpty) {
+      retailPrice = double.parse(fields[4]);
+    } else {
+      retailPrice = double.parse(fields[3]);
+    }
+
     return EsimPlan(
       name: fields[0].replaceAll('"', '').trim(),
       slug: fields[1].trim(),
       costUsd: double.parse(fields[2]),
-      retailUsd: double.parse(fields[3]),
+      retailUsd: retailPrice,
       directLink: fields[5].replaceAll('"', '').trim(),
       shopLink: fields[6].replaceAll('"', '').trim(),
     );
