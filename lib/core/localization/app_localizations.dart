@@ -102,6 +102,31 @@ abstract class AppLocalizations {
   // Terms and Conditions
   String get termsAndConditions;
   String get termsAndConditionsTitle;
+  
+  // About Us page
+  String get aboutUsTitle;
+  String get ourMission;
+  String get ourMissionDesc;
+  String get pioneering;
+  String get pioneeringDesc;
+  String get whyChooseUs;
+  String get dedicatedToAfghanistan;
+  String get dedicatedToAfghanistanDesc;
+  String get instantConnectivity;
+  String get instantConnectivityDesc;
+  String get reliableNetwork;
+  String get reliableNetworkDesc;
+  String get affordableRates;
+  String get affordableRatesDesc;
+  String get localSupport;
+  String get localSupportDesc;
+  String get ourVision;
+  String get ourVisionDesc;
+  String get getConnected;
+  String get firstEsimProvider;
+  String get joinThousands;
+  String get trustedByTravelers;
+  String get backToHome;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -308,6 +333,76 @@ class AppLocalizationsEn extends AppLocalizations {
   
   @override
   String get termsAndConditionsTitle => 'Terms and Conditions';
+  
+  // About Us page
+  @override
+  String get aboutUsTitle => 'About Asim - Your Afghanistan eSIM Specialist';
+  
+  @override
+  String get ourMission => 'Our Mission';
+  
+  @override
+  String get ourMissionDesc => 'To provide seamless, reliable, and affordable eSIM connectivity solutions specifically designed for travelers and residents in Afghanistan.';
+  
+  @override
+  String get pioneering => 'Pioneering Afghanistan Connectivity';
+  
+  @override
+  String get pioneeringDesc => 'Asim is proud to be the first eSIM provider dedicated exclusively to Afghanistan. We understand the unique connectivity challenges in the region and have developed specialized solutions to keep you connected wherever your journey takes you.';
+  
+  @override
+  String get whyChooseUs => 'Why Choose Asim?';
+  
+  @override
+  String get dedicatedToAfghanistan => 'Dedicated to Afghanistan';
+  
+  @override
+  String get dedicatedToAfghanistanDesc => 'Unlike other providers, we focus exclusively on Afghanistan, ensuring optimal network partnerships and coverage specifically for this region.';
+  
+  @override
+  String get instantConnectivity => 'Instant Connectivity';
+  
+  @override
+  String get instantConnectivityDesc => 'Get connected within minutes of purchase. No waiting, no physical SIM cards, no hassle.';
+  
+  @override
+  String get reliableNetwork => 'Reliable Network';
+  
+  @override
+  String get reliableNetworkDesc => 'We partner with the best local network operators to ensure stable and fast connectivity across Afghanistan.';
+  
+  @override
+  String get affordableRates => 'Affordable Rates';
+  
+  @override
+  String get affordableRatesDesc => 'Competitive pricing designed specifically for the Afghanistan market, offering the best value for your money.';
+  
+  @override
+  String get localSupport => 'Local Support';
+  
+  @override
+  String get localSupportDesc => 'Our support team understands the local context and can assist you in English, Dari, and Pashto.';
+  
+  @override
+  String get ourVision => 'Our Vision';
+  
+  @override
+  String get ourVisionDesc => 'To bridge the digital divide in Afghanistan by making reliable internet connectivity accessible to everyone, whether you\'re visiting for business, travel, or connecting with family.';
+  
+  @override
+  String get getConnected => 'Get Connected Today';
+  
+  @override
+  String get firstEsimProvider => 'The First eSIM Provider for Afghanistan';
+  
+  @override
+  String get joinThousands => 'Join thousands of satisfied customers who trust Asim for their Afghanistan connectivity needs.';
+  
+  @override
+  String get trustedByTravelers => 'Trusted by Travelers & Locals';
+  
+  @override
+  String get backToHome => 'Back to Home';
 }
 
 // Dari/Farsi
@@ -482,6 +577,76 @@ class AppLocalizationsFa extends AppLocalizations {
   
   @override
   String get termsAndConditionsTitle => 'Terms and Conditions';
+  
+  // About Us page
+  @override
+  String get aboutUsTitle => 'درباره آسیم - متخصص ای‌سیم افغانستان';
+  
+  @override
+  String get ourMission => 'مأموریت ما';
+  
+  @override
+  String get ourMissionDesc => 'ارائه راه‌حل‌های ارتباطی ای‌سیم یکپارچه، قابل اعتماد و مقرون به صرفه که به طور خاص برای مسافران و ساکنان افغانستان طراحی شده است.';
+  
+  @override
+  String get pioneering => 'پیشگام در ارتباطات افغانستان';
+  
+  @override
+  String get pioneeringDesc => 'آسیم مفتخر است که اولین ارائه‌دهنده ای‌سیم است که به طور انحصاری به افغانستان اختصاص یافته است. ما چالش‌های منحصر به فرد ارتباطی در منطقه را درک می‌کنیم و راه‌حل‌های تخصصی برای حفظ ارتباط شما در هر کجا که سفر می‌کنید توسعه داده‌ایم.';
+  
+  @override
+  String get whyChooseUs => 'چرا آسیم را انتخاب کنید؟';
+  
+  @override
+  String get dedicatedToAfghanistan => 'اختصاص به افغانستان';
+  
+  @override
+  String get dedicatedToAfghanistanDesc => 'برخلاف سایر ارائه‌دهندگان، ما به طور انحصاری بر افغانستان تمرکز می‌کنیم و شراکت‌های شبکه و پوشش بهینه را به طور خاص برای این منطقه تضمین می‌کنیم.';
+  
+  @override
+  String get instantConnectivity => 'ارتباط فوری';
+  
+  @override
+  String get instantConnectivityDesc => 'در عرض چند دقیقه پس از خرید متصل شوید. بدون انتظار، بدون سیم فیزیکی، بدون دردسر.';
+  
+  @override
+  String get reliableNetwork => 'شبکه قابل اعتماد';
+  
+  @override
+  String get reliableNetworkDesc => 'ما با بهترین اپراتورهای شبکه محلی شراکت می‌کنیم تا ارتباط پایدار و سریع در سراسر افغانستان را تضمین کنیم.';
+  
+  @override
+  String get affordableRates => 'نرخ‌های مقرون به صرفه';
+  
+  @override
+  String get affordableRatesDesc => 'قیمت‌گذاری رقابتی که به طور خاص برای بازار افغانستان طراحی شده و بهترین ارزش را برای پول شما ارائه می‌دهد.';
+  
+  @override
+  String get localSupport => 'پشتیبانی محلی';
+  
+  @override
+  String get localSupportDesc => 'تیم پشتیبانی ما زمینه محلی را درک می‌کند و می‌تواند به انگلیسی، دری و پشتو به شما کمک کند.';
+  
+  @override
+  String get ourVision => 'دیدگاه ما';
+  
+  @override
+  String get ourVisionDesc => 'پل زدن بر شکاف دیجیتال در افغانستان با در دسترس قرار دادن ارتباط اینترنتی قابل اعتماد برای همه، چه برای کسب‌وکار، سفر یا ارتباط با خانواده باشد.';
+  
+  @override
+  String get getConnected => 'همین امروز متصل شوید';
+  
+  @override
+  String get firstEsimProvider => 'اولین ارائه‌دهنده ای‌سیم برای افغانستان';
+  
+  @override
+  String get joinThousands => 'به هزاران مشتری راضی بپیوندید که برای نیازهای ارتباطی افغانستان خود به آسیم اعتماد می‌کنند.';
+  
+  @override
+  String get trustedByTravelers => 'مورد اعتماد مسافران و مردم محلی';
+  
+  @override
+  String get backToHome => 'بازگشت به خانه';
 }
 
 // Pashto
@@ -656,4 +821,74 @@ class AppLocalizationsPs extends AppLocalizations {
   
   @override
   String get termsAndConditionsTitle => 'Terms and Conditions';
+  
+  // About Us page
+  @override
+  String get aboutUsTitle => 'د آسیم په اړه - ستاسو د افغانستان ای‌سیم متخصص';
+  
+  @override
+  String get ourMission => 'زموږ ماموریت';
+  
+  @override
+  String get ourMissionDesc => 'د افغانستان د مسافرینو او اوسیدونکو لپاره ډیزاین شوي یوځای، د اعتماد وړ او د لاسرسي وړ ای‌سیم اړیکو حلونه چمتو کول.';
+  
+  @override
+  String get pioneering => 'د افغانستان اړیکو کې مخکښ';
+  
+  @override
+  String get pioneeringDesc => 'آسیم په دې ویاړي چې د افغانستان لپاره لومړۍ ای‌سیم وړاندې کوونکی دی چې په ځانګړي توګه افغانستان ته وقف دی. موږ په سیمه کې د اړیکو ځانګړي ننګونې پوهیږو او ځانګړي حلونه موږ رامینځته کړي ترڅو تاسو په هر ځای کې چې سفر کوئ وصل وساتو.';
+  
+  @override
+  String get whyChooseUs => 'ولې آسیم وټاکئ؟';
+  
+  @override
+  String get dedicatedToAfghanistan => 'د افغانستان لپاره وقف';
+  
+  @override
+  String get dedicatedToAfghanistanDesc => 'د نورو وړاندې کوونکو په پرتله، موږ په ځانګړي توګه افغانستان ته پاملرنه کوو، د دې سیمې لپاره په ځانګړي توګه د شبکې غوره ملګرتیاوې او پوښښ تضمینوو.';
+  
+  @override
+  String get instantConnectivity => 'سمدستي اړیکه';
+  
+  @override
+  String get instantConnectivityDesc => 'د پیرودلو څخه په څو دقیقو کې وصل شئ. هیڅ انتظار نشته، هیڅ فزیکي سیم نشته، هیڅ ستونزه نشته.';
+  
+  @override
+  String get reliableNetwork => 'د اعتماد وړ شبکه';
+  
+  @override
+  String get reliableNetworkDesc => 'موږ د غوره محلي شبکې چلوونکو سره ملګرتیا کوو ترڅو په ټول افغانستان کې مستحکم او ګړندي اړیکه تضمین کړو.';
+  
+  @override
+  String get affordableRates => 'د لاسرسي وړ نرخونه';
+  
+  @override
+  String get affordableRatesDesc => 'د افغانستان د بازار لپاره په ځانګړي توګه ډیزاین شوي رقابتي نرخونه، ستاسو د پیسو لپاره غوره ارزښت وړاندې کوي.';
+  
+  @override
+  String get localSupport => 'محلي ملاتړ';
+  
+  @override
+  String get localSupportDesc => 'زموږ د ملاتړ ټیم محلي شرایط پوهیږي او کولی شي په انګلیسي، دري او پښتو کې ستاسو سره مرسته وکړي.';
+  
+  @override
+  String get ourVision => 'زموږ لیدنه';
+  
+  @override
+  String get ourVisionDesc => 'په افغانستان کې د ډیجیټل تشې د پورته کولو لپاره د اعتماد وړ انټرنټ اړیکه د ټولو لپاره د لاسرسي وړ کول، که دا د سوداګرۍ، سفر یا د کورنۍ سره د اړیکو لپاره وي.';
+  
+  @override
+  String get getConnected => 'نن ورځ وصل شئ';
+  
+  @override
+  String get firstEsimProvider => 'د افغانستان لپاره لومړۍ ای‌سیم وړاندې کوونکی';
+  
+  @override
+  String get joinThousands => 'د زرګونو راضي پیرودونکو سره یوځای شئ چې د افغانستان د اړیکو اړتیاو لپاره آسیم ته اعتماد کوي.';
+  
+  @override
+  String get trustedByTravelers => 'د مسافرینو او محلي خلکو لخوا د اعتماد وړ';
+  
+  @override
+  String get backToHome => 'کور ته بیرته';
 }

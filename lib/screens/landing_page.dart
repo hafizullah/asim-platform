@@ -10,6 +10,7 @@ import '../core/models/esim_plan.dart';
 import '../core/widgets/asim_svg_logo.dart';
 import 'webview_screen.dart';
 import 'terms_conditions_screen.dart';
+import 'about_us_screen.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -598,7 +599,13 @@ class _LandingPageState extends State<LandingPage> {
             _buildCupertinoFooterLink(
               context: context,
               text: localization.about,
-              onTap: () => _launchURL('https://asim.esimqr.link/about'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AboutUsScreen(),
+                  ),
+                );
+              },
             ),
             _buildCupertinoFooterDivider(context),
             _buildCupertinoFooterLink(
@@ -842,7 +849,13 @@ class _LandingPageState extends State<LandingPage> {
             _buildFooterLink(
               context: context,
               text: localization.about,
-              onTap: () => _launchURL('https://asim.esimqr.link/about'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AboutUsScreen(),
+                  ),
+                );
+              },
             ),
             _buildFooterDivider(colorScheme),
             _buildFooterLink(
