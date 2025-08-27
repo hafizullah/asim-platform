@@ -51,7 +51,7 @@ class EsimPlan {
 
   // Check if this plan is popular (example logic)
   bool get isPopular {
-    return name.contains('500MB/Day') || name.contains('5GB 30Days') || name.contains('3GB 30Days');
+    return name.contains('1GB 7Days') || name.contains('5GB 30Days');
   }
 
   factory EsimPlan.fromCsv(String csvRow) {

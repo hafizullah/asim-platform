@@ -11,7 +11,7 @@ void main() {
       final plans = await EsimPlanService.getAfghanistanPlans();
       
       expect(plans, isNotEmpty);
-      expect(plans.length, equals(9)); // We found 9 Afghanistan plans
+      expect(plans.length, equals(6)); // We now have 6 Afghanistan plans after removal
       
       // Check that all plans are for Afghanistan
       for (final plan in plans) {

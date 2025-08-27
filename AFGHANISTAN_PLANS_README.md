@@ -35,17 +35,14 @@ Successfully updated the Asim platform landing page to display Afghanistan-speci
 - All tests passing
 
 ## Afghanistan Plans Available
-The system now loads and displays 9 Afghanistan-specific eSIM plans:
+The system now loads and displays 6 Afghanistan-specific eSIM plans:
 
-1. **Afghanistan 500MB/Day** - $4.24
-2. **Afghanistan 1GB/Day** - $5.89  
-3. **Afghanistan 1GB 7Days** - $6.48
-4. **Afghanistan 2GB/Day** - $9.30
-5. **Afghanistan 3GB 15Days** - $15.06
-6. **Afghanistan 3GB 30Days** - $15.89
-7. **Afghanistan 5GB 30Days** - $24.24
-8. **Afghanistan 10GB 30Days** - $44.48
-9. **Afghanistan 20GB 30Days** - $81.89
+1. **Afghanistan 1GB/Day** - $5.89  
+2. **Afghanistan 1GB 7Days** - $6.48 (Most Popular)
+3. **Afghanistan 3GB 15Days** - $15.06
+4. **Afghanistan 5GB 30Days** - $24.24
+5. **Afghanistan 10GB 30Days** - $44.48
+6. **Afghanistan 20GB 30Days** - $81.89
 
 ## Key Features
 - **Real-time data loading** from CSV asset

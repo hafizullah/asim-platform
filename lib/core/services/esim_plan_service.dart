@@ -59,12 +59,12 @@ class EsimPlanService {
     final allPlans = await getAfghanistanPlans();
     print('DEBUG: getFeaturedAfghanistanPlans called, found ${allPlans.length} plans');
     
-    // Select a good mix of plans for display, starting with 500MB daily plan
+    // Select a good mix of plans for display, starting with 1GB 7Days plan
     final featured = <EsimPlan>[];
     
-    // First, add the 500MB daily plan at the top (most affordable option)
+    // First, add the 1GB 7Days plan at the top (most popular option)
     for (final plan in allPlans) {
-      if (plan.name.contains('500MB/Day') && featured.length < 5) {
+      if (plan.name.contains('1GB 7Days') && featured.length < 5) {
         featured.add(plan);
         break;
       }
@@ -72,13 +72,11 @@ class EsimPlanService {
     
     // Add some variety: daily, weekly, and monthly plans
     for (final plan in allPlans) {
-      if (plan.name.contains('1GB 7Days') && featured.length < 5) {
-        featured.add(plan);
-      } else if (plan.name.contains('3GB 30Days') && featured.length < 5) {
+      if (plan.name.contains('1GB/Day') && featured.length < 5) {
         featured.add(plan);
       } else if (plan.name.contains('5GB 30Days') && featured.length < 5) {
         featured.add(plan);
-      } else if (plan.name.contains('1GB/Day') && featured.length < 5) {
+      } else if (plan.name.contains('3GB 15Days') && featured.length < 5) {
         featured.add(plan);
       }
     }
