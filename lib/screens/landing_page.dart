@@ -11,6 +11,7 @@ import '../core/widgets/asim_svg_logo.dart';
 import 'webview_screen.dart';
 import 'terms_conditions_screen.dart';
 import 'about_us_screen.dart';
+import 'contact_us_screen.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -693,7 +694,13 @@ class _LandingPageState extends State<LandingPage> {
             _buildCupertinoFooterLink(
               context: context,
               text: localization.contact,
-              onTap: () => _launchURL('https://asim.esimqr.link/contact'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ContactUsScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -1020,7 +1027,13 @@ class _LandingPageState extends State<LandingPage> {
             _buildFooterLink(
               context: context,
               text: localization.contact,
-              onTap: () => _launchURL('https://asim.esimqr.link/contact'),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ContactUsScreen(),
+                  ),
+                );
+              },
             ),
           ],
         ),

@@ -3,10 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/widgets/asim_svg_logo.dart';
-import 'contact_us_screen.dart';
 
-class AboutUsScreen extends StatelessWidget {
-  const AboutUsScreen({super.key});
+class ContactUsScreen extends StatelessWidget {
+  const ContactUsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +23,7 @@ class AboutUsScreen extends StatelessWidget {
         slivers: [
           // Modern App Bar with hero section
           SliverAppBar(
-            expandedHeight: 300,
+            expandedHeight: 280,
             floating: false,
             pinned: true,
             backgroundColor: colorScheme.primary,
@@ -64,10 +63,10 @@ class AboutUsScreen extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text('🥇', style: TextStyle(fontSize: 18)),
+                            const Text('📧', style: TextStyle(fontSize: 18)),
                             const SizedBox(width: 8),
                             Text(
-                              localization.firstEsimProvider,
+                              'Contact Us',
                               style: theme.textTheme.titleSmall?.copyWith(
                                 color: colorScheme.onPrimaryContainer,
                                 fontWeight: FontWeight.bold,
@@ -80,7 +79,7 @@ class AboutUsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Text(
-                          localization.aboutUsTitle,
+                          'Get in Touch with Asim eSIM',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
@@ -95,23 +94,17 @@ class AboutUsScreen extends StatelessWidget {
             ),
           ),
 
-          // Mission Section
-          _buildMissionSection(context, localization),
+          // Contact Information Section
+          _buildContactInfoSection(context, localization),
           
-          // Pioneering Section
-          _buildPioneeringSection(context, localization),
+          // Support Hours Section
+          _buildSupportHoursSection(context, localization),
           
-          // Why Choose Us Section
-          _buildWhyChooseUsSection(context, localization),
+          // Quick Help Section
+          _buildQuickHelpSection(context, localization),
           
-          // Vision Section
-          _buildVisionSection(context, localization),
-          
-          // CTA Section
-          _buildCTASection(context, localization),
-          
-          // Statistics Section
-          _buildStatsSection(context, localization),
+          // FAQ Section
+          _buildFAQSection(context, localization),
           
           // Footer
           _buildFooterSection(context, localization),
@@ -120,7 +113,7 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMissionSection(BuildContext context, AppLocalizations localization) {
+  Widget _buildContactInfoSection(BuildContext context, AppLocalizations localization) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
@@ -151,7 +144,7 @@ class AboutUsScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
-                    Icons.flag,
+                    Icons.mail,
                     color: colorScheme.primary,
                     size: 28,
                   ),
@@ -159,7 +152,7 @@ class AboutUsScreen extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
-                    localization.ourMission,
+                    'Email Support',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
@@ -170,10 +163,62 @@ class AboutUsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              localization.ourMissionDesc,
+              'For assistance with your eSIM plans, technical support, or general inquiries, please reach out to us:',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.8),
                 height: 1.6,
+              ),
+            ),
+            const SizedBox(height: 20),
+            
+            // Email Card
+            InkWell(
+              onTap: () => _launchEmail('info@asim.af'),
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: colorScheme.primary.withOpacity(0.2)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.email,
+                      color: colorScheme.primary,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'info@asim.af',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.primary,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Tap to send email',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurface.withOpacity(0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: colorScheme.primary,
+                      size: 16,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -182,7 +227,7 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPioneeringSection(BuildContext context, AppLocalizations localization) {
+  Widget _buildSupportHoursSection(BuildContext context, AppLocalizations localization) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
@@ -211,27 +256,52 @@ class AboutUsScreen extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: const Text(
-                  '🇦🇫',
-                  style: TextStyle(fontSize: 48),
+                  '⏰',
+                  style: TextStyle(fontSize: 32),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
               Text(
-                localization.pioneering,
+                'Support Hours',
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.onPrimaryContainer,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
-                localization.pioneeringDesc,
+                'We strive to respond to all emails within 24 hours',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: colorScheme.onPrimaryContainer.withOpacity(0.9),
-                  height: 1.6,
+                  height: 1.5,
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.surface.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.schedule,
+                      color: colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Monday - Sunday: 24/7 Email Support',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -240,7 +310,7 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWhyChooseUsSection(BuildContext context, AppLocalizations localization) {
+  Widget _buildQuickHelpSection(BuildContext context, AppLocalizations localization) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
@@ -251,51 +321,57 @@ class AboutUsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              localization.whyChooseUs,
+              'Quick Help Topics',
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
               ),
             ),
+            const SizedBox(height: 16),
+            Text(
+              'When contacting us, please include relevant details to help us assist you faster:',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: colorScheme.onSurface.withOpacity(0.7),
+              ),
+            ),
             const SizedBox(height: 24),
-            _buildFeatureCard(
+            _buildHelpTopicCard(
               context: context,
-              icon: Icons.location_on,
-              title: localization.dedicatedToAfghanistan,
-              description: localization.dedicatedToAfghanistanDesc,
-              color: const Color(0xFF1976D2),
+              icon: Icons.settings,
+              title: 'eSIM Setup & Activation',
+              description: 'Help with QR code scanning, APN settings, and activation issues',
+              topics: [
+                'QR code not scanning',
+                'eSIM activation problems',
+                'Data connection issues',
+                'APN configuration help',
+              ],
             ),
             const SizedBox(height: 16),
-            _buildFeatureCard(
+            _buildHelpTopicCard(
               context: context,
-              icon: Icons.flash_on,
-              title: localization.instantConnectivity,
-              description: localization.instantConnectivityDesc,
-              color: const Color(0xFFFF6F00),
+              icon: Icons.payment,
+              title: 'Purchase & Billing',
+              description: 'Questions about plans, payments, and billing',
+              topics: [
+                'Plan selection guidance',
+                'Payment methods',
+                'Refund requests',
+                'Invoice questions',
+              ],
             ),
             const SizedBox(height: 16),
-            _buildFeatureCard(
+            _buildHelpTopicCard(
               context: context,
-              icon: Icons.signal_cellular_4_bar,
-              title: localization.reliableNetwork,
-              description: localization.reliableNetworkDesc,
-              color: const Color(0xFF388E3C),
-            ),
-            const SizedBox(height: 16),
-            _buildFeatureCard(
-              context: context,
-              icon: Icons.attach_money,
-              title: localization.affordableRates,
-              description: localization.affordableRatesDesc,
-              color: const Color(0xFF7B1FA2),
-            ),
-            const SizedBox(height: 16),
-            _buildFeatureCard(
-              context: context,
-              icon: Icons.support_agent,
-              title: localization.localSupport,
-              description: localization.localSupportDesc,
-              color: const Color(0xFFD32F2F),
+              icon: Icons.travel_explore,
+              title: 'Travel Support',
+              description: 'Assistance for travelers using eSIM in Afghanistan',
+              topics: [
+                'Coverage area questions',
+                'Roaming information',
+                'Data speed expectations',
+                'Travel tips for connectivity',
+              ],
             ),
           ],
         ),
@@ -303,12 +379,12 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFeatureCard({
+  Widget _buildHelpTopicCard({
     required BuildContext context,
     required IconData icon,
     required String title,
     required String description,
-    required Color color,
+    required List<String> topics,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -327,49 +403,66 @@ class AboutUsScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  icon,
+                  color: colorScheme.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
                   title,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.7),
-                    height: 1.4,
-                  ),
-                ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            description,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurface.withOpacity(0.7),
             ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: topics.map((topic) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                topic,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurface.withOpacity(0.8),
+                ),
+              ),
+            )).toList(),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildVisionSection(BuildContext context, AppLocalizations localization) {
+  Widget _buildFAQSection(BuildContext context, AppLocalizations localization) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
@@ -385,13 +478,13 @@ class AboutUsScreen extends StatelessWidget {
         child: Column(
           children: [
             Icon(
-              Icons.visibility,
+              Icons.help_outline,
               color: colorScheme.primary,
               size: 48,
             ),
             const SizedBox(height: 16),
             Text(
-              localization.ourVision,
+              'Frequently Asked Questions',
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurface,
@@ -400,103 +493,30 @@ class AboutUsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              localization.ourVisionDesc,
+              'Before contacting us, you might find your answer in our most common questions:',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.8),
                 height: 1.6,
               ),
               textAlign: TextAlign.center,
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatsSection(BuildContext context, AppLocalizations localization) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    
-    return SliverToBoxAdapter(
-      child: Container(
-        margin: const EdgeInsets.all(24),
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              colorScheme.primary.withOpacity(0.1),
-              colorScheme.secondary.withOpacity(0.1),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                const Text('👥', style: TextStyle(fontSize: 24)),
-                const SizedBox(width: 12),
-                Text(
-                  localization.trustedByTravelers,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatItem(
-                    context: context,
-                    icon: '🥇',
-                    number: '#1',
-                    label: 'Afghanistan eSIM Provider',
-                  ),
-                ),
-                Expanded(
-                  child: _buildStatItem(
-                    context: context,
-                    icon: '🌟',
-                    number: '4.9',
-                    label: 'Customer Rating',
-                  ),
-                ),
-              ],
+            _buildFAQItem(
+              context: context,
+              question: 'How long does eSIM activation take?',
+              answer: 'eSIM activation typically takes 2-5 minutes after purchase.',
             ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildStatItem(
-                    context: context,
-                    icon: '⚡',
-                    number: '<5min',
-                    label: 'Activation Time',
-                  ),
-                ),
-                Expanded(
-                  child: _buildStatItem(
-                    context: context,
-                    icon: '📱',
-                    number: '24/7',
-                    label: 'Support',
-                  ),
-                ),
-              ],
+            const SizedBox(height: 12),
+            _buildFAQItem(
+              context: context,
+              question: 'Which devices support eSIM?',
+              answer: 'Most modern smartphones including iPhone XS and newer, Google Pixel 3 and newer, Samsung Galaxy S20 and newer.',
             ),
-            const SizedBox(height: 20),
-            Text(
-              localization.joinThousands,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onSurface.withOpacity(0.8),
-                height: 1.5,
-              ),
-              textAlign: TextAlign.center,
+            const SizedBox(height: 12),
+            _buildFAQItem(
+              context: context,
+              question: 'Can I use my eSIM outside Afghanistan?',
+              answer: 'Our Afghanistan eSIM plans are designed specifically for use within Afghanistan.',
             ),
           ],
         ),
@@ -504,54 +524,38 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem({
+  Widget _buildFAQItem({
     required BuildContext context,
-    required String icon,
-    required String number,
-    required String label,
+    required String question,
+    required String answer,
   }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
-    return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+    return ExpansionTile(
+      title: Text(
+        question,
+        style: theme.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: colorScheme.onSurface,
+        ),
       ),
-      child: Column(
-        children: [
-          Text(icon, style: const TextStyle(fontSize: 24)),
-          const SizedBox(height: 8),
-          Text(
-            number,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text(
+            answer,
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: colorScheme.onSurface.withOpacity(0.7),
+              height: 1.4,
             ),
-            textAlign: TextAlign.center,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildCTASection(BuildContext context, AppLocalizations localization) {
+  Widget _buildFooterSection(BuildContext context, AppLocalizations localization) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
@@ -575,7 +579,7 @@ class AboutUsScreen extends StatelessWidget {
             const Text('🚀', style: TextStyle(fontSize: 48)),
             const SizedBox(height: 16),
             Text(
-              localization.getConnected,
+              'Ready to Get Connected?',
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onPrimary,
@@ -584,7 +588,7 @@ class AboutUsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Experience the future of connectivity in Afghanistan with Asim eSIM',
+              'Still have questions? Don\'t hesitate to reach out at info@asim.af',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onPrimary.withOpacity(0.9),
               ),
@@ -595,33 +599,27 @@ class AboutUsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: FilledButton.icon(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => _launchEmail('info@asim.af'),
                     style: FilledButton.styleFrom(
                       backgroundColor: colorScheme.onPrimary,
                       foregroundColor: colorScheme.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    icon: const Icon(Icons.shopping_cart),
-                    label: Text('Explore Plans'),
+                    icon: const Icon(Icons.email),
+                    label: const Text('Send Email'),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ContactUsScreen(),
-                        ),
-                      );
-                    },
+                    onPressed: () => Navigator.of(context).pop(),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: colorScheme.onPrimary,
                       side: BorderSide(color: colorScheme.onPrimary),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    icon: const Icon(Icons.contact_support),
-                    label: Text('Contact Us'),
+                    icon: const Icon(Icons.shopping_cart),
+                    label: const Text('Browse Plans'),
                   ),
                 ),
               ],
@@ -632,54 +630,17 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFooterSection(BuildContext context, AppLocalizations localization) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+  Future<void> _launchEmail(String email) async {
+    final subject = Uri.encodeComponent('eSIM Support Request');
+    final body = Uri.encodeComponent('Hello Asim Team,\n\nI need help with:\n\n[Please describe your issue here]\n\nBest regards');
+    final emailUri = Uri.parse('mailto:$email?subject=$subject&body=$body');
     
-    return SliverToBoxAdapter(
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          border: Border(
-            top: BorderSide(
-              color: colorScheme.outline.withOpacity(0.2),
-              width: 1,
-            ),
-          ),
-        ),
-        child: Column(
-          children: [
-            AsimSvgLogo.medium(),
-            const SizedBox(height: 16),
-            Text(
-              'Connecting Afghanistan to the World',
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onSurface.withOpacity(0.7),
-                fontStyle: FontStyle.italic,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            TextButton.icon(
-              onPressed: () => Navigator.of(context).pop(),
-              icon: const Icon(Icons.arrow_back),
-              label: Text(localization.backToHome),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _launchURL(String url) async {
     try {
-      final Uri uri = Uri.parse(url);
-      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-        throw Exception('Could not launch $url');
+      if (!await launchUrl(emailUri)) {
+        throw Exception('Could not launch email client');
       }
     } catch (e) {
-      debugPrint('Error launching URL: $e');
+      debugPrint('Error launching email: $e');
     }
   }
 }
