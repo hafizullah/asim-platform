@@ -44,7 +44,7 @@ class AsimLandingApp extends StatelessWidget {
         ),
       ),
       
-      // Localization
+      // Localization and RTL support
       locale: languageProvider.locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -57,6 +57,17 @@ class AsimLandingApp extends StatelessWidget {
         Locale("fa", ""), // Dari/Persian
         Locale("ps", ""), // Pashto
       ],
+      
+      // Builder to wrap with Directionality for RTL support
+      builder: (context, child) {
+        final locale = Localizations.localeOf(context);
+        final isRTL = locale.languageCode == 'fa' || locale.languageCode == 'ps';
+        
+        return Directionality(
+          textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+          child: child!,
+        );
+      },
       
       home: const LandingPage(),
     );
@@ -86,7 +97,7 @@ class AsimLandingApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       
-      // Localization
+      // Localization and RTL support
       locale: languageProvider.locale,
       localizationsDelegates: const [
         AppLocalizations.delegate,
@@ -99,6 +110,17 @@ class AsimLandingApp extends StatelessWidget {
         Locale("fa", ""), // Dari/Persian
         Locale("ps", ""), // Pashto
       ],
+      
+      // Builder to wrap with Directionality for RTL support
+      builder: (context, child) {
+        final locale = Localizations.localeOf(context);
+        final isRTL = locale.languageCode == 'fa' || locale.languageCode == 'ps';
+        
+        return Directionality(
+          textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+          child: child!,
+        );
+      },
       
       home: const LandingPage(),
     );

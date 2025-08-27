@@ -188,11 +188,11 @@ class _LandingPageState extends State<LandingPage> {
 
     // Generate features for Afghanistan plans
     final features = <String>[
-      '${plan.dataAmount} data ${plan.duration}',
-      'Afghanistan coverage',
-      'Instant activation',
-      '24/7 support',
-      if (plan.name.contains('GB')) 'High-speed data',
+      '${plan.dataAmount} ${localization.afghanistanDataFeatures} ${plan.duration}',
+      localization.afghanistanCoverage,
+      localization.instantActivation,
+      localization.support24x7,
+      if (plan.name.contains('GB')) localization.highSpeedData,
     ];
 
     return Container(
@@ -341,6 +341,7 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Future<void> _launchURL(String url) async {
+    final localization = AppLocalizations.of(context);
     try {
       // Use in-app WebView for purchase links
       if (url.contains('esimqr.link') || url.contains('payment') || url.contains('buy')) {
@@ -349,13 +350,13 @@ class _LandingPageState extends State<LandingPage> {
               ? CupertinoPageRoute(
                   builder: (context) => WebViewScreen(
                     url: url,
-                    title: 'Purchase eSIM',
+                    title: localization.purchaseEsim,
                   ),
                 )
               : MaterialPageRoute(
                   builder: (context) => WebViewScreen(
                     url: url,
-                    title: 'Purchase eSIM',
+                    title: localization.purchaseEsim,
                   ),
                 ),
         );
@@ -376,7 +377,7 @@ class _LandingPageState extends State<LandingPage> {
       showCupertinoModalPopup(
         context: context,
         builder: (context) => CupertinoActionSheet(
-          title: const Text('Select Language'),
+          title: Text(localization.selectLanguage),
           actions: [
             CupertinoActionSheetAction(
               onPressed: () {
@@ -402,7 +403,7 @@ class _LandingPageState extends State<LandingPage> {
           ],
           cancelButton: CupertinoActionSheetAction(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: Text(localization.cancel),
           ),
         ),
       );
@@ -433,9 +434,9 @@ class _LandingPageState extends State<LandingPage> {
               color: Color(0xFF2E7D32),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Stay Connected in Afghanistan',
-              style: TextStyle(
+            Text(
+              localization.stayConnectedAfghanistan,
+              style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF2E7D32),
@@ -444,7 +445,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Get instant eSIM data plans for Afghanistan. No physical SIM required.',
+              localization.afghanistanDataPlans,
               style: TextStyle(
                 fontSize: 16,
                 color: CupertinoColors.secondaryLabel.resolveFrom(context),
@@ -476,16 +477,16 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Afghanistan eSIM Plans',
-              style: TextStyle(
+            Text(
+              localization.afghanistanEsimPlans,
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Stay connected in Afghanistan with our reliable data plans',
+              localization.reliableAfghanistanPlans,
               style: TextStyle(
                 fontSize: 16,
                 color: CupertinoColors.secondaryLabel.resolveFrom(context),
@@ -495,10 +496,10 @@ class _LandingPageState extends State<LandingPage> {
             _isLoading
                 ? const Center(child: CupertinoActivityIndicator())
                 : _afghanistanPlans.isEmpty
-                    ? const Center(
+                    ? Center(
                         child: Text(
-                          'No plans available',
-                          style: TextStyle(fontSize: 16),
+                          localization.noPlansAvailable,
+                          style: const TextStyle(fontSize: 16),
                         ),
                       )
                     : Column(
@@ -549,15 +550,15 @@ class _LandingPageState extends State<LandingPage> {
             _buildCupertinoFeatureItem(
               context: context,
               icon: CupertinoIcons.location_fill,
-              title: 'Afghanistan Coverage',
-              description: 'Reliable network coverage across Afghanistan',
+              title: localization.afghanistanCoverage,
+              description: localization.afghanistanCoverageDesc,
             ),
             const SizedBox(height: 16),
             _buildCupertinoFeatureItem(
               context: context,
               icon: CupertinoIcons.money_dollar_circle_fill,
               title: localization.affordablePrices,
-              description: 'Competitive rates for Afghanistan data plans',
+              description: localization.competitiveAfghanistanRates,
             ),
             const SizedBox(height: 16),
             _buildCupertinoFeatureItem(
@@ -579,9 +580,9 @@ class _LandingPageState extends State<LandingPage> {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const Text(
-              'Ready to stay connected in Afghanistan?',
-              style: TextStyle(
+            Text(
+              localization.readyStayConnectedAfghanistan,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -589,7 +590,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Choose your Afghanistan eSIM plan and stay connected anywhere in the country.',
+              localization.chooseAfghanistanPlan,
               style: TextStyle(
                 fontSize: 16,
                 color: CupertinoColors.secondaryLabel.resolveFrom(context),
@@ -656,7 +657,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Stay Connected in Afghanistan',
+              localization.stayConnectedAfghanistan,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onPrimaryContainer,
@@ -665,7 +666,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Get instant eSIM data plans for Afghanistan. No physical SIM required.',
+              localization.afghanistanDataPlans,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onPrimaryContainer.withOpacity(0.8),
               ),
@@ -704,14 +705,14 @@ class _LandingPageState extends State<LandingPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Afghanistan eSIM Plans',
+              localization.afghanistanEsimPlans,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 8),
             Text(
-              'Stay connected in Afghanistan with our reliable data plans',
+              localization.reliableAfghanistanPlans,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
@@ -722,7 +723,7 @@ class _LandingPageState extends State<LandingPage> {
                 : _afghanistanPlans.isEmpty
                     ? Center(
                         child: Text(
-                          'No plans available',
+                          localization.noPlansAvailable,
                           style: theme.textTheme.bodyLarge,
                         ),
                       )
@@ -775,15 +776,15 @@ class _LandingPageState extends State<LandingPage> {
             _buildFeatureItem(
               context: context,
               icon: Icons.location_on,
-              title: 'Afghanistan Coverage',
-              description: 'Reliable network coverage across Afghanistan',
+              title: localization.afghanistanCoverage,
+              description: localization.afghanistanCoverageDesc,
             ),
             const SizedBox(height: 16),
             _buildFeatureItem(
               context: context,
               icon: Icons.attach_money,
               title: localization.affordablePrices,
-              description: 'Competitive rates for Afghanistan data plans',
+              description: localization.competitiveAfghanistanRates,
             ),
             const SizedBox(height: 16),
             _buildFeatureItem(
@@ -809,7 +810,7 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           children: [
             Text(
-              'Ready to stay connected in Afghanistan?',
+              localization.readyStayConnectedAfghanistan,
               style: theme.textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -817,7 +818,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Choose your Afghanistan eSIM plan and stay connected anywhere in the country.',
+              localization.chooseAfghanistanPlan,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
@@ -861,11 +862,11 @@ class _LandingPageState extends State<LandingPage> {
   }) {
     // Generate features for Afghanistan plans
     final features = <String>[
-      '${plan.dataAmount} data ${plan.duration}',
-      'Afghanistan coverage',
-      'Instant activation',
-      '24/7 support',
-      if (plan.name.contains('GB')) 'High-speed data',
+      '${plan.dataAmount} ${localization.afghanistanDataFeatures} ${plan.duration}',
+      localization.afghanistanCoverage,
+      localization.instantActivation,
+      localization.support24x7,
+      if (plan.name.contains('GB')) localization.highSpeedData,
     ];
 
     return Container(

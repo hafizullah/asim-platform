@@ -74,6 +74,22 @@ abstract class AppLocalizations {
   String get english;
   String get dari;
   String get pashto;
+
+  // Afghanistan-specific content
+  String get stayConnectedAfghanistan;
+  String get afghanistanDataPlans;
+  String get afghanistanEsimPlans;
+  String get afghanistanCoverage;
+  String get afghanistanCoverageDesc;
+  String get reliableAfghanistanPlans;
+  String get readyStayConnectedAfghanistan;
+  String get chooseAfghanistanPlan;
+  String get afghanistanDataFeatures;
+  String get highSpeedData;
+  String get support24x7;
+  String get competitiveAfghanistanRates;
+  String get noPlansAvailable;
+  String get purchaseEsim;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -216,6 +232,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pashto => 'پښتو';
+
+  // Afghanistan-specific content
+  @override
+  String get stayConnectedAfghanistan => 'Stay Connected in Afghanistan';
+
+  @override
+  String get afghanistanDataPlans => 'Get instant eSIM data plans for Afghanistan. No physical SIM required.';
+
+  @override
+  String get afghanistanEsimPlans => 'Afghanistan eSIM Plans';
+
+  @override
+  String get afghanistanCoverage => 'Afghanistan Coverage';
+
+  @override
+  String get afghanistanCoverageDesc => 'Reliable network coverage across Afghanistan';
+
+  @override
+  String get reliableAfghanistanPlans => 'Stay connected in Afghanistan with our reliable data plans';
+
+  @override
+  String get readyStayConnectedAfghanistan => 'Ready to stay connected in Afghanistan?';
+
+  @override
+  String get chooseAfghanistanPlan => 'Choose your Afghanistan eSIM plan and stay connected anywhere in the country.';
+
+  @override
+  String get afghanistanDataFeatures => 'Afghanistan data';
+
+  @override
+  String get highSpeedData => 'High-speed data';
+
+  @override
+  String get support24x7 => '24/7 support';
+
+  @override
+  String get competitiveAfghanistanRates => 'Competitive rates for Afghanistan data plans';
+
+  @override
+  String get noPlansAvailable => 'No plans available';
+
+  @override
+  String get purchaseEsim => 'Purchase eSIM';
 }
 
 // Dari/Farsi
@@ -326,6 +385,49 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get pashto => 'پښتو';
+
+  // Afghanistan-specific content
+  @override
+  String get stayConnectedAfghanistan => 'در افغانستان متصل بمانید';
+
+  @override
+  String get afghanistanDataPlans => 'طرح‌های داده ای‌سیم فوری برای افغانستان دریافت کنید. سیم فیزیکی مورد نیاز نیست.';
+
+  @override
+  String get afghanistanEsimPlans => 'طرح‌های ای‌سیم افغانستان';
+
+  @override
+  String get afghanistanCoverage => 'پوشش افغانستان';
+
+  @override
+  String get afghanistanCoverageDesc => 'پوشش شبکه قابل اعتماد در سراسر افغانستان';
+
+  @override
+  String get reliableAfghanistanPlans => 'با طرح‌های قابل اعتماد ما در افغانستان متصل بمانید';
+
+  @override
+  String get readyStayConnectedAfghanistan => 'آماده متصل ماندن در افغانستان هستید؟';
+
+  @override
+  String get chooseAfghanistanPlan => 'طرح ای‌سیم افغانستان خود را انتخاب کنید و در هر نقطه از کشور متصل بمانید.';
+
+  @override
+  String get afghanistanDataFeatures => 'داده افغانستان';
+
+  @override
+  String get highSpeedData => 'داده پرسرعت';
+
+  @override
+  String get support24x7 => 'پشتیبانی ۲۴/۷';
+
+  @override
+  String get competitiveAfghanistanRates => 'نرخ‌های رقابتی برای طرح‌های داده افغانستان';
+
+  @override
+  String get noPlansAvailable => 'هیچ طرحی در دسترس نیست';
+
+  @override
+  String get purchaseEsim => 'خرید ای‌سیم';
 }
 
 // Pashto
@@ -436,4 +538,47 @@ class AppLocalizationsPs extends AppLocalizations {
 
   @override
   String get pashto => 'پښتو';
+
+  // Afghanistan-specific content
+  @override
+  String get stayConnectedAfghanistan => 'په افغانستان کې وصل پاتې شئ';
+
+  @override
+  String get afghanistanDataPlans => 'د افغانستان لپاره د ای‌سیم ډیټا پلانونه ترلاسه کړئ. فزیکي سیم ته اړتیا نشته.';
+
+  @override
+  String get afghanistanEsimPlans => 'د افغانستان ای‌سیم پلانونه';
+
+  @override
+  String get afghanistanCoverage => 'د افغانستان پوښښ';
+
+  @override
+  String get afghanistanCoverageDesc => 'په ټول افغانستان کې د اعتماد وړ شبکې پوښښ';
+
+  @override
+  String get reliableAfghanistanPlans => 'زموږ د اعتماد وړ پلانونو سره په افغانستان کې وصل پاتې شئ';
+
+  @override
+  String get readyStayConnectedAfghanistan => 'په افغانستان کې د وصل پاتې کیدو لپاره چمتو یاست؟';
+
+  @override
+  String get chooseAfghanistanPlan => 'خپل د افغانستان ای‌سیم پلان وټاکئ او د هیواد په هره برخه کې وصل پاتې شئ.';
+
+  @override
+  String get afghanistanDataFeatures => 'د افغانستان ډیټا';
+
+  @override
+  String get highSpeedData => 'د لوړ سرعت ډیټا';
+
+  @override
+  String get support24x7 => '۲۴/۷ ملاتړ';
+
+  @override
+  String get competitiveAfghanistanRates => 'د افغانستان ډیټا پلانونو لپاره رقابتي نرخونه';
+
+  @override
+  String get noPlansAvailable => 'هیڅ پلان شتون نلري';
+
+  @override
+  String get purchaseEsim => 'ای‌سیم وپېرئ';
 }
