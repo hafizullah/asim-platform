@@ -3,7 +3,7 @@ import "package:flutter/cupertino.dart";
 import "package:flutter/services.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:provider/provider.dart";
-import "dart:io";
+import "package:flutter/foundation.dart";
 import "core/providers/language_provider.dart";
 import "core/localization/app_localizations.dart";
 import "screens/landing_page.dart";
@@ -21,55 +21,11 @@ class AsimLandingApp extends StatelessWidget {
       create: (_) => LanguageProvider(),
       child: Consumer<LanguageProvider>(
         builder: (context, languageProvider, child) {
-          // Use platform-adaptive app
-          return Platform.isIOS
-              ? _buildCupertinoApp(languageProvider)
-              : _buildMaterialApp(languageProvider);
+          // For web, always use Material Design
+          // For mobile, use platform-adaptive app but default to Material for broader compatibility
+          return _buildMaterialApp(languageProvider);
         },
       ),
-    );
-  }
-
-  Widget _buildCupertinoApp(LanguageProvider languageProvider) {
-    return CupertinoApp(
-      title: "Asim - Global eSIM Solutions",
-      debugShowCheckedModeBanner: false,
-      
-      // iOS-style theme
-      theme: const CupertinoThemeData(
-        primaryColor: Color(0xFF2E7D32),
-        scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
-        textTheme: CupertinoTextThemeData(
-          primaryColor: Color(0xFF2E7D32),
-        ),
-      ),
-      
-      // Localization and RTL support
-      locale: languageProvider.locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale("en", ""), // English
-        Locale("fa", ""), // Dari/Persian
-        Locale("ps", ""), // Pashto
-      ],
-      
-      // Builder to wrap with Directionality for RTL support
-      builder: (context, child) {
-        final locale = Localizations.localeOf(context);
-        final isRTL = locale.languageCode == 'fa' || locale.languageCode == 'ps';
-        
-        return Directionality(
-          textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
-          child: child!,
-        );
-      },
-      
-      home: const LandingPage(),
     );
   }
 

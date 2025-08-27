@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 import '../core/providers/language_provider.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/services/esim_plan_service.dart';
@@ -56,58 +56,9 @@ class _LandingPageState extends State<LandingPage> {
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context);
     
-    if (Platform.isIOS) {
-      return _buildCupertinoLayout(context, localization);
-    } else {
-      return _buildMaterialLayout(context, localization);
-    }
-  }
-
-  Widget _buildCupertinoLayout(BuildContext context, AppLocalizations localization) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              CupertinoIcons.antenna_radiowaves_left_right,
-              color: Color(0xFF2E7D32),
-              size: 28,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              localization.appName,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2E7D32),
-              ),
-            ),
-          ],
-        ),
-        trailing: Consumer<LanguageProvider>(
-          builder: (context, languageProvider, child) {
-            return CupertinoButton(
-              padding: EdgeInsets.zero,
-              child: const Icon(CupertinoIcons.globe),
-              onPressed: () {
-                _showLanguageSelector(context, languageProvider, localization);
-              },
-            );
-          },
-        ),
-      ),
-      child: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            _buildCupertinoHeroSection(context, localization),
-            _buildCupertinoPlansSection(context, localization),
-            _buildCupertinoOtherCountriesSection(context, localization),
-            _buildCupertinoFeaturesSection(context, localization),
-            _buildCupertinoContactSection(context, localization),
-          ],
-        ),
-      ),
-    );
+    // Always use Material Design for web compatibility
+    // While Cupertino would work on iOS, Material provides better web support
+    return _buildMaterialLayout(context, localization);
   }
 
   Widget _buildMaterialLayout(BuildContext context, AppLocalizations localization) {
@@ -276,7 +227,7 @@ class _LandingPageState extends State<LandingPage> {
                     ],
                   ),
                 )),
-                const Spacer(),
+                const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
@@ -349,19 +300,12 @@ class _LandingPageState extends State<LandingPage> {
       // Use in-app WebView for purchase links
       if (url.contains('esimqr.link') || url.contains('payment') || url.contains('buy')) {
         Navigator.of(context).push(
-          Platform.isIOS
-              ? CupertinoPageRoute(
-                  builder: (context) => WebViewScreen(
-                    url: url,
-                    title: localization.purchaseEsim,
-                  ),
-                )
-              : MaterialPageRoute(
-                  builder: (context) => WebViewScreen(
-                    url: url,
-                    title: localization.purchaseEsim,
-                  ),
-                ),
+          MaterialPageRoute(
+            builder: (context) => WebViewScreen(
+              url: url,
+              title: localization.purchaseEsim,
+            ),
+          ),
         );
       } else {
         // Use external browser for other links
@@ -376,41 +320,45 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   void _showLanguageSelector(BuildContext context, LanguageProvider languageProvider, AppLocalizations localization) {
-    if (Platform.isIOS) {
-      showCupertinoModalPopup(
-        context: context,
-        builder: (context) => CupertinoActionSheet(
-          title: Text(localization.selectLanguage),
-          actions: [
-            CupertinoActionSheetAction(
-              onPressed: () {
+    // Always use Material design for web compatibility
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: Text(localization.selectLanguage),
+              onTap: null,
+            ),
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: Text(localization.english),
+              onTap: () {
                 languageProvider.setLanguage('en');
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
-              child: Text(localization.english),
             ),
-            CupertinoActionSheetAction(
-              onPressed: () {
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: Text(localization.dari),
+              onTap: () {
                 languageProvider.setLanguage('fa');
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
-              child: Text(localization.dari),
             ),
-            CupertinoActionSheetAction(
-              onPressed: () {
+            ListTile(
+              leading: const Icon(Icons.language),
+              title: Text(localization.pashto),
+              onTap: () {
                 languageProvider.setLanguage('ps');
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
-              child: Text(localization.pashto),
             ),
           ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.pop(context),
-            child: Text(localization.cancel),
-          ),
         ),
-      );
-    }
+      ),
+    );
   }
 
   // Cupertino Sections
