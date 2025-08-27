@@ -7,6 +7,7 @@ import '../core/providers/language_provider.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/services/esim_plan_service.dart';
 import '../core/models/esim_plan.dart';
+import '../core/widgets/asim_svg_logo.dart';
 import 'webview_screen.dart';
 
 class LandingPage extends StatefulWidget {
@@ -76,11 +77,7 @@ class _LandingPageState extends State<LandingPage> {
             elevation: 0,
             title: Row(
               children: [
-                Icon(
-                  Icons.signal_cellular_4_bar,
-                  color: colorScheme.primary,
-                  size: 28,
-                ),
+                AsimSvgLogo.small(),
                 const SizedBox(width: 8),
                 Text(
                   localization.appName,
@@ -646,11 +643,7 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           children: [
             const SizedBox(height: 40),
-            Icon(
-              Icons.public,
-              size: 80,
-              color: colorScheme.primary,
-            ),
+            AsimSvgLogo.large(),
             const SizedBox(height: 24),
             Text(
               '🇦🇫 ${localization.stayConnectedAfghanistan}',

@@ -31,14 +31,14 @@ class AsimLandingApp extends StatelessWidget {
 
   Widget _buildMaterialApp(LanguageProvider languageProvider) {
     return MaterialApp(
-      title: "Asim - Global eSIM Solutions",
+      title: "ASIM Platform - Professional eSIM Solutions",
       debugShowCheckedModeBanner: false,
       
-      // Modern Material 3 Theme
+      // Modern Material 3 Theme with ASIM brand colors
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2E7D32), // Professional green
+          seedColor: const Color(0xFF228B22), // ASIM brand green
           brightness: Brightness.light,
         ),
         fontFamily: "Roboto",
@@ -46,7 +46,7 @@ class AsimLandingApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2E7D32),
+          seedColor: const Color(0xFF228B22), // ASIM brand green
           brightness: Brightness.dark,
         ),
         fontFamily: "Roboto",
