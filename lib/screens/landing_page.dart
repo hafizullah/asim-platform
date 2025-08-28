@@ -7,7 +7,7 @@ import '../core/localization/app_localizations.dart';
 import '../core/services/esim_plan_service.dart';
 import '../core/models/esim_plan.dart';
 import '../core/utils/plan_localization_utils.dart';
-import '../core/widgets/asim_unified_logo.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'webview_screen.dart';
 import 'terms_conditions_screen.dart';
 import 'about_us_screen.dart';
@@ -71,21 +71,18 @@ class _LandingPageState extends State<LandingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            AsimUnifiedLogo.navBar(),
-            const SizedBox(width: 12),
-            Flexible(
-              child: Text(
-                localization.appName,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.primary,
-                ),
-                overflow: TextOverflow.ellipsis,
+        title: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                'assets/images/brand_logo.svg',
+                width: 200,
+                height: 60,
+                fit: BoxFit.contain,
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         backgroundColor: colorScheme.surface,
         elevation: 0,
@@ -509,7 +506,15 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           children: [
             const SizedBox(height: 40),
-            AsimUnifiedLogo.hero(),
+            Directionality(
+              textDirection: TextDirection.ltr,
+              child: SvgPicture.asset(
+                'assets/images/logo.svg',
+                width: 400,
+                height: 120,
+                fit: BoxFit.contain,
+              ),
+            ),
             const SizedBox(height: 32),
             
             // First Customer Scenario - Travelers
