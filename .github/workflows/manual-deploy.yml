@@ -159,9 +159,6 @@ jobs:
           chmod +x github_actions_signing_fix.sh
           ./github_actions_signing_fix.sh
           
-          echo "=== Fixing code signing identity for App Store distribution ==="
-          sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "iPhone Developer";/"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";/g' Runner.xcodeproj/project.pbxproj
-          
           echo "✅ Xcode configured for GitHub Actions deployment"
           
       - name: Build iOS App
