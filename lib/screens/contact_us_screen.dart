@@ -23,7 +23,7 @@ class ContactUsScreen extends StatelessWidget {
         slivers: [
           // Modern App Bar with hero section
           SliverAppBar(
-            expandedHeight: 280,
+            expandedHeight: 260, // Reduced from 280 to 260
             floating: false,
             pinned: true,
             backgroundColor: colorScheme.primary,
@@ -47,12 +47,12 @@ class ContactUsScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 60), // Account for app bar
+                      const SizedBox(height: 50), // Reduced from 60 to 50
                       Hero(
                         tag: 'asim_logo',
                         child: AsimSvgLogo.large(),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20), // Reduced from 24 to 20
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
@@ -75,7 +75,7 @@ class ContactUsScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12), // Reduced from 16 to 12
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Text(
@@ -561,7 +561,7 @@ class ContactUsScreen extends StatelessWidget {
     
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.all(24),
+        margin: const EdgeInsets.fromLTRB(24, 24, 24, 32), // Added bottom margin
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -624,6 +624,7 @@ class ContactUsScreen extends StatelessWidget {
                 ),
               ],
             ),
+            const SizedBox(height: 16), // Additional bottom padding
           ],
         ),
       ),
