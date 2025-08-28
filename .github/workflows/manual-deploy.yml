@@ -222,23 +222,26 @@ jobs:
           cd ..
           
           # Check if IPA was created successfully
-          if [ ! -f "ios/build/*.ipa" ]; then
-            echo "❌ IPA build failed"
+          IPA_COUNT=$(find ios/build -name "*.ipa" | wc -l)
+          if [ "$IPA_COUNT" -eq 0 ]; then
+            echo "❌ IPA build failed - no IPA files found"
             echo "=== Checking build directory ==="
             ls -la ios/build/ || echo "ios build directory not found"
             exit 1
           fi
           
           echo "✅ IPA built successfully with xcodebuild"
+          echo "=== Build directory contents ==="
           ls -la ios/build/
           
           # Get the actual IPA filename (should be in ios/build/)
-          IPA_FILE=$(ls ios/build/*.ipa | head -1)
-          echo "IPA file: $IPA_FILE"
+          IPA_FILE=$(find ios/build -name "*.ipa" | head -1)
+          echo "Found IPA file: $IPA_FILE"
           echo "IPA size: $(du -h "$IPA_FILE")"
           
-          # Move IPA to expected location for upload step
+          # Copy IPA to expected location for upload step (keep original name as backup)
           cp "$IPA_FILE" ios/build/Runner.ipa
+          echo "✅ IPA copied to ios/build/Runner.ipa for TestFlight upload"
             
       - name: Upload to TestFlight
         uses: Apple-Actions/upload-testflight-build@v1
