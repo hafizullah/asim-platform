@@ -72,63 +72,81 @@ class _LandingPageState extends State<LandingPage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Modern App Bar
-          SliverAppBar(
-            expandedHeight: 0,
-            floating: true,
-            backgroundColor: colorScheme.surface,
-            elevation: 0,
-            title: Row(
-              children: [
-                AsimSvgLogo.small(),
-                const SizedBox(width: 8),
-                Text(
-                  localization.appName,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.primary,
+          // Modern App Bar with custom positioning
+          SliverToBoxAdapter(
+            child: Container(
+              height: 56, // Standard app bar height
+              color: colorScheme.surface,
+              child: Stack(
+                children: [
+                  // Left side - Logo and title
+                  Positioned(
+                    left: 16,
+                    top: 0,
+                    bottom: 0,
+                    child: Row(
+                      children: [
+                        AsimSvgLogo.small(),
+                        const SizedBox(width: 8),
+                        Text(
+                          localization.appName,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            actions: [
-              Consumer<LanguageProvider>(
-                builder: (context, languageProvider, child) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildLanguageButton(
-                        context: context,
-                        languageCode: 'en',
-                        languageLabel: localization.english,
-                        isSelected: languageProvider.locale.languageCode == 'en',
-                        onPressed: () => languageProvider.setLanguage('en'),
-                        colorScheme: colorScheme,
+                  // Right side - Language buttons (always LTR positioned)
+                  Positioned(
+                    right: 16,
+                    top: 0,
+                    bottom: 0,
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Center(
+                        child: Consumer<LanguageProvider>(
+                          builder: (context, languageProvider, child) {
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _buildLanguageButton(
+                                  context: context,
+                                  languageCode: 'en',
+                                  languageLabel: localization.english,
+                                  isSelected: languageProvider.locale.languageCode == 'en',
+                                  onPressed: () => languageProvider.setLanguage('en'),
+                                  colorScheme: colorScheme,
+                                ),
+                                const SizedBox(width: 4),
+                                _buildLanguageButton(
+                                  context: context,
+                                  languageCode: 'fa',
+                                  languageLabel: localization.dari,
+                                  isSelected: languageProvider.locale.languageCode == 'fa',
+                                  onPressed: () => languageProvider.setLanguage('fa'),
+                                  colorScheme: colorScheme,
+                                ),
+                                const SizedBox(width: 4),
+                                _buildLanguageButton(
+                                  context: context,
+                                  languageCode: 'ps',
+                                  languageLabel: localization.pashto,
+                                  isSelected: languageProvider.locale.languageCode == 'ps',
+                                  onPressed: () => languageProvider.setLanguage('ps'),
+                                  colorScheme: colorScheme,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
-                      const SizedBox(width: 4),
-                      _buildLanguageButton(
-                        context: context,
-                        languageCode: 'fa',
-                        languageLabel: localization.dari,
-                        isSelected: languageProvider.locale.languageCode == 'fa',
-                        onPressed: () => languageProvider.setLanguage('fa'),
-                        colorScheme: colorScheme,
-                      ),
-                      const SizedBox(width: 4),
-                      _buildLanguageButton(
-                        context: context,
-                        languageCode: 'ps',
-                        languageLabel: localization.pashto,
-                        isSelected: languageProvider.locale.languageCode == 'ps',
-                        onPressed: () => languageProvider.setLanguage('ps'),
-                        colorScheme: colorScheme,
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                  );
-                },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
 
           _buildMaterialHeroSection(context, localization),
@@ -359,7 +377,8 @@ class _LandingPageState extends State<LandingPage> {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          width: 50, // Fixed width to prevent layout shifts
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
             color: isSelected ? colorScheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
@@ -375,6 +394,7 @@ class _LandingPageState extends State<LandingPage> {
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
+            textAlign: TextAlign.center, // Center the text within the fixed width
           ),
         ),
       ),
@@ -465,9 +485,9 @@ class _LandingPageState extends State<LandingPage> {
                     color: Color(0xFF2E7D32),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    '✈️ Flying to Afghanistan?',
-                    style: TextStyle(
+                  Text(
+                    localization.flyingToAfghanistan,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -475,7 +495,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Get instant internet connectivity the moment you land! No SIM swapping, no waiting in lines.',
+                    localization.flyingToAfghanistanDesc,
                     style: TextStyle(
                       fontSize: 14,
                       color: CupertinoColors.secondaryLabel.resolveFrom(context),
@@ -503,9 +523,9 @@ class _LandingPageState extends State<LandingPage> {
                     color: Color(0xFF2E7D32),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    '👨‍👩‍👧‍👦 Have family in Afghanistan?',
-                    style: TextStyle(
+                  Text(
+                    localization.haveFamilyInAfghanistan,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -513,7 +533,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Help them stay connected easily! Send data plans instantly - no complicated setup required.',
+                    localization.haveFamilyInAfghanistanDesc,
                     style: TextStyle(
                       fontSize: 14,
                       color: CupertinoColors.secondaryLabel.resolveFrom(context),
@@ -532,25 +552,25 @@ class _LandingPageState extends State<LandingPage> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: const Color(0xFF2E7D32).withOpacity(0.5)),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     CupertinoIcons.chevron_down,
                     color: Color(0xFF2E7D32),
                     size: 24,
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
-                    'Choose your perfect plan below',
-                    style: TextStyle(
+                    localization.chooseYourPerfectPlan,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF2E7D32),
                     ),
                   ),
-                  SizedBox(width: 8),
-                  Icon(
+                  const SizedBox(width: 8),
+                  const Icon(
                     CupertinoIcons.chevron_down,
                     color: Color(0xFF2E7D32),
                     size: 24,
@@ -797,7 +817,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '✈️ Flying to Afghanistan?',
+                    localization.flyingToAfghanistan,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
@@ -806,7 +826,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Get instant internet connectivity the moment you land! No SIM swapping, no waiting in lines.',
+                    localization.flyingToAfghanistanDesc,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurface.withOpacity(0.8),
                     ),
@@ -834,7 +854,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    '👨‍👩‍👧‍👦 Have family in Afghanistan?',
+                    localization.haveFamilyInAfghanistan,
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
@@ -843,7 +863,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Help them stay connected easily! Send data plans instantly - no complicated setup required.',
+                    localization.haveFamilyInAfghanistanDesc,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: colorScheme.onSurface.withOpacity(0.8),
                     ),
@@ -871,7 +891,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'Choose your perfect plan below',
+                    localization.chooseYourPerfectPlan,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: colorScheme.primary,

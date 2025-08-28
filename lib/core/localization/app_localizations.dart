@@ -127,6 +127,13 @@ abstract class AppLocalizations {
   String get joinThousands;
   String get trustedByTravelers;
   String get backToHome;
+  
+  // Hero section content
+  String get flyingToAfghanistan;
+  String get flyingToAfghanistanDesc;
+  String get haveFamilyInAfghanistan;
+  String get haveFamilyInAfghanistanDesc;
+  String get chooseYourPerfectPlan;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -403,6 +410,22 @@ class AppLocalizationsEn extends AppLocalizations {
   
   @override
   String get backToHome => 'Back to Home';
+  
+  // Hero section content
+  @override
+  String get flyingToAfghanistan => '✈️ Flying to Afghanistan?';
+  
+  @override
+  String get flyingToAfghanistanDesc => 'Get instant internet connectivity the moment you land! No SIM swapping, no waiting in lines.';
+  
+  @override
+  String get haveFamilyInAfghanistan => '👨‍👩‍👧‍👦 Have family in Afghanistan?';
+  
+  @override
+  String get haveFamilyInAfghanistanDesc => 'Help them stay connected easily! Send data plans instantly - no complicated setup required.';
+  
+  @override
+  String get chooseYourPerfectPlan => 'Choose your perfect plan below';
 }
 
 // Dari/Farsi
@@ -647,6 +670,22 @@ class AppLocalizationsFa extends AppLocalizations {
   
   @override
   String get backToHome => 'بازگشت به خانه';
+  
+  // Hero section content
+  @override
+  String get flyingToAfghanistan => '✈️ به افغانستان سفر می‌کنید؟';
+  
+  @override
+  String get flyingToAfghanistanDesc => 'لحظه فرود، ارتباط فوری با اینترنت داشته باشید! بدون تعویض سیم، بدون انتظار در صف.';
+  
+  @override
+  String get haveFamilyInAfghanistan => '👨‍👩‍👧‍👦 خانواده در افغانستان دارید؟';
+  
+  @override
+  String get haveFamilyInAfghanistanDesc => 'به آنها کمک کنید تا به راحتی متصل بمانند! طرح‌های داده را فوراً ارسال کنید - بدون پیکربندی پیچیده.';
+  
+  @override
+  String get chooseYourPerfectPlan => 'طرح مناسب خود را در زیر انتخاب کنید';
 }
 
 // Pashto
@@ -891,4 +930,20 @@ class AppLocalizationsPs extends AppLocalizations {
   
   @override
   String get backToHome => 'کور ته بیرته';
+  
+  // Hero section content
+  @override
+  String get flyingToAfghanistan => '✈️ افغانستان ته ځاست؟';
+  
+  @override
+  String get flyingToAfghanistanDesc => 'د رسیدو په لومړۍ شیبه کې د انټرنیټ سمدستي اړیکه ترلاسه کړئ! د سیم بدلولو اړتیا نشته، د انتظار د کرښو اړتیا نشته.';
+  
+  @override
+  String get haveFamilyInAfghanistan => '👨‍👩‍👧‍👦 په افغانستان کې کورنۍ لرئ؟';
+  
+  @override
+  String get haveFamilyInAfghanistanDesc => 'دوی ته د اسانۍ سره د وصل پاتې کیدو کې مرسته وکړئ! د ډیټا پلانونه سمدستي واستوئ - د پیچلي تنظیماتو اړتیا نشته.';
+  
+  @override
+  String get chooseYourPerfectPlan => 'دلته لاندې خپل مناسب پلان وټاکئ';
 }
