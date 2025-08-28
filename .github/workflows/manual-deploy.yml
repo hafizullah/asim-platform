@@ -175,17 +175,16 @@ jobs:
           chmod +x create_export_options.sh
           ./create_export_options.sh
           
+          echo "=== Ensuring CocoaPods are up to date ==="
+          pod install --repo-update
+          
           echo "=== Available certificates ==="
           security find-identity -v -p codesigning
           
           cd ..
           
-          echo "=== Building iOS app with Flutter ==="
-          flutter build ios --release --no-codesign
-          
+          echo "=== Creating archive directly with xcodebuild and automatic signing ==="
           cd ios
-          
-          echo "=== Creating archive with xcodebuild and automatic signing ==="
           set -e
           
           xcodebuild -workspace Runner.xcworkspace \
