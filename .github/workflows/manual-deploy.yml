@@ -33,14 +33,30 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.24.3'
           channel: 'stable'
           
       - name: Get dependencies
         run: flutter pub get
         
       - name: Build web
-        run: flutter build web --release --web-renderer html
+        run: |
+          echo "Flutter version info:"
+          flutter --version
+          echo "Building web app..."
+          flutter build web --release --base-href /
+          echo "Build completed successfully!"
+        
+      - name: Verify build output
+        run: |
+          echo "Checking build directory structure..."
+          ls -la build/web/
+          echo "Checking index.html content..."
+          head -20 build/web/index.html
+          echo "Checking main.dart.js exists and size..."
+          ls -lh build/web/main.dart.js || echo "main.dart.js not found!"
+          echo "Checking flutter_bootstrap.js..."
+          ls -lh build/web/flutter_bootstrap.js || echo "flutter_bootstrap.js not found!"
         
       - name: Setup Node.js for Firebase
         uses: actions/setup-node@v4
@@ -71,7 +87,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.24.3'
           channel: 'stable'
           
       - name: Get dependencies

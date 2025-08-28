@@ -9,6 +9,13 @@ void main() {
   // Ensure WebView platform is initialized properly
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Add error handling for uncaught exceptions
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint('Flutter Error: ${details.exception}');
+    debugPrint('Stack trace: ${details.stack}');
+  };
+  
   runApp(const AsimLandingApp());
 }
 
@@ -67,8 +74,36 @@ class AsimLandingApp extends StatelessWidget {
         Locale("ps", ""), // Pashto
       ],
       
-      // Builder to wrap with Directionality for RTL support
+      // Add error handling
       builder: (context, child) {
+        // Add error handling
+        ErrorWidget.builder = (FlutterErrorDetails details) {
+          return Material(
+            child: Container(
+              color: Colors.red,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error, color: Colors.white, size: 64),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'An error occurred',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      details.exception.toString(),
+                      style: const TextStyle(color: Colors.white, fontSize: 12),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        };
+        
         final locale = Localizations.localeOf(context);
         final isRTL = locale.languageCode == 'fa' || locale.languageCode == 'ps';
         
