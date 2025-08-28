@@ -169,7 +169,7 @@ class SignalIconPainter extends CustomPainter {
       canvas.drawRRect(rect, paint);
 
       // Highlight effect (lighter green)
-      paint.color = greenColor.withValues(alpha: 0.7);
+      paint.color = greenColor.withOpacity(0.7);
       final highlightRect = RRect.fromRectAndRadius(
         Rect.fromLTWH(
           bar.x + barWidth * 0.1, 
@@ -199,7 +199,7 @@ class SignalIconPainter extends CustomPainter {
     paint.style = PaintingStyle.stroke;
     paint.strokeWidth = size * 0.05;
     paint.strokeCap = StrokeCap.round;
-    paint.color = redColor.withValues(alpha: 0.8);
+    paint.color = redColor.withOpacity(0.8);
 
     final waveStartX = canvasSize.width * 0.7;
     final waveY = canvasSize.height * 0.25;
@@ -216,7 +216,7 @@ class SignalIconPainter extends CustomPainter {
     canvas.drawPath(path1, paint);
 
     // Second wave (longer)
-    paint.color = redColor.withValues(alpha: 0.6);
+    paint.color = redColor.withOpacity(0.6);
     paint.strokeWidth = size * 0.04;
     final path2 = Path();
     path2.moveTo(waveStartX - size * 0.1, waveY - size * 0.1);
