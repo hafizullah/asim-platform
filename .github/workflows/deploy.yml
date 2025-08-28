@@ -152,26 +152,35 @@ jobs:
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
           
-      - name: Configure Xcode for Automatic Signing
+      - name: Configure Xcode for Manual Signing
         run: |
           cd ios
           
-          echo "=== Configuring Xcode for automatic signing ==="
+          echo "=== Configuring Xcode for manual signing ==="
           
           # List downloaded provisioning profiles
           echo "=== Available provisioning profiles ==="
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory"
-          find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" 2>/dev/null | grep -A 1 -B 1 "Name\|application-identifier" || echo "Failed to read profile"' _ {} \; || echo "No profiles found"
+          find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" 2>/dev/null | grep -A 1 -B 1 "Name\|UUID\|application-identifier" || echo "Failed to read profile"' _ {} \; || echo "No profiles found"
           
-          # Ensure automatic signing is enabled and team ID is set
-          sed -i '' 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj
+          # Configure manual signing and team ID
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
           sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "${{ secrets.IOS_TEAM_ID }}";/g' Runner.xcodeproj/project.pbxproj
           
-          # Remove any manual provisioning profile specifiers that might exist
-          sed -i '' '/PROVISIONING_PROFILE_SPECIFIER/d' Runner.xcodeproj/project.pbxproj
+          # Add provisioning profile specifier to all Release configurations
+          awk '
+            /name = Release;/ { inRelease = 1 }
+            inRelease && /DEVELOPMENT_TEAM = / && !/PROVISIONING_PROFILE_SPECIFIER/ {
+              print $0
+              print "\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = \"asim-prod\";"
+              next
+            }
+            /};/ && inRelease { inRelease = 0 }
+            { print }
+          ' Runner.xcodeproj/project.pbxproj > Runner.xcodeproj/project.pbxproj.tmp && mv Runner.xcodeproj/project.pbxproj.tmp Runner.xcodeproj/project.pbxproj
           
-          # Update ExportOptions.plist for automatic signing
-          cat > ExportOptions.plist << EOF
+          # Update ExportOptions.plist for manual signing
+          cat > ExportOptions.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -181,7 +190,12 @@ jobs:
               <key>destination</key>
               <string>upload</string>
               <key>signingStyle</key>
-              <string>automatic</string>
+              <string>manual</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.asim.asimPlatform</key>
+                  <string>asim-prod</string>
+              </dict>
               <key>stripSwiftSymbols</key>
               <true/>
               <key>uploadBitcode</key>
@@ -191,17 +205,18 @@ jobs:
               <key>compileBitcode</key>
               <false/>
               <key>teamID</key>
-              <string>\${{ secrets.IOS_TEAM_ID }}</string>
+              <string>${{ secrets.IOS_TEAM_ID }}</string>
           </dict>
           </plist>
           EOF
           
-          echo "✅ Xcode project configured for automatic signing"
+          echo "✅ Xcode project configured for manual signing"
           
           # Verify configuration
           echo "=== Verifying project configuration ==="
-          grep -A 5 -B 5 "CODE_SIGN_STYLE.*Automatic" Runner.xcodeproj/project.pbxproj || echo "Warning: Automatic signing not found"
+          grep -A 5 -B 5 "CODE_SIGN_STYLE.*Manual" Runner.xcodeproj/project.pbxproj || echo "Warning: Manual signing not found"
           grep -A 5 -B 5 "DEVELOPMENT_TEAM.*${{ secrets.IOS_TEAM_ID }}" Runner.xcodeproj/project.pbxproj || echo "Warning: Team ID not set"
+          grep -A 5 -B 5 "PROVISIONING_PROFILE_SPECIFIER.*asim-prod" Runner.xcodeproj/project.pbxproj || echo "Warning: Provisioning profile not set"
           echo "=== ExportOptions.plist content ==="
           cat ExportOptions.plist
           
