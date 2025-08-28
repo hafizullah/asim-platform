@@ -65,6 +65,18 @@ app.*.map.json
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
+# iOS project modifications for local testing (GitHub Actions will handle these)
+ios/Runner.xcodeproj/project.pbxproj
+ios/Runner.xcodeproj/project.pbxproj.backup.*
+ios/ExportOptions.plist
+ios/ExportOptions-dev.plist
+
+# iOS test and build artifacts
+ios/Runner.xcarchive/
+ios/build/
+ios/*.log
+ios/*.ipa
+
 # Web
 /build/web/
 
@@ -113,6 +125,13 @@ coverage/
 
 # Test results
 test-results/
+
+# Local testing scripts and artifacts
+test_flutter_ipa_build.sh
+simple_ipa_test.sh
+ios/test_xcodebuild_with_provisioning_updates.sh
+ios/quick_test.sh
+flutter_ipa_build.log
 
 # Backup files
 *.backup

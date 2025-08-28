@@ -161,7 +161,7 @@ jobs:
           
           echo "✅ Xcode configured for GitHub Actions deployment"
           
-      - name: Build iOS IPA with Flutter
+      - name: Build iOS App and Create IPA
         env:
           TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
         run: |
@@ -180,28 +180,54 @@ jobs:
           
           cd ..
           
-          echo "=== Building iOS IPA with Flutter ==="
-          # Use Flutter to build and code sign the IPA
-          # Flutter handles the Xcode build process internally and works better with automatic signing
-          flutter build ipa --release \
-            --export-options-plist ios/ExportOptions.plist
+          echo "=== Building iOS app with Flutter ==="
+          flutter build ios --release --no-codesign
           
-          # Check if IPA was created successfully
-          if [ ! -f "build/ios/ipa/Runner.ipa" ]; then
-            echo "❌ IPA build failed"
-            echo "=== Checking build directory ==="
-            ls -la build/ios/ || echo "ios build directory not found"
-            ls -la build/ios/ipa/ || echo "ipa directory not found"
+          cd ios
+          
+          echo "=== Creating archive with xcodebuild and automatic signing ==="
+          set -e
+          
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath Runner.xcarchive \
+            archive \
+            -allowProvisioningUpdates \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            ONLY_ACTIVE_ARCH=NO | tee build_log.txt
+          
+          # Check if archive was created successfully
+          if [ ! -d "Runner.xcarchive" ]; then
+            echo "❌ Archive creation failed"
+            echo "=== Build log tail ==="
+            tail -50 build_log.txt
             exit 1
           fi
           
-          echo "✅ IPA built successfully with Flutter"
-          ls -la build/ios/ipa/
-          echo "IPA size: $(du -h build/ios/ipa/Runner.ipa)"
+          echo "✅ Archive created successfully"
           
-          # Move IPA to expected location for upload step
-          mkdir -p ios/build
-          cp build/ios/ipa/Runner.ipa ios/build/Runner.ipa
+          echo "=== Exporting IPA ==="
+          xcodebuild -exportArchive \
+            -archivePath Runner.xcarchive \
+            -exportPath ./build \
+            -exportOptionsPlist ExportOptions.plist \
+            -allowProvisioningUpdates | tee export_log.txt
+            
+          # Check if IPA was created successfully
+          if [ ! -f "build/Runner.ipa" ]; then
+            echo "❌ IPA export failed"
+            echo "=== Export log tail ==="
+            tail -50 export_log.txt
+            echo "=== Build directory contents ==="
+            ls -la build/ || echo "Build directory not found"
+            exit 1
+          fi
+          
+          echo "✅ IPA exported successfully"
+          ls -la build/
+          echo "IPA size: $(du -h build/Runner.ipa)"
             
       - name: Upload to TestFlight
         uses: Apple-Actions/upload-testflight-build@v1
