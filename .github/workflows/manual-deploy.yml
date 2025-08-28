@@ -132,6 +132,9 @@ jobs:
           echo "=== Available signing identities ==="
           security find-identity -v -p codesigning
           
+          echo "=== Checking certificate details ==="
+          security find-identity -v -p codesigning | grep "Apple Distribution"
+          
           echo "=== Available provisioning profiles ==="
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory"
           
@@ -160,6 +163,12 @@ jobs:
             echo "=== Configuring for manual signing with profile: $PROVISIONING_PROFILE_NAME ==="
             chmod +x github_actions_manual_signing_fix.sh
             ./github_actions_manual_signing_fix.sh
+            
+            # Fix code signing identity for distribution
+            echo "=== Fixing code signing identity for App Store distribution ==="
+            sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "iPhone Developer";/"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";/g' Runner.xcodeproj/project.pbxproj
+            
+            echo "✅ Updated code signing identity to Apple Distribution"
             
             # Create ExportOptions.plist for manual signing
             cat > ExportOptions.plist << EOF
@@ -198,6 +207,12 @@ jobs:
             # Run our proven GitHub Actions signing fix for automatic signing
             chmod +x github_actions_signing_fix.sh
             ./github_actions_signing_fix.sh
+            
+            # Fix code signing identity for distribution
+            echo "=== Fixing code signing identity for App Store distribution ==="
+            sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "iPhone Developer";/"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";/g' Runner.xcodeproj/project.pbxproj
+            
+            echo "✅ Updated code signing identity to Apple Distribution"
             
             # Create ExportOptions.plist for automatic signing
             cat > ExportOptions.plist << EOF
@@ -260,6 +275,7 @@ jobs:
               -archivePath Runner.xcarchive \
               archive \
               CODE_SIGN_STYLE=Manual \
+              CODE_SIGN_IDENTITY="Apple Distribution" \
               DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
               PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_NAME" \
               | tee build_log.txt
@@ -274,6 +290,7 @@ jobs:
               archive \
               -allowProvisioningUpdates \
               CODE_SIGN_STYLE=Automatic \
+              CODE_SIGN_IDENTITY="Apple Distribution" \
               DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
               | tee build_log.txt
           fi
