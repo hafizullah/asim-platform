@@ -184,7 +184,6 @@ jobs:
           # Use Flutter to build and code sign the IPA
           # Flutter handles the Xcode build process internally and works better with automatic signing
           flutter build ipa --release \
-            --export-method app-store \
             --export-options-plist ios/ExportOptions.plist
           
           # Check if IPA was created successfully

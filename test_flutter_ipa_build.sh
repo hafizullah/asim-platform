@@ -29,14 +29,28 @@ cd ..
 
 echo ""
 echo "5. Testing Flutter IPA build..."
-echo "Command: flutter build ipa --release --export-method app-store --export-options-plist ios/ExportOptions.plist"
+echo "Command: flutter build ipa --release --export-options-plist ios/ExportOptions.plist"
 echo ""
 
-# For local testing, we'll use development export method since we may not have distribution cert
-echo "Using development export method for local test..."
+# For local testing, we'll create a development export options since we may not have distribution cert
+echo "Creating development ExportOptions.plist for local testing..."
+cat > ios/ExportOptions-dev.plist << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>development</string>
+    <key>signingStyle</key>
+    <string>automatic</string>
+    <key>teamID</key>
+    <string>$TEAM_ID</string>
+</dict>
+</plist>
+EOF
+
 flutter build ipa --release \
-  --export-method development \
-  --export-options-plist ios/ExportOptions.plist
+  --export-options-plist ios/ExportOptions-dev.plist
 
 if [ $? -eq 0 ]; then
     echo ""
