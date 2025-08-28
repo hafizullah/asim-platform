@@ -153,12 +153,20 @@ jobs:
           
           cd ..
           
-          echo "=== Building iOS release with Flutter ==="
-          # First build the iOS app without archiving
-          flutter build ios --release
+          echo "=== Building iOS release with Flutter and xcodebuild ==="
+          # Run flutter pub get to ensure dependencies are ready
+          flutter packages get
           
-          # Then create the archive with proper provisioning flags
+          # Generate Flutter build files (without actually building)
+          flutter build ios --release --no-codesign
+          
+          # Now build, archive and export with xcodebuild directly
           cd ios
+          
+          # Clean previous builds
+          xcodebuild clean -workspace Runner.xcworkspace -scheme Runner
+          
+          # Build and archive with proper provisioning flags
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
