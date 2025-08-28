@@ -130,7 +130,13 @@ jobs:
         run: |
           cd ios
           sudo gem install cocoapods
-          pod install
+          
+          # Clean existing pods to ensure fresh install
+          rm -rf Pods
+          rm -f Podfile.lock
+          
+          # Install pods with updated deployment target
+          pod install --repo-update
           
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v2
@@ -155,33 +161,74 @@ jobs:
         run: |
           cd ios
           
-          # Get the actual provisioning profile name from downloaded profiles
+          # List all provisioning profiles to debug
+          echo "=== Listing all provisioning profiles ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "Provisioning profiles directory not found"
+          
+          # Extract provisioning profile information
           PROFILE_NAME=""
+          PROFILE_UUID=""
+          
           if [ -d ~/Library/MobileDevice/Provisioning\ Profiles/ ]; then
             for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
               if [ -f "$profile" ]; then
-                NAME=$(security cms -D -i "$profile" | plutil -extract Name xml1 -o - - | grep -o '<string>.*</string>' | sed 's/<[^>]*>//g')
-                echo "Found provisioning profile: $NAME"
-                if [[ "$NAME" == *"Distribution"* ]] || [[ "$NAME" == *"App Store"* ]]; then
-                  PROFILE_NAME="$NAME"
-                  break
+                echo "=== Processing profile: $profile ==="
+                
+                # Extract profile content
+                PROFILE_CONTENT=$(security cms -D -i "$profile" 2>/dev/null)
+                
+                if [ $? -eq 0 ]; then
+                  # Extract profile name
+                  NAME=$(echo "$PROFILE_CONTENT" | plutil -extract Name xml1 -o - - 2>/dev/null | grep -o '<string>.*</string>' | sed 's/<[^>]*>//g')
+                  
+                  # Extract profile UUID 
+                  UUID=$(echo "$PROFILE_CONTENT" | plutil -extract UUID xml1 -o - - 2>/dev/null | grep -o '<string>.*</string>' | sed 's/<[^>]*>//g')
+                  
+                  # Extract application identifier
+                  APP_ID=$(echo "$PROFILE_CONTENT" | plutil -extract Entitlements.application-identifier xml1 -o - - 2>/dev/null | grep -o '<string>.*</string>' | sed 's/<[^>]*>//g')
+                  
+                  echo "Profile Name: $NAME"
+                  echo "Profile UUID: $UUID"
+                  echo "App ID: $APP_ID"
+                  
+                  # Check if this profile matches our bundle ID
+                  if [[ "$APP_ID" == *"com.asim.asimPlatform"* ]]; then
+                    PROFILE_NAME="$NAME"
+                    PROFILE_UUID="$UUID"
+                    echo "✅ Found matching profile for com.asim.asimPlatform"
+                    break
+                  fi
                 fi
               fi
             done
           fi
           
-          echo "Using provisioning profile: $PROFILE_NAME"
+          if [ -z "$PROFILE_NAME" ]; then
+            echo "❌ No matching provisioning profile found for com.asim.asimPlatform"
+            echo "Available profiles:"
+            find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" 2>/dev/null | plutil -extract Name xml1 -o - - 2>/dev/null | grep -o "<string>.*</string>" | sed "s/<[^>]*>//g" || echo "Failed to extract name"' _ {} \;
+            exit 1
+          fi
+          
+          echo "✅ Using provisioning profile: $PROFILE_NAME (UUID: $PROFILE_UUID)"
           
           # Configure Xcode project for manual signing
+          echo "Configuring Xcode project for manual signing..."
+          
+          # Update CODE_SIGN_STYLE to Manual
           sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
+          
+          # Set DEVELOPMENT_TEAM
           sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "${{ secrets.IOS_TEAM_ID }}";/g' Runner.xcodeproj/project.pbxproj
           
-          # Add provisioning profile specifier using the actual profile name
-          if [ ! -z "$PROFILE_NAME" ]; then
-            sed -i '' "s/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Manual;\n\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" Runner.xcodeproj/project.pbxproj
-            
-            # Also update ExportOptions.plist with the correct provisioning profile
-            cat > ExportOptions.plist << 'EOF'
+          # Add CODE_SIGN_IDENTITY for distribution
+          sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "iPhone Developer";/"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";/g' Runner.xcodeproj/project.pbxproj
+          
+          # Add provisioning profile specifier
+          sed -i '' "s/DEVELOPMENT_TEAM = \"\${{ secrets.IOS_TEAM_ID }}\";/DEVELOPMENT_TEAM = \"\${{ secrets.IOS_TEAM_ID }}\";\n\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" Runner.xcodeproj/project.pbxproj
+          
+          # Update ExportOptions.plist with the correct provisioning profile
+          cat > ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -205,34 +252,114 @@ jobs:
                   <key>com.asim.asimPlatform</key>
                   <string>$PROFILE_NAME</string>
               </dict>
+              <key>signingCertificate</key>
+              <string>iPhone Distribution</string>
+              <key>teamID</key>
+              <string>\${{ secrets.IOS_TEAM_ID }}</string>
           </dict>
           </plist>
           EOF
-          fi
           
-          echo "Xcode project configured for manual signing"
+          echo "✅ Xcode project configured for manual signing"
+          
+          # Verify configuration
+          echo "=== Verifying project configuration ==="
+          grep -A 5 -B 5 "CODE_SIGN_STYLE.*Manual" Runner.xcodeproj/project.pbxproj || echo "Warning: Manual signing not found"
+          grep -A 5 -B 5 "PROVISIONING_PROFILE_SPECIFIER" Runner.xcodeproj/project.pbxproj || echo "Warning: Provisioning profile specifier not found"
+          echo "=== ExportOptions.plist content ==="
+          cat ExportOptions.plist
           
       - name: Build iOS App
         run: |
           flutter build ios --release --no-codesign
           
+      - name: Verify signing configuration
+        run: |
+          cd ios
+          
+          echo "=== Verifying signing configuration ==="
+          
+          # Check available signing identities
+          echo "Available signing identities:"
+          security find-identity -v -p codesigning
+          
+          # Check available provisioning profiles
+          echo "Available provisioning profiles:"
+          find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" 2>/dev/null | grep -A 1 -B 1 "Name\|UUID\|application-identifier" || echo "Failed to read profile"' _ {} \;
+          
+          # Verify project configuration
+          echo "=== Project signing configuration ==="
+          grep -A 10 -B 5 "CODE_SIGN_STYLE.*Manual" Runner.xcodeproj/project.pbxproj || echo "Manual signing not configured"
+          grep -A 5 "PROVISIONING_PROFILE_SPECIFIER" Runner.xcodeproj/project.pbxproj || echo "No provisioning profile specifier found"
+          grep -A 5 "DEVELOPMENT_TEAM" Runner.xcodeproj/project.pbxproj || echo "No development team found"
+          
       - name: Build and Archive with Xcode
         run: |
           cd ios
-          xcodebuild -workspace Runner.xcworkspace \
+          
+          echo "=== Starting Xcode build and archive ==="
+          echo "Current directory: $(pwd)"
+          echo "Available schemes:"
+          xcodebuild -list -workspace Runner.xcworkspace
+          
+          echo "=== Building archive ==="
+          set -e  # Exit on any error
+          
+          xcodebuild \
+            -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath Runner.xcarchive \
-            archive
+            -allowProvisioningUpdates \
+            archive \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
+            | tee build_log.txt
+            
+          # Check if archive was created successfully
+          if [ ! -d "Runner.xcarchive" ]; then
+            echo "❌ Archive creation failed"
+            echo "=== Build log tail ==="
+            tail -50 build_log.txt
+            exit 1
+          fi
+          
+          echo "✅ Archive created successfully"
+          ls -la Runner.xcarchive/
             
       - name: Export IPA
         run: |
           cd ios
-          xcodebuild -exportArchive \
+          
+          echo "=== Exporting IPA ==="
+          echo "ExportOptions.plist content:"
+          cat ExportOptions.plist
+          
+          echo "=== Starting export ==="
+          set -e  # Exit on any error
+          
+          xcodebuild \
+            -exportArchive \
             -archivePath Runner.xcarchive \
             -exportPath ./build \
-            -exportOptionsPlist ExportOptions.plist
+            -exportOptionsPlist ExportOptions.plist \
+            -allowProvisioningUpdates \
+            | tee export_log.txt
+            
+          # Check if IPA was created successfully
+          if [ ! -f "build/Runner.ipa" ]; then
+            echo "❌ IPA export failed"
+            echo "=== Export log tail ==="
+            tail -50 export_log.txt
+            echo "=== Build directory contents ==="
+            ls -la build/ || echo "Build directory not found"
+            exit 1
+          fi
+          
+          echo "✅ IPA exported successfully"
+          ls -la build/
+          echo "IPA size: $(du -h build/Runner.ipa)"
             
       - name: Upload to TestFlight
         uses: Apple-Actions/upload-testflight-build@v1
