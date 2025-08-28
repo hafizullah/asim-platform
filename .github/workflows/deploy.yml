@@ -153,21 +153,20 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
           
       - name: Configure Xcode for Manual Signing
+        env:
+          IOS_TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
         run: |
           cd ios
           
           echo "=== Configuring Xcode for manual signing ==="
           
-          # List downloaded provisioning profiles
+          # List downloaded provisioning profiles for debugging
           echo "=== Available provisioning profiles ==="
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory"
           find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" 2>/dev/null | grep -A 1 -B 1 "Name\|UUID\|application-identifier" || echo "Failed to read profile"' _ {} \; || echo "No profiles found"
           
-          # Configure manual signing and team ID
-          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
-          sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "${{ secrets.IOS_TEAM_ID }}";/g' Runner.xcodeproj/project.pbxproj
-          
-          # Add provisioning profile specifier to all Release configurations
+          # Run our configuration script
+          chmod +x fix_provisioning.sh
           ./fix_provisioning.sh
           
           # Update ExportOptions.plist for manual signing
@@ -202,12 +201,6 @@ jobs:
           EOF
           
           echo "✅ Xcode project configured for manual signing"
-          
-          # Verify configuration
-          echo "=== Verifying project configuration ==="
-          grep -A 5 -B 5 "CODE_SIGN_STYLE.*Manual" Runner.xcodeproj/project.pbxproj || echo "Warning: Manual signing not found"
-          grep -A 5 -B 5 "DEVELOPMENT_TEAM.*${{ secrets.IOS_TEAM_ID }}" Runner.xcodeproj/project.pbxproj || echo "Warning: Team ID not set"
-          grep -A 5 -B 5 "PROVISIONING_PROFILE_SPECIFIER.*asim-prod" Runner.xcodeproj/project.pbxproj || echo "Warning: Provisioning profile not set"
           echo "=== ExportOptions.plist content ==="
           cat ExportOptions.plist
           
@@ -263,8 +256,9 @@ jobs:
           
           # Verify project configuration
           echo "=== Project signing configuration ==="
-          grep -A 10 -B 5 "CODE_SIGN_STYLE.*Automatic" Runner.xcodeproj/project.pbxproj || echo "❌ Automatic signing not configured"
+          grep -A 5 -B 5 "CODE_SIGN_STYLE.*Manual" Runner.xcodeproj/project.pbxproj || echo "❌ Manual signing not configured"
           grep -A 5 "DEVELOPMENT_TEAM.*${{ secrets.IOS_TEAM_ID }}" Runner.xcodeproj/project.pbxproj || echo "❌ Development team not set"
+          grep -A 5 "PROVISIONING_PROFILE_SPECIFIER" Runner.xcodeproj/project.pbxproj || echo "❌ Provisioning profile specifier not set"
           
       - name: Build and Archive with Xcode
         run: |
@@ -275,7 +269,7 @@ jobs:
           echo "Available schemes:"
           xcodebuild -list -workspace Runner.xcworkspace
           
-          echo "=== Building archive with automatic signing ==="
+          echo "=== Building archive with manual signing ==="
           set -e  # Exit on any error
           
           xcodebuild \
@@ -285,7 +279,9 @@ jobs:
             -destination generic/platform=iOS \
             -archivePath Runner.xcarchive \
             archive \
+            CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
+            PROVISIONING_PROFILE_SPECIFIER="asim-prod" \
             | tee build_log.txt
             
           # Check if archive was created successfully
