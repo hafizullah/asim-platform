@@ -91,6 +91,15 @@ abstract class AppLocalizations {
   String get noPlansAvailable;
   String get purchaseEsim;
   
+  // Plan suitability guides
+  String get suitabilityGuide;
+  String get suitableForShortTrips;
+  String get suitableForWeeklyTrips;
+  String get suitableForExtendedStays;
+  String get suitableForLongTermStays;
+  String get suitableForHeavyDataUsers;
+  String get suitableForDailyUse;
+  
   // Other countries section
   String get needEsimOtherCountries;
   String get browseAllCountries;
@@ -325,6 +334,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get purchaseEsim => 'Purchase eSIM';
+  
+  // Plan suitability guides
+  @override
+  String get suitabilityGuide => 'Best For';
+  
+  @override
+  String get suitableForShortTrips => 'Perfect for 1-day visits and short trips';
+  
+  @override
+  String get suitableForWeeklyTrips => 'Ideal for week-long stays and business trips';
+  
+  @override
+  String get suitableForExtendedStays => 'Great for 2-week vacations and extended visits';
+  
+  @override
+  String get suitableForLongTermStays => 'Perfect for month-long stays and work assignments';
+  
+  @override
+  String get suitableForHeavyDataUsers => 'Ideal for heavy data usage and media streaming';
+  
+  @override
+  String get suitableForDailyUse => 'Perfect for daily internet needs and communication';
   
   // Other countries section
   @override
@@ -598,6 +629,28 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get purchaseEsim => 'خرید ای‌سیم';
+  
+  // Plan suitability guides
+  @override
+  String get suitabilityGuide => 'مناسب برای';
+  
+  @override
+  String get suitableForShortTrips => 'عالی برای بازدیدهای یک روزه و سفرهای کوتاه';
+  
+  @override
+  String get suitableForWeeklyTrips => 'ایده‌آل برای اقامت یک هفته‌ای و سفرهای کاری';
+  
+  @override
+  String get suitableForExtendedStays => 'مناسب برای تعطیلات دو هفته‌ای و بازدیدهای طولانی';
+  
+  @override
+  String get suitableForLongTermStays => 'عالی برای اقامت یک ماهه و ماموریت‌های کاری';
+  
+  @override
+  String get suitableForHeavyDataUsers => 'ایده‌آل برای استفاده سنگین از داده و پخش رسانه';
+  
+  @override
+  String get suitableForDailyUse => 'عالی برای نیازهای روزانه اینترنت و ارتباطات';
   
   // Other countries section
   @override
@@ -892,6 +945,28 @@ class AppLocalizationsPs extends AppLocalizations {
 
   @override
   String get purchaseEsim => 'ای‌سیم وپېرئ';
+  
+  // Plan suitability guides
+  @override
+  String get suitabilityGuide => 'ډېر ښه دی';
+  
+  @override
+  String get suitableForShortTrips => 'د یوې ورځې لیدنو او لنډو سفرونو لپاره مناسب';
+  
+  @override
+  String get suitableForWeeklyTrips => 'د یوې اونۍ پاتې کیدو او کاري سفرونو لپاره غوره';
+  
+  @override
+  String get suitableForExtendedStays => 'د دوو اونیو رخصتیو او اوږدو لیدنو لپاره ښه';
+  
+  @override
+  String get suitableForLongTermStays => 'د یوې میاشتې پاتې کیدو او کاري دندو لپاره مناسب';
+  
+  @override
+  String get suitableForHeavyDataUsers => 'د ډېرو ډیټا کارونکو او رسنیو لیدلو لپاره غوره';
+  
+  @override
+  String get suitableForDailyUse => 'د ورځنیو انټرنیټ اړتیاوو او اړیکو لپاره مناسب';
   
   // Other countries section
   @override

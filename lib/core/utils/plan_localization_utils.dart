@@ -50,4 +50,26 @@ class PlanLocalizationUtils {
     }
     return plan.name;
   }
+
+  /// Get localized suitability guide for a plan
+  static String getLocalizedSuitabilityGuide(EsimPlan plan, AppLocalizations localization) {
+    final suitabilityType = plan.getSuitabilityType();
+    
+    switch (suitabilityType) {
+      case 'daily':
+        return localization.suitableForDailyUse;
+      case 'short':
+        return localization.suitableForShortTrips;
+      case 'weekly':
+        return localization.suitableForWeeklyTrips;
+      case 'monthly':
+        return localization.suitableForExtendedStays;
+      case 'heavy':
+        return localization.suitableForHeavyDataUsers;
+      case 'longterm':
+        return localization.suitableForLongTermStays;
+      default:
+        return localization.suitableForShortTrips;
+    }
+  }
 }

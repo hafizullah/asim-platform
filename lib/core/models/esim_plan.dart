@@ -54,6 +54,49 @@ class EsimPlan {
     return name.contains('1GB 7Days') || name.contains('5GB 30Days');
   }
 
+  // Get suitability guide based on plan characteristics
+  String getSuitabilityType() {
+    // Check for daily plans
+    if (name.contains('/Day')) {
+      return 'daily';
+    }
+    
+    // Parse duration to determine suitability
+    final RegExp durationRegex = RegExp(r'(\d+)\s*Days');
+    final match = durationRegex.firstMatch(name);
+    if (match != null) {
+      final days = int.parse(match.group(1)!);
+      
+      // Parse data amount for better categorization
+      final RegExp dataRegex = RegExp(r'(\d+(?:\.\d+)?)(MB|GB)');
+      final dataMatch = dataRegex.firstMatch(name);
+      
+      double dataAmount = 0;
+      if (dataMatch != null) {
+        dataAmount = double.parse(dataMatch.group(1)!);
+        if (dataMatch.group(2) == 'MB') {
+          dataAmount = dataAmount / 1024; // Convert MB to GB for comparison
+        }
+      }
+      
+      // Categorize based on duration and data amount
+      if (days <= 7) {
+        return 'short'; // 1-7 days
+      } else if (days <= 15) {
+        return 'weekly'; // 8-15 days
+      } else if (days <= 30) {
+        if (dataAmount >= 10) {
+          return 'heavy'; // High data usage for monthly plans
+        }
+        return 'monthly'; // Regular monthly plans
+      } else {
+        return 'longterm'; // 30+ days
+      }
+    }
+    
+    return 'default';
+  }
+
   factory EsimPlan.fromCsv(String csvRow) {
     final fields = _parseCsvRow(csvRow);
     if (fields.length < 6) {
