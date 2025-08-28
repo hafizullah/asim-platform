@@ -102,32 +102,38 @@ jobs:
         run: |
           cd ios
           sudo gem install cocoapods
-          pod install
+          
+          # Clean existing pods to ensure fresh install
+          rm -rf Pods
+          rm -f Podfile.lock
+          
+          # Install pods with updated deployment target
+          pod install --repo-update
           
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
           p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
+          keychain: signing_temp
+          create-keychain: true
           
       - name: Install Provisioning Profile
         uses: Apple-Actions/download-provisioning-profiles@v1
         with:
           bundle-id: ${{ secrets.IOS_BUNDLE_ID }}
+          profile-type: 'IOS_APP_STORE'
           issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
           
       - name: Debug provisioning profiles
         run: |
-          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "Provisioning profiles directory not found"
-          find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" | plutil -p -' _ {} \; || echo "No provisioning profiles found"
+          echo "=== Available signing identities ==="
+          security find-identity -v -p codesigning
           
-      - name: Configure Xcode project for CI
-        run: |
-          cd ios
-          
-          echo "=== Configuring Xcode for manual signing ==="
+          echo "=== Available provisioning profiles ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory"
           
           # Show detailed info about each profile
           for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
@@ -140,12 +146,23 @@ jobs:
             fi
           done
           
-          # Run our quick fix script that uses the exact UUIDs
-          chmod +x quick_signing_fix.sh
-          ./quick_signing_fix.sh
+      - name: Configure Xcode for Signing
+        env:
+          TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
+          PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
+        run: |
+          cd ios
           
-          # Create ExportOptions.plist with the correct provisioning profile UUID
-          cat > ExportOptions.plist << 'EOF'
+          echo "=== Configuring Xcode for signing ==="
+          
+          # Try manual signing first if provisioning profile name is provided
+          if [ -n "$PROVISIONING_PROFILE_NAME" ]; then
+            echo "=== Configuring for manual signing with profile: $PROVISIONING_PROFILE_NAME ==="
+            chmod +x github_actions_manual_signing_fix.sh
+            ./github_actions_manual_signing_fix.sh
+            
+            # Create ExportOptions.plist for manual signing
+            cat > ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -156,11 +173,44 @@ jobs:
               <string>upload</string>
               <key>signingStyle</key>
               <string>manual</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>compileBitcode</key>
+              <false/>
+              <key>teamID</key>
+              <string>${{ secrets.IOS_TEAM_ID }}</string>
               <key>provisioningProfiles</key>
               <dict>
-                  <key>com.asim.asimPlatform</key>
-                  <string>d1677fe0-db29-4970-937c-d44ec7067064</string>
+                  <key>${{ secrets.IOS_BUNDLE_ID }}</key>
+                  <string>$PROVISIONING_PROFILE_NAME</string>
               </dict>
+          </dict>
+          </plist>
+          EOF
+            
+            echo "✅ Configured for manual signing"
+          else
+            echo "=== Configuring for automatic signing ==="
+            # Run our proven GitHub Actions signing fix for automatic signing
+            chmod +x github_actions_signing_fix.sh
+            ./github_actions_signing_fix.sh
+            
+            # Create ExportOptions.plist for automatic signing
+            cat > ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>destination</key>
+              <string>upload</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
               <key>stripSwiftSymbols</key>
               <true/>
               <key>uploadBitcode</key>
@@ -174,37 +224,102 @@ jobs:
           </dict>
           </plist>
           EOF
-          
-          echo "✅ Xcode project configured for manual signing"
+            
+            echo "✅ Configured for automatic signing"
+          fi
           
       - name: Build iOS App
         run: |
           flutter build ios --release --no-codesign
           
       - name: Build and Archive with Xcode
+        env:
+          PROVISIONING_PROFILE_NAME: ${{ secrets.IOS_PROVISIONING_PROFILE_NAME }}
         run: |
           cd ios
           
-          # Configure automatic signing
-          TEAM_ID="${{ secrets.IOS_TEAM_ID }}" ./github_actions_signing_fix.sh
+          echo "=== Starting Xcode build and archive ==="
+          echo "Current directory: $(pwd)"
+          echo "Available schemes:"
+          xcodebuild -list -workspace Runner.xcworkspace
           
-          xcodebuild -workspace Runner.xcworkspace \
-            -scheme Runner \
-            -configuration Release \
-            -destination generic/platform=iOS \
-            -archivePath Runner.xcarchive \
-            archive \
-            -allowProvisioningUpdates \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}"
+          echo "=== Available certificates ==="
+          security find-identity -v -p codesigning
+          
+          echo "=== Building archive ==="
+          set -e  # Exit on any error
+          
+          # Choose signing approach based on whether provisioning profile name is provided
+          if [ -n "$PROVISIONING_PROFILE_NAME" ]; then
+            echo "=== Building with manual signing ==="
+            xcodebuild \
+              -workspace Runner.xcworkspace \
+              -scheme Runner \
+              -configuration Release \
+              -destination generic/platform=iOS \
+              -archivePath Runner.xcarchive \
+              archive \
+              CODE_SIGN_STYLE=Manual \
+              DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
+              PROVISIONING_PROFILE_SPECIFIER="$PROVISIONING_PROFILE_NAME" \
+              | tee build_log.txt
+          else
+            echo "=== Building with automatic signing ==="
+            xcodebuild \
+              -workspace Runner.xcworkspace \
+              -scheme Runner \
+              -configuration Release \
+              -destination generic/platform=iOS \
+              -archivePath Runner.xcarchive \
+              archive \
+              -allowProvisioningUpdates \
+              CODE_SIGN_STYLE=Automatic \
+              DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
+              | tee build_log.txt
+          fi
+            
+          # Check if archive was created successfully
+          if [ ! -d "Runner.xcarchive" ]; then
+            echo "❌ Archive creation failed"
+            echo "=== Build log tail ==="
+            tail -50 build_log.txt
+            exit 1
+          fi
+          
+          echo "✅ Archive created successfully"
+          ls -la Runner.xcarchive/
             
       - name: Export IPA
         run: |
           cd ios
-          xcodebuild -exportArchive \
+          
+          echo "=== Exporting IPA ==="
+          echo "ExportOptions.plist content:"
+          cat ExportOptions.plist
+          
+          echo "=== Starting export ==="
+          set -e  # Exit on any error
+          
+          xcodebuild \
+            -exportArchive \
             -archivePath Runner.xcarchive \
             -exportPath ./build \
-            -exportOptionsPlist ExportOptions.plist
+            -exportOptionsPlist ExportOptions.plist \
+            | tee export_log.txt
+            
+          # Check if IPA was created successfully
+          if [ ! -f "build/Runner.ipa" ]; then
+            echo "❌ IPA export failed"
+            echo "=== Export log tail ==="
+            tail -50 export_log.txt
+            echo "=== Build directory contents ==="
+            ls -la build/ || echo "Build directory not found"
+            exit 1
+          fi
+          
+          echo "✅ IPA exported successfully"
+          ls -la build/
+          echo "IPA size: $(du -h build/Runner.ipa)"
             
       - name: Upload to TestFlight
         uses: Apple-Actions/upload-testflight-build@v1
