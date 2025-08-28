@@ -5,7 +5,18 @@ echo "=== Quick iOS Signing Fix for GitHub Actions ==="
 # This script directly fixes the Xcode project configuration
 # for the specific provisioning profiles that GitHub Actions downloads
 
-cd ios
+# Check if we're already in the ios directory or need to navigate to it
+if [ ! -f "Runner.xcodeproj/project.pbxproj" ]; then
+    if [ -d "ios" ]; then
+        echo "Navigating to ios directory..."
+        cd ios
+    else
+        echo "❌ Cannot find iOS project. Make sure you're running this from the project root or ios directory."
+        exit 1
+    fi
+else
+    echo "Already in ios directory or project root with direct access to Xcode project."
+fi
 
 # Get the provisioning profile UUIDs from the GitHub Actions output
 # Based on your logs:
