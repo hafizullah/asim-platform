@@ -7,7 +7,7 @@ import '../core/localization/app_localizations.dart';
 import '../core/services/esim_plan_service.dart';
 import '../core/models/esim_plan.dart';
 import '../core/utils/plan_localization_utils.dart';
-import '../core/widgets/asim_svg_logo.dart';
+import '../core/widgets/asim_unified_logo.dart';
 import 'webview_screen.dart';
 import 'terms_conditions_screen.dart';
 import 'about_us_screen.dart';
@@ -73,7 +73,7 @@ class _LandingPageState extends State<LandingPage> {
       appBar: AppBar(
         title: Row(
           children: [
-            AsimSvgLogo.small(),
+            AsimUnifiedLogo.navBar(),
             const SizedBox(width: 12),
             Flexible(
               child: Text(
@@ -509,7 +509,7 @@ class _LandingPageState extends State<LandingPage> {
         child: Column(
           children: [
             const SizedBox(height: 40),
-            AsimSvgLogo.large(),
+            AsimUnifiedLogo.hero(),
             const SizedBox(height: 32),
             
             // First Customer Scenario - Travelers

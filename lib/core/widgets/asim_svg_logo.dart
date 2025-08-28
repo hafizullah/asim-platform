@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart'; // Commented out temporarily
+import 'package:flutter_svg/flutter_svg.dart';
+import '../constants/logo_assets.dart';
 
 /// SVG-based ASIM Platform Logo Widget
 /// 
@@ -59,44 +60,40 @@ class AsimSvgLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Temporarily use fallback until SVG is properly set up
-    return _buildFallback(context);
+    final String assetPath = _getAssetPath();
     
-    // TODO: Enable SVG when properly configured
-    // final String assetPath = _getAssetPath();
-    // 
-    // return SizedBox(
-    //   width: width,
-    //   height: height,
-    //   child: SvgPicture.asset(
-    //     assetPath,
-    //     width: width,
-    //     height: height,
-    //     fit: fit,
-    //     colorFilter: color != null 
-    //         ? ColorFilter.mode(color!, BlendMode.srcIn)
-    //         : null,
-    //     placeholderBuilder: (context) => _buildFallback(context),
-    //   ),
-    // );
+    return SizedBox(
+      width: width,
+      height: height,
+      child: SvgPicture.asset(
+        assetPath,
+        width: width,
+        height: height,
+        fit: fit,
+        colorFilter: color != null 
+            ? ColorFilter.mode(color!, BlendMode.srcIn)
+            : null,
+        placeholderBuilder: (context) => _buildFallback(context),
+      ),
+    );
   }
 
   String _getAssetPath() {
     switch (variant) {
       case AsimSvgLogoVariant.brand:
-        return 'assets/images/brand_logo.svg';
+        return LogoAssets.brandLogo;
       case AsimSvgLogoVariant.icon:
-        return 'assets/images/app_icon_fixed.svg';
+        return LogoAssets.appIcon;
       case AsimSvgLogoVariant.full:
-        return 'assets/images/logo.svg';
+        return LogoAssets.fullLogo;
     }
   }
 
   Widget _buildFallback(BuildContext context) {
     final theme = Theme.of(context);
     final primaryColor = color ?? theme.colorScheme.primary;
-    final greenColor = const Color(0xFF228B22);
-    final redColor = const Color(0xFFCC0000);
+    final greenColor = Color(LogoAssets.brandColors['accentGreen']!);
+    final redColor = Color(LogoAssets.brandColors['primaryRed']!);
     
     return Container(
       width: width,
@@ -172,7 +169,7 @@ class SignalIconPainter extends CustomPainter {
       canvas.drawRRect(rect, paint);
 
       // Highlight effect (lighter green)
-      paint.color = greenColor.withOpacity(0.7);
+      paint.color = greenColor.withValues(alpha: 0.7);
       final highlightRect = RRect.fromRectAndRadius(
         Rect.fromLTWH(
           bar.x + barWidth * 0.1, 
@@ -202,7 +199,7 @@ class SignalIconPainter extends CustomPainter {
     paint.style = PaintingStyle.stroke;
     paint.strokeWidth = size * 0.05;
     paint.strokeCap = StrokeCap.round;
-    paint.color = redColor.withOpacity(0.8);
+    paint.color = redColor.withValues(alpha: 0.8);
 
     final waveStartX = canvasSize.width * 0.7;
     final waveY = canvasSize.height * 0.25;
@@ -219,7 +216,7 @@ class SignalIconPainter extends CustomPainter {
     canvas.drawPath(path1, paint);
 
     // Second wave (longer)
-    paint.color = redColor.withOpacity(0.6);
+    paint.color = redColor.withValues(alpha: 0.6);
     paint.strokeWidth = size * 0.04;
     final path2 = Path();
     path2.moveTo(waveStartX - size * 0.1, waveY - size * 0.1);

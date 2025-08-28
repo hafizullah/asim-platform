@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import '../constants/logo_assets.dart';
 
 /// ASIM Platform Brand Logo Widget
 /// 
@@ -65,11 +65,26 @@ class AsimLogo extends StatelessWidget {
   LogoDimensions _getDimensions() {
     switch (size) {
       case AsimLogoSize.small:
-        return const LogoDimensions(width: 120, height: 36, iconSize: 24);
+        final sizes = LogoAssets.recommendedSizes['small']!;
+        return LogoDimensions(
+          width: sizes['width']!, 
+          height: sizes['height']!, 
+          iconSize: 24
+        );
       case AsimLogoSize.medium:
-        return const LogoDimensions(width: 200, height: 60, iconSize: 32);
+        final sizes = LogoAssets.recommendedSizes['medium']!;
+        return LogoDimensions(
+          width: sizes['width']!, 
+          height: sizes['height']!, 
+          iconSize: 32
+        );
       case AsimLogoSize.large:
-        return const LogoDimensions(width: 400, height: 120, iconSize: 48);
+        final sizes = LogoAssets.recommendedSizes['large']!;
+        return LogoDimensions(
+          width: sizes['width']!, 
+          height: sizes['height']!, 
+          iconSize: 48
+        );
     }
   }
 
@@ -105,7 +120,7 @@ class AsimLogo extends StatelessWidget {
                     'Professional eSIM Platform',
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: dimensions.height * 0.12,
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -115,7 +130,7 @@ class AsimLogo extends StatelessWidget {
                       'Connecting Afghanistan to the World',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: dimensions.height * 0.10,
-                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                        color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -130,9 +145,8 @@ class AsimLogo extends StatelessWidget {
   }
 
   Widget _buildSignalIcon(BuildContext context, LogoDimensions dimensions) {
-    final theme = Theme.of(context);
-    final greenColor = color ?? const Color(0xFF228B22);
-    final redColor = const Color(0xFFCC0000);
+    final greenColor = color ?? Color(LogoAssets.brandColors['accentGreen']!);
+    final redColor = Color(LogoAssets.brandColors['primaryRed']!);
     final iconSize = dimensions.iconSize;
 
     return Container(
@@ -149,7 +163,6 @@ class AsimLogo extends StatelessWidget {
   }
 }
 
-/// Custom painter for the signal icon
 class SignalIconPainter extends CustomPainter {
   final Color greenColor;
   final Color redColor;
@@ -187,7 +200,7 @@ class SignalIconPainter extends CustomPainter {
       canvas.drawRRect(rect, paint);
 
       // Highlight effect (lighter green)
-      paint.color = greenColor.withOpacity(0.7);
+      paint.color = greenColor.withValues(alpha: 0.7);
       final highlightRect = RRect.fromRectAndRadius(
         Rect.fromLTWH(
           bar.x + barWidth * 0.1, 
@@ -217,7 +230,7 @@ class SignalIconPainter extends CustomPainter {
     paint.style = PaintingStyle.stroke;
     paint.strokeWidth = size * 0.05;
     paint.strokeCap = StrokeCap.round;
-    paint.color = redColor.withOpacity(0.8);
+    paint.color = redColor.withValues(alpha: 0.8);
 
     final waveStartX = canvasSize.width * 0.7;
     final waveY = canvasSize.height * 0.25;
@@ -234,7 +247,7 @@ class SignalIconPainter extends CustomPainter {
     canvas.drawPath(path1, paint);
 
     // Second wave (longer)
-    paint.color = redColor.withOpacity(0.6);
+    paint.color = redColor.withValues(alpha: 0.6);
     paint.strokeWidth = size * 0.04;
     final path2 = Path();
     path2.moveTo(waveStartX - size * 0.1, waveY - size * 0.1);
