@@ -162,6 +162,10 @@ jobs:
           sed -i '' "s/DEVELOPMENT_TEAM = \"[^\"]*\";/DEVELOPMENT_TEAM = \"$TEAM_ID\";/g" Runner.xcodeproj/project.pbxproj
           sed -i '' "s/DEVELOPMENT_TEAM = \"\";/DEVELOPMENT_TEAM = \"$TEAM_ID\";/g" Runner.xcodeproj/project.pbxproj
           
+          # Set the correct code signing identity for distribution
+          sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "iPhone Developer";/"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution";/g' Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer";/CODE_SIGN_IDENTITY = "Apple Distribution";/g' Runner.xcodeproj/project.pbxproj
+          
           # Add or update provisioning profile specifier
           if ! grep -q "PROVISIONING_PROFILE_SPECIFIER" Runner.xcodeproj/project.pbxproj; then
             echo "Adding provisioning profile specifier to project..."
