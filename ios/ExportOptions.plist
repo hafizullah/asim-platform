@@ -16,10 +16,5 @@
     <true/>
     <key>compileBitcode</key>
     <false/>
-    <key>provisioningProfiles</key>
-    <dict>
-        <key>com.asim.asimPlatform</key>
-        <string>ASIM Platform Distribution</string>
-    </dict>
 </dict>
 </plist>

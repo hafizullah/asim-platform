@@ -108,16 +108,71 @@ jobs:
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
           
+      - name: Debug provisioning profiles
+        run: |
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "Provisioning profiles directory not found"
+          find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" | plutil -p -' _ {} \; || echo "No provisioning profiles found"
+          
       - name: Configure Xcode project for CI
         run: |
           cd ios
-          # Update the Xcode project to use manual signing and set development team
-          /usr/libexec/PlistBuddy -c "Set :objects:97C147061CF9000F007C117D:buildSettings:CODE_SIGN_STYLE Manual" Runner.xcodeproj/project.pbxproj
-          /usr/libexec/PlistBuddy -c "Set :objects:97C147071CF9000F007C117D:buildSettings:CODE_SIGN_STYLE Manual" Runner.xcodeproj/project.pbxproj
-          /usr/libexec/PlistBuddy -c "Set :objects:249021D4217E4FDB00AE95B9:buildSettings:CODE_SIGN_STYLE Manual" Runner.xcodeproj/project.pbxproj
-          /usr/libexec/PlistBuddy -c "Set :objects:97C147061CF9000F007C117D:buildSettings:DEVELOPMENT_TEAM ${{ secrets.IOS_TEAM_ID }}" Runner.xcodeproj/project.pbxproj
-          /usr/libexec/PlistBuddy -c "Set :objects:97C147071CF9000F007C117D:buildSettings:DEVELOPMENT_TEAM ${{ secrets.IOS_TEAM_ID }}" Runner.xcodeproj/project.pbxproj
-          /usr/libexec/PlistBuddy -c "Set :objects:249021D4217E4FDB00AE95B9:buildSettings:DEVELOPMENT_TEAM ${{ secrets.IOS_TEAM_ID }}" Runner.xcodeproj/project.pbxproj
+          
+          # Get the actual provisioning profile name from downloaded profiles
+          PROFILE_NAME=""
+          if [ -d ~/Library/MobileDevice/Provisioning\ Profiles/ ]; then
+            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+              if [ -f "$profile" ]; then
+                NAME=$(security cms -D -i "$profile" | plutil -extract Name xml1 -o - - | grep -o '<string>.*</string>' | sed 's/<[^>]*>//g')
+                echo "Found provisioning profile: $NAME"
+                if [[ "$NAME" == *"Distribution"* ]] || [[ "$NAME" == *"App Store"* ]]; then
+                  PROFILE_NAME="$NAME"
+                  break
+                fi
+              fi
+            done
+          fi
+          
+          echo "Using provisioning profile: $PROFILE_NAME"
+          
+          # Configure Xcode project for manual signing
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "${{ secrets.IOS_TEAM_ID }}";/g' Runner.xcodeproj/project.pbxproj
+          
+          # Add provisioning profile specifier using the actual profile name
+          if [ ! -z "$PROFILE_NAME" ]; then
+            sed -i '' "s/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Manual;\n\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_NAME\";/g" Runner.xcodeproj/project.pbxproj
+            
+            # Also update ExportOptions.plist with the correct provisioning profile
+            cat > ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>destination</key>
+              <string>upload</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>stripSwiftSymbols</key>
+              <true/>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>compileBitcode</key>
+              <false/>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>com.asim.asimPlatform</key>
+                  <string>$PROFILE_NAME</string>
+              </dict>
+          </dict>
+          </plist>
+          EOF
+          fi
+          
+          echo "Xcode project configured for manual signing"
           
       - name: Build iOS App
         run: |
