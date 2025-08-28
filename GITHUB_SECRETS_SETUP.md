@@ -19,7 +19,7 @@ To set up automatic deployment, add these secrets in your GitHub repository:
    - **Value**: `asim-24e42`
    - **Purpose**: Identifies your Firebase project
 
-### iOS Secrets (for future iOS deployment):
+### iOS Secrets (for automatic signing):
 
 3. **IOS_BUNDLE_ID**
    - **Value**: `com.asim.asimPlatform`
@@ -31,12 +31,12 @@ To set up automatic deployment, add these secrets in your GitHub repository:
      - **Method 1 (Web)**: Go to [Apple Developer Account](https://developer.apple.com/account/) → Sign in → Click "Membership" in sidebar → Your Team ID is displayed
      - **Method 2 (Xcode)**: Open Xcode → Preferences → Accounts → Select your Apple ID → Click team name → Team ID shown in details
      - **Method 3 (Terminal)**: Run `security find-identity -v -p codesigning` and look for "Apple Development" or "Apple Distribution" certificates
-   - **Purpose**: Required for code signing in CI/CD
+   - **Purpose**: Required for automatic code signing in CI/CD
 
 5. **IOS_DIST_SIGNING_KEY**
    - **Value**: Base64 encoded .p12 certificate file
-   - **How to get**: Export distribution certificate from Xcode
-   - **Purpose**: Code signing for App Store
+   - **How to get**: Export distribution certificate from Xcode/Keychain
+   - **Purpose**: Code signing certificate for App Store
 
 6. **IOS_DIST_SIGNING_KEY_PASSWORD**
    - **Value**: Password for the .p12 file
@@ -53,6 +53,46 @@ To set up automatic deployment, add these secrets in your GitHub repository:
 9. **APPSTORE_API_PRIVATE_KEY**
    - **Value**: Content of the .p8 file from App Store Connect
    - **Purpose**: App Store Connect API authentication
+
+## 🎯 Why Automatic Signing?
+
+This project uses **automatic signing** for both local development and CI/CD because:
+
+✅ **Consistency**: Same signing method locally and in GitHub Actions  
+✅ **Simplicity**: No manual provisioning profile management  
+✅ **Reliability**: Xcode manages certificates and profiles automatically  
+✅ **Modern**: Apple's recommended approach  
+
+**No more manual provisioning profiles needed!** 🎉
+
+## 🚀 Getting Your Firebase Token
+
+Run this command in your terminal:
+```bash
+firebase login:ci
+```
+
+Copy the token that appears and add it as `FIREBASE_TOKEN` in GitHub Secrets.
+
+## 🛠️ Setting Up Local iOS Development
+
+To configure your local development environment:
+
+1. **Find your Team ID** (see methods above)
+
+2. **Run the configuration script**:
+   ```bash
+   cd ios
+   ./configure_signing.sh YOUR_TEAM_ID
+   ```
+
+   Or run it interactively (it will prompt for your Team ID):
+   ```bash
+   cd ios
+   ./configure_signing.sh
+   ```
+
+3. **Done!** Now both your local development and GitHub Actions use automatic signing consistently.
 
 ## 🚀 Getting Your Firebase Token
 
