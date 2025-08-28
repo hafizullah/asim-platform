@@ -377,7 +377,7 @@ class _LandingPageState extends State<LandingPage> {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(16),
         child: Container(
-          width: 50, // Fixed width to prevent layout shifts
+          width: 65, // Increased width to accommodate "English" text
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
             color: isSelected ? colorScheme.primary : Colors.transparent,
@@ -395,6 +395,8 @@ class _LandingPageState extends State<LandingPage> {
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
             textAlign: TextAlign.center, // Center the text within the fixed width
+            maxLines: 1, // Ensure single line
+            overflow: TextOverflow.ellipsis, // Handle overflow gracefully
           ),
         ),
       ),
