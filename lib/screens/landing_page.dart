@@ -306,25 +306,42 @@ class _LandingPageState extends State<LandingPage> {
   Future<void> _launchURL(String url) async {
     final localization = AppLocalizations.of(context);
     try {
-      // Use in-app WebView for purchase links
-      if (url.contains('esimqr.link') || url.contains('payment') || url.contains('buy')) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => WebViewScreen(
-              url: url,
-              title: localization.purchaseEsim,
-            ),
-          ),
-        );
-      } else {
-        // Use external browser for other links
+      // For web platform, always use external browser due to WebView limitations
+      if (kIsWeb) {
         final Uri uri = Uri.parse(url);
         if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
           throw Exception('Could not launch $url');
         }
+      } else {
+        // Use in-app WebView for mobile platforms
+        if (url.contains('esimqr.link') || url.contains('payment') || url.contains('buy')) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => WebViewScreen(
+                url: url,
+                title: localization.purchaseEsim,
+              ),
+            ),
+          );
+        } else {
+          // Use external browser for other links
+          final Uri uri = Uri.parse(url);
+          if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+            throw Exception('Could not launch $url');
+          }
+        }
       }
     } catch (e) {
       debugPrint('Error launching URL: $e');
+      // Show a snackbar with error message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to open link: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

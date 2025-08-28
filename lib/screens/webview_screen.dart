@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewScreen extends StatefulWidget {
@@ -19,6 +19,7 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   late final WebViewController _controller;
   bool _isLoading = true;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -27,9 +28,15 @@ class _WebViewScreenState extends State<WebViewScreen> {
   }
 
   void _initializeWebView() {
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(
+    try {
+      _controller = WebViewController();
+      
+      // Only set JavaScript mode on non-web platforms
+      if (!kIsWeb) {
+        _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+      }
+      
+      _controller.setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
             // Update loading bar if needed
@@ -37,6 +44,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onPageStarted: (String url) {
             setState(() {
               _isLoading = true;
+              _errorMessage = null;
             });
           },
           onPageFinished: (String url) {
@@ -45,23 +53,35 @@ class _WebViewScreenState extends State<WebViewScreen> {
             });
           },
           onHttpError: (HttpResponseError error) {
-            // Handle HTTP errors
+            setState(() {
+              _errorMessage = 'HTTP Error: ${error.response?.statusCode}';
+              _isLoading = false;
+            });
           },
           onWebResourceError: (WebResourceError error) {
-            // Handle web resource errors
+            setState(() {
+              _errorMessage = 'Error: ${error.description}';
+              _isLoading = false;
+            });
           },
           onNavigationRequest: (NavigationRequest request) {
             // Allow all navigation for purchase flows
             return NavigationDecision.navigate;
           },
         ),
-      )
-      ..loadRequest(Uri.parse(widget.url));
+      );
+      
+      _controller.loadRequest(Uri.parse(widget.url));
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to initialize WebView: ${e.toString()}';
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Always use Material Design for web compatibility
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -78,11 +98,50 @@ class _WebViewScreenState extends State<WebViewScreen> {
           else
             IconButton(
               icon: const Icon(Icons.refresh),
-              onPressed: () => _controller.reload(),
+              onPressed: () {
+                setState(() {
+                  _isLoading = true;
+                  _errorMessage = null;
+                });
+                _controller.reload();
+              },
             ),
         ],
       ),
-      body: WebViewWidget(controller: _controller),
+      body: _errorMessage != null
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Failed to load page',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Text(
+                      _errorMessage!,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: () => _initializeWebView(),
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Retry'),
+                  ),
+                ],
+              ),
+            )
+          : WebViewWidget(controller: _controller),
     );
   }
 }

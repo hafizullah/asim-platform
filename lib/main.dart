@@ -1,14 +1,22 @@
 import "package:flutter/material.dart";
-import "package:flutter/cupertino.dart";
-import "package:flutter/services.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:provider/provider.dart";
-import "package:flutter/foundation.dart";
+import "package:webview_flutter/webview_flutter.dart";
+import "package:webview_flutter_web/webview_flutter_web.dart";
 import "core/providers/language_provider.dart";
 import "core/localization/app_localizations.dart";
 import "screens/landing_page.dart";
 
 void main() {
+  // Ensure WebView platform is initialized properly
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize WebView for web platform
+  if (kIsWeb) {
+    WebViewPlatform.instance = WebWebViewPlatform();
+  }
+  
   runApp(const AsimLandingApp());
 }
 

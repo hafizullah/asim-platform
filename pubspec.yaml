@@ -41,6 +41,7 @@ dependencies:
   # Utils
   url_launcher: ^6.2.2
   webview_flutter: ^4.4.4
+  webview_flutter_web: ^0.2.2+4
   package_info_plus: ^4.2.0
   connectivity_plus: ^5.0.2
   
