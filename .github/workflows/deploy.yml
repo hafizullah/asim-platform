@@ -143,6 +143,8 @@ jobs:
         with:
           p12-file-base64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
           p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
+          keychain: signing_temp
+          create-keychain: true
           
       - name: Install Provisioning Profile
         uses: Apple-Actions/download-provisioning-profiles@v1
@@ -160,6 +162,10 @@ jobs:
           
           echo "=== Configuring Xcode for manual signing ==="
           
+          # List available certificates to debug signing issues
+          echo "=== Available signing identities ==="
+          security find-identity -v -p codesigning
+          
           # List downloaded provisioning profiles for debugging
           echo "=== Available provisioning profiles ==="
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory"
@@ -175,12 +181,11 @@ jobs:
             fi
           done
           
-          # Run our quick fix script that uses the exact UUIDs
-          chmod +x quick_signing_fix.sh
-          ./quick_signing_fix.sh
+          # Run our GitHub Actions specific signing fix
+          chmod +x github_actions_ios_fix.sh
+          ./github_actions_ios_fix.sh
           
           # Create ExportOptions.plist with the correct provisioning profile UUID
-          # Based on your logs, the production profile UUID is: d1677fe0-db29-4970-937c-d44ec7067064
           cat > ExportOptions.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -194,7 +199,7 @@ jobs:
               <string>manual</string>
               <key>provisioningProfiles</key>
               <dict>
-                  <key>com.asim.asimPlatform</key>
+                  <key>${{ secrets.IOS_BUNDLE_ID }}</key>
                   <string>d1677fe0-db29-4970-937c-d44ec7067064</string>
               </dict>
               <key>stripSwiftSymbols</key>
@@ -212,8 +217,6 @@ jobs:
           EOF
           
           echo "✅ Xcode project configured for manual signing"
-          echo "=== ExportOptions.plist content ==="
-          cat ExportOptions.plist
           
       - name: Build iOS App
         run: |
@@ -280,6 +283,17 @@ jobs:
           echo "Available schemes:"
           xcodebuild -list -workspace Runner.xcworkspace
           
+          # Find the correct distribution certificate
+          echo "=== Finding distribution certificate ==="
+          DIST_CERT=$(security find-identity -v -p codesigning | grep -i "distribution" | head -1 | awk '{print $2}')
+          if [ -z "$DIST_CERT" ]; then
+            echo "❌ No distribution certificate found"
+            echo "Available certificates:"
+            security find-identity -v -p codesigning
+            exit 1
+          fi
+          echo "✅ Found distribution certificate: $DIST_CERT"
+          
           echo "=== Building archive with manual signing ==="
           set -e  # Exit on any error
           
@@ -292,7 +306,8 @@ jobs:
             archive \
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
-            PROVISIONING_PROFILE_SPECIFIER="d1677fe0-db29-4970-937c-d44ec7067064" \
+            PROVISIONING_PROFILE_SPECIFIER="asim-prod" \
+            CODE_SIGN_IDENTITY="$DIST_CERT" \
             | tee build_log.txt
             
           # Check if archive was created successfully

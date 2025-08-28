@@ -18,10 +18,11 @@ else
     echo "Already in ios directory or project root with direct access to Xcode project."
 fi
 
-# Get the provisioning profile UUIDs from the GitHub Actions output
-# Based on your logs:
+# Fixed provisioning profile UUIDs based on GitHub Actions output:
 # - Development profile "asim": de5c7240-7cc2-4453-86f0-8aeb731909db  
 # - Distribution profile "asim-prod": d1677fe0-db29-4970-937c-d44ec7067064
+DEV_PROFILE_UUID="de5c7240-7cc2-4453-86f0-8aeb731909db"
+DIST_PROFILE_UUID="d1677fe0-db29-4970-937c-d44ec7067064"
 
 # Extract team ID from any available provisioning profile
 TEAM_ID=""
@@ -44,78 +45,108 @@ if [ -z "$TEAM_ID" ]; then
     exit 1
 fi
 
+# Check what certificates are available in the keychain
+echo "Available certificates in keychain:"
+security find-identity -v -p codesigning
+
+# Export environment variables for Python script
+export TEAM_ID
+export DEV_PROFILE_UUID
+export DIST_PROFILE_UUID
+
 # Backup the project file
 cp Runner.xcodeproj/project.pbxproj Runner.xcodeproj/project.pbxproj.backup
 
 echo "Configuring Xcode project for manual signing..."
 
-# Use a simple approach with sed to make the necessary changes
-# 1. Change CODE_SIGN_STYLE from Automatic to Manual
-sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
-
-# 2. Set DEVELOPMENT_TEAM
-sed -i '' "s/DEVELOPMENT_TEAM = \"\";/DEVELOPMENT_TEAM = \"$TEAM_ID\";/g" Runner.xcodeproj/project.pbxproj
-
-# 3. Remove any existing PROVISIONING_PROFILE_SPECIFIER lines
-sed -i '' '/PROVISIONING_PROFILE_SPECIFIER/d' Runner.xcodeproj/project.pbxproj
-
-# 4. Add provisioning profile specifiers using a more targeted approach
-# We'll use a Python script that can precisely identify the configuration sections
-
+# Create a more robust Python script to handle the configuration
 python3 << 'EOF'
 import re
 
-# Read the project file
-with open('Runner.xcodeproj/project.pbxproj', 'r') as f:
-    content = f.read()
-
-lines = content.split('\n')
-result_lines = []
-in_debug_config = False
-in_release_config = False
-in_profile_config = False
-
-i = 0
-while i < len(lines):
-    line = lines[i]
-    result_lines.append(line)
+def update_xcode_project():
+    # Read the project file
+    with open('Runner.xcodeproj/project.pbxproj', 'r') as f:
+        content = f.read()
     
-    # Track which configuration section we're in
-    if 'name = Debug;' in line:
-        in_debug_config = True
-        in_release_config = False
-        in_profile_config = False
-    elif 'name = Release;' in line:
-        in_debug_config = False
-        in_release_config = True
-        in_profile_config = False
-    elif 'name = Profile;' in line:
-        in_debug_config = False
-        in_release_config = False
-        in_profile_config = True
-    elif line.strip() == '};' and (in_debug_config or in_release_config or in_profile_config):
-        # End of configuration section
-        in_debug_config = False
-        in_release_config = False
-        in_profile_config = False
+    lines = content.split('\n')
+    result_lines = []
+    in_runner_debug = False
+    in_runner_release = False
+    in_runner_profile = False
     
-    # If we find DEVELOPMENT_TEAM line, add provisioning profile after it
-    if 'DEVELOPMENT_TEAM = ' in line and '""' not in line:
-        if in_debug_config:
-            result_lines.append('\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "de5c7240-7cc2-4453-86f0-8aeb731909db";')
-            print("✓ Added development provisioning profile for Debug configuration")
-        elif in_release_config or in_profile_config:
-            result_lines.append('\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "d1677fe0-db29-4970-937c-d44ec7067064";')
-            config_type = "Release" if in_release_config else "Profile"
-            print(f"✓ Added distribution provisioning profile for {config_type} configuration")
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        
+        # Track which configuration we're in - only for Runner target, not tests
+        if re.search(r'[A-F0-9]{24} /\* Debug \*/ = {', line):
+            # Check if this is a Runner configuration by looking ahead
+            debug_section = '\n'.join(lines[i:min(i+50, len(lines))])
+            if 'PRODUCT_BUNDLE_IDENTIFIER = ' in debug_section and 'Runner' in debug_section:
+                in_runner_debug = True
+                in_runner_release = False
+                in_runner_profile = False
+        elif re.search(r'[A-F0-9]{24} /\* Release \*/ = {', line):
+            # Check if this is a Runner configuration
+            release_section = '\n'.join(lines[i:min(i+50, len(lines))])
+            if 'PRODUCT_BUNDLE_IDENTIFIER = ' in release_section and 'Runner' in release_section:
+                in_runner_debug = False
+                in_runner_release = True
+                in_runner_profile = False
+        elif re.search(r'[A-F0-9]{24} /\* Profile \*/ = {', line):
+            # Check if this is a Runner configuration
+            profile_section = '\n'.join(lines[i:min(i+50, len(lines))])
+            if 'PRODUCT_BUNDLE_IDENTIFIER = ' in profile_section and 'Runner' in profile_section:
+                in_runner_debug = False
+                in_runner_release = False
+                in_runner_profile = True
+        elif line.strip() == '};' and (in_runner_debug or in_runner_release or in_runner_profile):
+            # End of configuration section
+            in_runner_debug = False
+            in_runner_release = False
+            in_runner_profile = False
+        
+        # Update CODE_SIGN_STYLE to Manual for Runner configurations
+        if 'CODE_SIGN_STYLE = Automatic;' in line and (in_runner_debug or in_runner_release or in_runner_profile):
+            line = line.replace('CODE_SIGN_STYLE = Automatic;', 'CODE_SIGN_STYLE = Manual;')
+            print(f"✓ Set manual signing for {'Debug' if in_runner_debug else 'Release' if in_runner_release else 'Profile'}")
+        
+        # Update DEVELOPMENT_TEAM for Runner configurations
+        if 'DEVELOPMENT_TEAM = "";' in line and (in_runner_debug or in_runner_release or in_runner_profile):
+            line = line.replace('DEVELOPMENT_TEAM = "";', f'DEVELOPMENT_TEAM = "{TEAM_ID}";')
+            print(f"✓ Set team ID for {'Debug' if in_runner_debug else 'Release' if in_runner_release else 'Profile'}")
+        
+        result_lines.append(line)
+        
+        # Add provisioning profile after DEVELOPMENT_TEAM line
+        if 'DEVELOPMENT_TEAM = ' in line and '""' not in line and (in_runner_debug or in_runner_release or in_runner_profile):
+            if in_runner_debug:
+                result_lines.append(f'\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{DEV_PROFILE_UUID}";')
+                print("✓ Added development provisioning profile for Debug")
+            elif in_runner_release or in_runner_profile:
+                result_lines.append(f'\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{DIST_PROFILE_UUID}";')
+                config_type = "Release" if in_runner_release else "Profile"
+                print(f"✓ Added distribution provisioning profile for {config_type}")
+        
+        i += 1
     
-    i += 1
+    # Write the result back
+    with open('Runner.xcodeproj/project.pbxproj', 'w') as f:
+        f.write('\n'.join(result_lines))
+    
+    print("✅ Xcode project configuration updated")
 
-# Write the result
-with open('Runner.xcodeproj/project.pbxproj', 'w') as f:
-    f.write('\n'.join(result_lines))
+# Run the update with the variables from shell
+import os
+TEAM_ID = os.environ.get('TEAM_ID', '')
+DEV_PROFILE_UUID = os.environ.get('DEV_PROFILE_UUID', '')
+DIST_PROFILE_UUID = os.environ.get('DIST_PROFILE_UUID', '')
 
-print("✅ Provisioning profiles configured")
+if TEAM_ID and DEV_PROFILE_UUID and DIST_PROFILE_UUID:
+    update_xcode_project()
+else:
+    print("❌ Missing required environment variables")
+    exit(1)
 EOF
 
 echo "✅ Configuration completed"
