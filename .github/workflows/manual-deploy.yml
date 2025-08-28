@@ -184,15 +184,18 @@ jobs:
       - name: Build and Archive with Xcode
         run: |
           cd ios
+          
+          # Configure automatic signing
+          TEAM_ID="${{ secrets.IOS_TEAM_ID }}" ./github_actions_signing_fix.sh
+          
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath Runner.xcarchive \
             archive \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}" \
-            PROVISIONING_PROFILE_SPECIFIER="d1677fe0-db29-4970-937c-d44ec7067064"
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}"
             
       - name: Export IPA
         run: |
