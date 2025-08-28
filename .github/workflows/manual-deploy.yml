@@ -118,6 +118,25 @@ jobs:
           keychain: signing_temp
           create-keychain: true
           
+      - name: Download and Install Provisioning Profiles
+        env:
+          IOS_PROVISIONING_PROFILE: ${{ secrets.IOS_PROVISIONING_PROFILE }}
+        run: |
+          # Create provisioning profiles directory
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Decode and install the provisioning profile
+          echo "$IOS_PROVISIONING_PROFILE" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/AsimPlatform.mobileprovision
+          
+          echo "=== Installed provisioning profiles ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          # Show profile details
+          if command -v security &> /dev/null; then
+            echo "=== Provisioning profile details ==="
+            security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/AsimPlatform.mobileprovision
+          fi
+          
       - name: Debug signing setup
         run: |
           echo "=== Available signing identities ==="
@@ -126,32 +145,44 @@ jobs:
           echo "=== Available provisioning profiles ==="
           ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory (will be created automatically)"
           
-      - name: Configure Xcode for Automatic Signing
+      - name: Configure Xcode for Manual Signing with Provisioning Profile
         env:
           TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
         run: |
           cd ios
           
-          echo "=== Configuring Xcode for automatic signing with Flutter ==="
-          chmod +x github_actions_signing_fix.sh
-          ./github_actions_signing_fix.sh
+          echo "=== Configuring Xcode for manual signing with explicit provisioning profile ==="
           
-          echo "✅ Xcode configured for automatic signing with team: $TEAM_ID"
+          # Get the UUID of the installed provisioning profile
+          PROFILE_UUID=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/AsimPlatform.mobileprovision | plutil -extract UUID xml1 - -o - | sed -n 's/.*<string>\(.*\)<\/string>.*/\1/p')
+          echo "Provisioning Profile UUID: $PROFILE_UUID"
+          
+          # Configure manual signing in Xcode project
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/DEVELOPMENT_TEAM = \"[^\"]*\";/DEVELOPMENT_TEAM = \"$TEAM_ID\";/g" Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/DEVELOPMENT_TEAM = \"\";/DEVELOPMENT_TEAM = \"$TEAM_ID\";/g" Runner.xcodeproj/project.pbxproj
+          
+          # Add or update provisioning profile specifier
+          if ! grep -q "PROVISIONING_PROFILE_SPECIFIER" Runner.xcodeproj/project.pbxproj; then
+            echo "Adding provisioning profile specifier to project..."
+            # Create a temporary file with the provisioning profile line
+            echo "				PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_UUID\";" > /tmp/provision_line.txt
+            # Insert after DEVELOPMENT_TEAM lines
+            awk "/DEVELOPMENT_TEAM = \"$TEAM_ID\";/{print; print \"				PROVISIONING_PROFILE_SPECIFIER = \\\"$PROFILE_UUID\\\";\"; next}1" Runner.xcodeproj/project.pbxproj > /tmp/project_updated.pbxproj
+            mv /tmp/project_updated.pbxproj Runner.xcodeproj/project.pbxproj
+          else
+            # Update existing provisioning profile specifier
+            sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = \"[^\"]*\";/PROVISIONING_PROFILE_SPECIFIER = \"$PROFILE_UUID\";/g" Runner.xcodeproj/project.pbxproj
+          fi
+          
+          echo "✅ Xcode configured for manual signing with provisioning profile"
           
       - name: Build and Release iOS App with Flutter
         env:
           TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
         run: |
-          cd ios
-          
-          echo "=== Configuring Xcode for automatic signing ==="
-          chmod +x github_actions_signing_fix.sh
-          ./github_actions_signing_fix.sh
-          
           echo "=== Available certificates ==="
           security find-identity -v -p codesigning
-          
-          cd ..
           
           echo "=== Building iOS release with Flutter and xcodebuild ==="
           # Run flutter pub get to ensure dependencies are ready
@@ -166,21 +197,19 @@ jobs:
           # Clean previous builds
           xcodebuild clean -workspace Runner.xcworkspace -scheme Runner
           
-          # Build and archive with proper provisioning flags
+          # Build and archive (no need for -allowProvisioningUpdates with manual signing)
           xcodebuild -workspace Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
             -destination generic/platform=iOS \
             -archivePath build/Runner.xcarchive \
-            -allowProvisioningUpdates \
             archive
           
           # Export the IPA using the export options
           xcodebuild -exportArchive \
             -archivePath build/Runner.xcarchive \
             -exportPath build \
-            -exportOptionsPlist ExportOptions.plist \
-            -allowProvisioningUpdates
+            -exportOptionsPlist ExportOptions.plist
           
           cd ..
           
