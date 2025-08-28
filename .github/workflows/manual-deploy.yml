@@ -194,6 +194,7 @@ jobs:
             -destination generic/platform=iOS \
             -archivePath Runner.xcarchive \
             archive \
+            -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM="${{ secrets.IOS_TEAM_ID }}"
             

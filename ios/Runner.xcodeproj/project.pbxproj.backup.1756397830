@@ -475,7 +475,6 @@
 				DEVELOPMENT_TEAM = "368HV7DHRL";
 				CODE_SIGN_STYLE = Automatic;
 				CODE_SIGN_STYLE = Automatic;
-				CODE_SIGN_STYLE = Automatic;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -664,7 +663,6 @@
 				DEVELOPMENT_TEAM = "368HV7DHRL";
 				CODE_SIGN_STYLE = Automatic;
 				CODE_SIGN_STYLE = Automatic;
-				CODE_SIGN_STYLE = Automatic;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -689,7 +687,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = "368HV7DHRL";
-				CODE_SIGN_STYLE = Automatic;
 				CODE_SIGN_STYLE = Automatic;
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_BITCODE = NO;
