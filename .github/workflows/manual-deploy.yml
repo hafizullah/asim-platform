@@ -188,7 +188,7 @@ jobs:
           echo "=== Building archive with automatic signing ==="
           set -e
           
-          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -destination generic/platform=iOS -archivePath Runner.xcarchive archive -allowProvisioningUpdates CODE_SIGN_IDENTITY="Apple Distribution" DEVELOPMENT_TEAM="$TEAM_ID" ONLY_ACTIVE_ARCH=NO | tee build_log.txt
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -destination generic/platform=iOS -archivePath Runner.xcarchive archive -allowProvisioningUpdates DEVELOPMENT_TEAM="$TEAM_ID" ONLY_ACTIVE_ARCH=NO | tee build_log.txt
           
           # Check if archive was created successfully
           if [ ! -d "Runner.xcarchive" ]; then
