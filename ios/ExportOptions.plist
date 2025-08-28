@@ -7,7 +7,7 @@
     <key>destination</key>
     <string>upload</string>
     <key>signingStyle</key>
-    <string>automatic</string>
+    <string>manual</string>
     <key>stripSwiftSymbols</key>
     <true/>
     <key>uploadBitcode</key>
@@ -16,5 +16,10 @@
     <true/>
     <key>compileBitcode</key>
     <false/>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.asim.asimPlatform</key>
+        <string>ASIM Platform Distribution</string>
+    </dict>
 </dict>
 </plist>
