@@ -144,11 +144,24 @@ jobs:
           p12-file-base64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
           p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
           
+      - name: Install Provisioning Profile
+        uses: Apple-Actions/download-provisioning-profiles@v1
+        with:
+          bundle-id: ${{ secrets.IOS_BUNDLE_ID }}
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+          
       - name: Configure Xcode for Automatic Signing
         run: |
           cd ios
           
           echo "=== Configuring Xcode for automatic signing ==="
+          
+          # List downloaded provisioning profiles
+          echo "=== Available provisioning profiles ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No provisioning profiles directory"
+          find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" 2>/dev/null | grep -A 1 -B 1 "Name\|application-identifier" || echo "Failed to read profile"' _ {} \; || echo "No profiles found"
           
           # Ensure automatic signing is enabled and team ID is set
           sed -i '' 's/CODE_SIGN_STYLE = Manual;/CODE_SIGN_STYLE = Automatic;/g' Runner.xcodeproj/project.pbxproj
@@ -206,15 +219,46 @@ jobs:
           echo "Available signing identities:"
           security find-identity -v -p codesigning
           
-          # Check available provisioning profiles
-          echo "Available provisioning profiles:"
-          find ~/Library/MobileDevice/Provisioning\ Profiles/ -name "*.mobileprovision" -exec sh -c 'echo "=== $1 ==="; security cms -D -i "$1" 2>/dev/null | grep -A 1 -B 1 "Name\|UUID\|application-identifier" || echo "Failed to read profile"' _ {} \;
+          # Check available provisioning profiles and find the right one
+          echo "=== Analyzing downloaded provisioning profiles ==="
+          PROFILE_NAME=""
+          if [ -d ~/Library/MobileDevice/Provisioning\ Profiles/ ]; then
+            for profile in ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision; do
+              if [ -f "$profile" ]; then
+                echo "=== Processing profile: $(basename "$profile") ==="
+                
+                # Extract profile content
+                PROFILE_CONTENT=$(security cms -D -i "$profile" 2>/dev/null)
+                
+                if [ $? -eq 0 ]; then
+                  # Extract profile name and app ID
+                  NAME=$(echo "$PROFILE_CONTENT" | plutil -extract Name xml1 -o - - 2>/dev/null | grep -o '<string>.*</string>' | sed 's/<[^>]*>//g')
+                  APP_ID=$(echo "$PROFILE_CONTENT" | plutil -extract Entitlements.application-identifier xml1 -o - - 2>/dev/null | grep -o '<string>.*</string>' | sed 's/<[^>]*>//g')
+                  
+                  echo "Profile Name: $NAME"
+                  echo "App ID: $APP_ID"
+                  
+                  # Check if this profile matches our bundle ID
+                  if [[ "$APP_ID" == *"com.asim.asimPlatform"* ]]; then
+                    PROFILE_NAME="$NAME"
+                    echo "✅ Found matching profile for com.asim.asimPlatform: $PROFILE_NAME"
+                  fi
+                fi
+              fi
+            done
+          fi
+          
+          if [ -z "$PROFILE_NAME" ]; then
+            echo "❌ No matching provisioning profile found for com.asim.asimPlatform"
+            echo "This might cause signing issues"
+          else
+            echo "✅ Will use profile: $PROFILE_NAME"
+          fi
           
           # Verify project configuration
           echo "=== Project signing configuration ==="
-          grep -A 10 -B 5 "CODE_SIGN_STYLE.*Manual" Runner.xcodeproj/project.pbxproj || echo "Manual signing not configured"
-          grep -A 5 "PROVISIONING_PROFILE_SPECIFIER" Runner.xcodeproj/project.pbxproj || echo "No provisioning profile specifier found"
-          grep -A 5 "DEVELOPMENT_TEAM" Runner.xcodeproj/project.pbxproj || echo "No development team found"
+          grep -A 10 -B 5 "CODE_SIGN_STYLE.*Automatic" Runner.xcodeproj/project.pbxproj || echo "❌ Automatic signing not configured"
+          grep -A 5 "DEVELOPMENT_TEAM.*${{ secrets.IOS_TEAM_ID }}" Runner.xcodeproj/project.pbxproj || echo "❌ Development team not set"
           
       - name: Build and Archive with Xcode
         run: |
