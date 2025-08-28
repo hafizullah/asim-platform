@@ -134,6 +134,12 @@ abstract class AppLocalizations {
   String get haveFamilyInAfghanistan;
   String get haveFamilyInAfghanistanDesc;
   String get chooseYourPerfectPlan;
+  
+  // Duration and numbers
+  String get perDay;
+  String get days;
+  String get day;
+  String formatNumber(String number);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
@@ -426,6 +432,19 @@ class AppLocalizationsEn extends AppLocalizations {
   
   @override
   String get chooseYourPerfectPlan => 'Choose your perfect plan below';
+  
+  // Duration and numbers
+  @override
+  String get perDay => 'per day';
+  
+  @override
+  String get days => 'days';
+  
+  @override
+  String get day => 'day';
+  
+  @override
+  String formatNumber(String number) => number; // English uses regular digits
 }
 
 // Dari/Farsi
@@ -686,6 +705,40 @@ class AppLocalizationsFa extends AppLocalizations {
   
   @override
   String get chooseYourPerfectPlan => 'طرح مناسب خود را در زیر انتخاب کنید';
+  
+  // Duration and numbers  
+  @override
+  String get perDay => 'در روز';
+  
+  @override
+  String get days => 'روز';
+  
+  @override
+  String get day => 'روز';
+  
+  @override
+  String formatNumber(String number) {
+    // Convert English numerals to Persian/Dari numerals
+    const englishToPersian = {
+      '0': '۰',
+      '1': '۱', 
+      '2': '۲',
+      '3': '۳',
+      '4': '۴',
+      '5': '۵',
+      '6': '۶',
+      '7': '۷',
+      '8': '۸',
+      '9': '۹',
+      '.': '.',
+    };
+    
+    String result = number;
+    englishToPersian.forEach((english, persian) {
+      result = result.replaceAll(english, persian);
+    });
+    return result;
+  }
 }
 
 // Pashto
@@ -946,4 +999,38 @@ class AppLocalizationsPs extends AppLocalizations {
   
   @override
   String get chooseYourPerfectPlan => 'دلته لاندې خپل مناسب پلان وټاکئ';
+  
+  // Duration and numbers  
+  @override
+  String get perDay => 'په ورځ';
+  
+  @override
+  String get days => 'ورځې';
+  
+  @override
+  String get day => 'ورځ';
+  
+  @override
+  String formatNumber(String number) {
+    // Convert English numerals to Persian/Pashto numerals
+    const englishToPersian = {
+      '0': '۰',
+      '1': '۱', 
+      '2': '۲',
+      '3': '۳',
+      '4': '۴',
+      '5': '۵',
+      '6': '۶',
+      '7': '۷',
+      '8': '۸',
+      '9': '۹',
+      '.': '.',
+    };
+    
+    String result = number;
+    englishToPersian.forEach((english, persian) {
+      result = result.replaceAll(english, persian);
+    });
+    return result;
+  }
 }

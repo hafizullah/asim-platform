@@ -6,6 +6,7 @@ import '../core/providers/language_provider.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/services/esim_plan_service.dart';
 import '../core/models/esim_plan.dart';
+import '../core/utils/plan_localization_utils.dart';
 import '../core/widgets/asim_svg_logo.dart';
 import 'webview_screen.dart';
 import 'terms_conditions_screen.dart';
@@ -204,8 +205,11 @@ class _LandingPageState extends State<LandingPage> {
     final localization = AppLocalizations.of(context);
 
     // Generate features for Afghanistan plans
+    final localizedDataAmount = PlanLocalizationUtils.getLocalizedDataAmount(plan, localization);
+    final localizedDuration = PlanLocalizationUtils.getLocalizedDuration(plan, localization);
+    
     final features = <String>[
-      '${plan.dataAmount} ${localization.afghanistanDataFeatures} ${plan.duration}',
+      PlanLocalizationUtils.getLocalizedPlanDescription(plan, localization),
       localization.afghanistanCoverage,
       localization.instantActivation,
       localization.support24x7,
@@ -245,7 +249,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                 if (plan.isPopular) const SizedBox(height: 12),
                 Text(
-                  '🇦🇫 ${plan.dataAmount} ${localization.afghanistan}',
+                  '🇦🇫 ${localizedDataAmount} ${localization.afghanistan}',
                   style: theme.textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -255,15 +259,15 @@ class _LandingPageState extends State<LandingPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      plan.formattedPrice,
+                      PlanLocalizationUtils.getLocalizedPrice(plan, localization),
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: colorScheme.primary,
                       ),
                     ),
-                    if (plan.duration.isNotEmpty)
+                    if (localizedDuration.isNotEmpty)
                       Text(
-                        ' / ${plan.duration}',
+                        ' / $localizedDuration',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onSurface.withOpacity(0.7),
                         ),
