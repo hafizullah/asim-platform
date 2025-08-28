@@ -154,29 +154,45 @@ jobs:
           cd ..
           
           echo "=== Building iOS release with Flutter ==="
-          # Use Flutter's built-in iOS release process
-          # Flutter will handle xcodebuild with proper flags internally
-          flutter build ipa --release
+          # First build the iOS app without archiving
+          flutter build ios --release
+          
+          # Then create the archive with proper provisioning flags
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -archivePath build/Runner.xcarchive \
+            -allowProvisioningUpdates \
+            archive
+          
+          # Export the IPA using the export options
+          xcodebuild -exportArchive \
+            -archivePath build/Runner.xcarchive \
+            -exportPath build \
+            -exportOptionsPlist ExportOptions.plist \
+            -allowProvisioningUpdates
+          
+          cd ..
           
           # Check if IPA was created successfully
-          if [ ! -f "build/ios/ipa/*.ipa" ]; then
+          if [ ! -f "ios/build/*.ipa" ]; then
             echo "❌ IPA build failed"
             echo "=== Checking build directory ==="
-            ls -la build/ios/ || echo "ios build directory not found"
-            ls -la build/ios/ipa/ || echo "ipa directory not found"
+            ls -la ios/build/ || echo "ios build directory not found"
             exit 1
           fi
           
-          echo "✅ IPA built successfully with Flutter"
-          ls -la build/ios/ipa/
+          echo "✅ IPA built successfully with xcodebuild"
+          ls -la ios/build/
           
-          # Get the actual IPA filename (Flutter names it after the app)
-          IPA_FILE=$(ls build/ios/ipa/*.ipa | head -1)
+          # Get the actual IPA filename (should be in ios/build/)
+          IPA_FILE=$(ls ios/build/*.ipa | head -1)
           echo "IPA file: $IPA_FILE"
           echo "IPA size: $(du -h "$IPA_FILE")"
           
           # Move IPA to expected location for upload step
-          mkdir -p ios/build
           cp "$IPA_FILE" ios/build/Runner.ipa
             
       - name: Upload to TestFlight
