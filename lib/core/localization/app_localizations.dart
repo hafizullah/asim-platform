@@ -1061,7 +1061,7 @@ class AppLocalizationsPs extends AppLocalizations {
   
   // Hero section content
   @override
-  String get flyingToAfghanistan => '✈️ افغانستان ته ځاست؟';
+  String get flyingToAfghanistan => '✈️ افغانستان ته سفر کوئ؟';
   
   @override
   String get flyingToAfghanistanDesc => 'د رسیدو په لومړۍ شیبه کې د انټرنیټ سمدستي اړیکه ترلاسه کړئ! د سیم بدلولو اړتیا نشته، د انتظار د کرښو اړتیا نشته.';

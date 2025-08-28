@@ -48,34 +48,65 @@ fi
 
 echo "Configuring Xcode project with Team ID: $TEAM_ID"
 
+# Find the provisioning profile UUIDs
+PROFILE_DIR="$HOME/Library/MobileDevice/Provisioning Profiles"
+DEVELOPMENT_PROFILE_UUID=""
+DISTRIBUTION_PROFILE_UUID=""
+
+echo "Searching for provisioning profile UUIDs..."
+
+for profile in "$PROFILE_DIR"/*.mobileprovision; do
+    if [ -f "$profile" ]; then
+        profile_name=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract Name raw - 2>/dev/null)
+        profile_uuid=$(security cms -D -i "$profile" 2>/dev/null | plutil -extract UUID raw - 2>/dev/null)
+        
+        if [ "$profile_name" = "asim" ]; then
+            DEVELOPMENT_PROFILE_UUID="$profile_uuid"
+            echo "Development profile UUID: $DEVELOPMENT_PROFILE_UUID"
+        elif [ "$profile_name" = "asim-prod" ]; then
+            DISTRIBUTION_PROFILE_UUID="$profile_uuid"
+            echo "Distribution profile UUID: $DISTRIBUTION_PROFILE_UUID"
+        fi
+    fi
+done
+
 # Configure Xcode project for manual signing
 echo "Setting up manual code signing..."
-
-# 1. Change CODE_SIGN_STYLE from Automatic to Manual
-sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' Runner.xcodeproj/project.pbxproj
-
-# 2. Set DEVELOPMENT_TEAM
-sed -i '' "s/DEVELOPMENT_TEAM = \"\";/DEVELOPMENT_TEAM = \"$TEAM_ID\";/g" Runner.xcodeproj/project.pbxproj
-
-# 3. Remove any existing provisioning profile specifiers
-sed -i '' '/PROVISIONING_PROFILE_SPECIFIER/d' Runner.xcodeproj/project.pbxproj
-
-# 4. Add provisioning profile specifiers
-# We'll add them after the DEVELOPMENT_TEAM line in each configuration section
-# But we need to be very specific about which line to target
 
 # Create a backup
 cp Runner.xcodeproj/project.pbxproj Runner.xcodeproj/project.pbxproj.backup
 
-# Use a Python script for precise control
+# Use a more robust Python script that handles all configurations
 cat > /tmp/fix_provisioning.py << 'EOF'
 #!/usr/bin/env python3
+import re
+import sys
+import os
+
+team_id = os.environ.get('TEAM_ID', '')
+dev_uuid = os.environ.get('DEVELOPMENT_PROFILE_UUID', '')
+dist_uuid = os.environ.get('DISTRIBUTION_PROFILE_UUID', '')
+
+if not team_id:
+    print("Error: TEAM_ID not provided")
+    sys.exit(1)
 
 with open('Runner.xcodeproj/project.pbxproj', 'r') as f:
-    lines = f.readlines()
+    content = f.read()
 
-# Find lines with DEVELOPMENT_TEAM and add provisioning profile after them
-# We need to track which configuration we're in
+# 1. Change all CODE_SIGN_STYLE from Automatic to Manual
+content = re.sub(r'CODE_SIGN_STYLE = Automatic;', 'CODE_SIGN_STYLE = Manual;', content)
+
+# 2. Set DEVELOPMENT_TEAM everywhere it's empty
+content = re.sub(r'DEVELOPMENT_TEAM = "";', f'DEVELOPMENT_TEAM = "{team_id}";', content)
+
+# 3. Remove any existing PROVISIONING_PROFILE_SPECIFIER lines
+content = re.sub(r'\s*PROVISIONING_PROFILE_SPECIFIER = [^;]*;\n', '', content)
+
+# 4. Add provisioning profile specifiers after DEVELOPMENT_TEAM lines
+# We need to be careful to add them in the right build configurations
+
+lines = content.split('\n')
 result_lines = []
 i = 0
 
@@ -83,42 +114,45 @@ while i < len(lines):
     line = lines[i]
     result_lines.append(line)
     
-    # If this line contains DEVELOPMENT_TEAM, we need to add provisioning profile
-    if 'DEVELOPMENT_TEAM = ' in line and '""' not in line:  # Only process lines that have the team ID set
-        # Look backwards to find which configuration this is
-        config_type = None
-        for j in range(i-1, max(0, i-20), -1):  # Look back up to 20 lines
+    # If this line contains DEVELOPMENT_TEAM with our team ID, add provisioning profile
+    if f'DEVELOPMENT_TEAM = "{team_id}";' in line:
+        # Look backward and forward to determine configuration type
+        config_name = None
+        
+        # Look backward for configuration reference
+        for j in range(i-1, max(0, i-30), -1):
             prev_line = lines[j]
-            if 'Debug.xcconfig' in prev_line:
-                config_type = 'Debug'
+            if 'name = Debug;' in prev_line:
+                config_name = 'Debug'
                 break
-            elif 'Release.xcconfig' in prev_line:
-                # Need to check if this is Profile or Release
-                # Look for the name line after this config
-                for k in range(j, min(len(lines), j+20)):
-                    name_line = lines[k]
-                    if 'name = Profile;' in name_line:
-                        config_type = 'Profile'
-                        break
-                    elif 'name = Release;' in name_line:
-                        config_type = 'Release'
-                        break
+            elif 'name = Release;' in prev_line:
+                config_name = 'Release'
+                break
+            elif 'name = Profile;' in prev_line:
+                config_name = 'Profile'
                 break
         
-        # Add the appropriate provisioning profile
-        if config_type == 'Debug':
-            result_lines.append('\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "asim";\n')
-        elif config_type in ['Release', 'Profile']:
-            result_lines.append('\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "asim-prod";\n')
+        # Add appropriate provisioning profile UUID
+        if config_name == 'Debug' and dev_uuid:
+            result_lines.append(f'\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{dev_uuid}";')
+        elif config_name in ['Release', 'Profile'] and dist_uuid:
+            result_lines.append(f'\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = "{dist_uuid}";')
+        
+        print(f"Added provisioning profile for {config_name} configuration")
     
     i += 1
 
 # Write the result
 with open('Runner.xcodeproj/project.pbxproj', 'w') as f:
-    f.writelines(result_lines)
+    f.write('\n'.join(result_lines))
 
-print("Provisioning profiles added successfully")
+print("✅ Xcode project configuration completed")
 EOF
+
+# Set environment variables for the Python script
+export TEAM_ID="$TEAM_ID"
+export DEVELOPMENT_PROFILE_UUID="$DEVELOPMENT_PROFILE_UUID"
+export DISTRIBUTION_PROFILE_UUID="$DISTRIBUTION_PROFILE_UUID"
 
 # Run the Python script
 python3 /tmp/fix_provisioning.py
