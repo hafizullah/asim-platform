@@ -168,16 +168,7 @@ jobs:
           sed -i '' 's/DEVELOPMENT_TEAM = "";/DEVELOPMENT_TEAM = "${{ secrets.IOS_TEAM_ID }}";/g' Runner.xcodeproj/project.pbxproj
           
           # Add provisioning profile specifier to all Release configurations
-          awk '
-            /name = Release;/ { inRelease = 1 }
-            inRelease && /DEVELOPMENT_TEAM = / && !/PROVISIONING_PROFILE_SPECIFIER/ {
-              print $0
-              print "\t\t\t\tPROVISIONING_PROFILE_SPECIFIER = \"asim-prod\";"
-              next
-            }
-            /};/ && inRelease { inRelease = 0 }
-            { print }
-          ' Runner.xcodeproj/project.pbxproj > Runner.xcodeproj/project.pbxproj.tmp && mv Runner.xcodeproj/project.pbxproj.tmp Runner.xcodeproj/project.pbxproj
+          ./fix_provisioning.sh
           
           # Update ExportOptions.plist for manual signing
           cat > ExportOptions.plist << 'EOF'
