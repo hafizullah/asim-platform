@@ -181,6 +181,12 @@ jobs:
           
           echo "✅ Xcode configured for manual signing with provisioning profile"
           
+          # Update ExportOptions.plist with the correct team ID
+          sed -i '' "s/<string>368HV7DHRL<\/string>/<string>$TEAM_ID<\/string>/g" ExportOptions.plist
+          
+          echo "=== Updated ExportOptions.plist ==="
+          cat ExportOptions.plist
+          
       - name: Build and Release iOS App with Flutter
         env:
           TEAM_ID: ${{ secrets.IOS_TEAM_ID }}
