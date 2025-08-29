@@ -217,7 +217,7 @@ class ContactUsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'info@asim.af',
+                            'info@sim.af',
                             style: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: colorScheme.primary,
@@ -609,7 +609,7 @@ class ContactUsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Still have questions? Don\'t hesitate to reach out at info@asim.af',
+              'Still have questions? Don\'t hesitate to reach out at info@sim.af',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onPrimary.withOpacity(0.9),
               ),
@@ -620,7 +620,7 @@ class ContactUsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: FilledButton.icon(
-                    onPressed: () => _launchEmail('info@asim.af'),
+                    onPressed: () => _launchEmail('info@sim.af'),
                     style: FilledButton.styleFrom(
                       backgroundColor: colorScheme.onPrimary,
                       foregroundColor: colorScheme.primary,
