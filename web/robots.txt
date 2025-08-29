@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.asim.af/sitemap.xml
+
+# Crawl-delay (optional, helps with server load)
+Crawl-delay: 1
+
+# Disallow any admin or private directories (if any)
+# Disallow: /admin/
+# Disallow: /private/
+
+# Allow all search engines to crawl the site
+# This includes Google, Bing, Yahoo, Yandex, Baidu, etc.

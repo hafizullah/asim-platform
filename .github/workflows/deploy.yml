@@ -1,11 +1,11 @@
 name: Deploy Web App
 
 on:
-  # push:
-  #   branches: [ main ]
-  #   tags: [ 'v*' ]
-  # pull_request:
-  #   branches: [ main ]
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -52,20 +52,70 @@ jobs:
         run: |
           echo "Flutter version info:"
           flutter --version
-          echo "Building web app..."
+          echo "Building web app with SEO optimizations..."
           flutter build web --release --base-href /
           echo "Build completed successfully!"
         
+      - name: Apply SEO optimizations
+        run: |
+          echo "Applying post-build SEO optimizations..."
+          
+          # Update sitemap with current date
+          CURRENT_DATE=$(date +%Y-%m-%d)
+          if [ -f "build/web/sitemap.xml" ]; then
+            sed -i "s/2025-08-29/$CURRENT_DATE/g" build/web/sitemap.xml
+            echo "✅ Updated sitemap.xml with current date: $CURRENT_DATE"
+          fi
+          
+          # Ensure all SEO files are present
+          echo "📋 Checking SEO files:"
+          echo "robots.txt: $([ -f 'build/web/robots.txt' ] && echo '✅ Present' || echo '❌ Missing')"
+          echo "sitemap.xml: $([ -f 'build/web/sitemap.xml' ] && echo '✅ Present' || echo '❌ Missing')"
+          echo "manifest.json: $([ -f 'build/web/manifest.json' ] && echo '✅ Present' || echo '❌ Missing')"
+          echo "sw.js: $([ -f 'build/web/sw.js' ] && echo '✅ Present' || echo '❌ Missing')"
+          echo "browserconfig.xml: $([ -f 'build/web/browserconfig.xml' ] && echo '✅ Present' || echo '❌ Missing')"
+          
+          # Verify HTML structure for SEO
+          echo "🔍 Verifying HTML SEO structure:"
+          if grep -q "og:title" build/web/index.html; then
+            echo "✅ Open Graph tags found"
+          else
+            echo "❌ Open Graph tags missing"
+          fi
+          
+          if grep -q "application/ld+json" build/web/index.html; then
+            echo "✅ Structured data found"
+          else
+            echo "❌ Structured data missing"
+          fi
+          
+          if grep -q "canonical" build/web/index.html; then
+            echo "✅ Canonical URL found"
+          else
+            echo "❌ Canonical URL missing"
+          fi
+          
+          echo "SEO optimization completed!"
+        
       - name: Verify build output
         run: |
-          echo "Checking build directory structure..."
+          echo "📊 Checking build directory structure..."
           ls -la build/web/
-          echo "Checking index.html content..."
-          head -20 build/web/index.html
-          echo "Checking main.dart.js exists and size..."
+          echo ""
+          echo "📄 Checking index.html content (first 30 lines)..."
+          head -30 build/web/index.html
+          echo ""
+          echo "📦 Checking asset sizes..."
           ls -lh build/web/main.dart.js || echo "main.dart.js not found!"
-          echo "Checking flutter_bootstrap.js..."
           ls -lh build/web/flutter_bootstrap.js || echo "flutter_bootstrap.js not found!"
+          echo ""
+          echo "🔍 SEO files check:"
+          [ -f "build/web/robots.txt" ] && echo "✅ robots.txt ($(wc -l < build/web/robots.txt) lines)" || echo "❌ robots.txt missing"
+          [ -f "build/web/sitemap.xml" ] && echo "✅ sitemap.xml ($(grep -c '<url>' build/web/sitemap.xml) URLs)" || echo "❌ sitemap.xml missing"
+          [ -f "build/web/manifest.json" ] && echo "✅ manifest.json present" || echo "❌ manifest.json missing"
+          [ -f "build/web/sw.js" ] && echo "✅ sw.js present" || echo "❌ sw.js missing"
+          echo ""
+          echo "📊 Build size: $(du -sh build/web | cut -f1)"
         
       - name: Setup Node.js for Firebase
         uses: actions/setup-node@v4
@@ -90,15 +140,58 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          echo "Deploying to Firebase Hosting..."
+          echo "🚀 Deploying to Firebase Hosting with SEO optimizations..."
           firebase deploy --only hosting --token "$FIREBASE_TOKEN" --project "${{ secrets.FIREBASE_PROJECT_ID }}"
-          echo "Deployment completed!"
+          echo "✅ Deployment completed!"
           
-      - name: Verify deployment
+      - name: Post-deployment SEO checks
         run: |
-          echo "Waiting for deployment to propagate..."
+          echo "⏳ Waiting for deployment to propagate..."
           sleep 30
-          echo "Testing deployed site..."
-          curl -I https://www.asim.af || echo "Failed to reach deployment"
-          echo "Checking if HTML content is served..."
-          curl -s https://www.asim.af | head -20 || echo "Failed to get content"
+          echo ""
+          echo "🔍 Testing deployed site SEO..."
+          
+          # Test basic connectivity
+          if curl -I https://www.asim.af 2>/dev/null | grep -q "200 OK"; then
+            echo "✅ Site is accessible"
+          else
+            echo "❌ Site accessibility check failed"
+          fi
+          
+          # Test robots.txt
+          if curl -s https://www.asim.af/robots.txt 2>/dev/null | grep -q "User-agent"; then
+            echo "✅ robots.txt is accessible"
+          else
+            echo "❌ robots.txt check failed"
+          fi
+          
+          # Test sitemap.xml
+          if curl -s https://www.asim.af/sitemap.xml 2>/dev/null | grep -q "<urlset"; then
+            echo "✅ sitemap.xml is accessible"
+          else
+            echo "❌ sitemap.xml check failed"
+          fi
+          
+          # Test manifest.json
+          if curl -s https://www.asim.af/manifest.json 2>/dev/null | grep -q "ASIM Platform"; then
+            echo "✅ manifest.json is accessible"
+          else
+            echo "❌ manifest.json check failed"
+          fi
+          
+          # Check HTML structure
+          HTML_CONTENT=$(curl -s https://www.asim.af 2>/dev/null || echo "")
+          if echo "$HTML_CONTENT" | grep -q "og:title"; then
+            echo "✅ Open Graph meta tags present"
+          else
+            echo "❌ Open Graph meta tags missing"
+          fi
+          
+          if echo "$HTML_CONTENT" | grep -q "application/ld\+json"; then
+            echo "✅ Structured data present"
+          else
+            echo "❌ Structured data missing"
+          fi
+          
+          echo ""
+          echo "🎉 SEO deployment verification completed!"

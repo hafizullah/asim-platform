@@ -3,11 +3,15 @@ import "package:flutter_localizations/flutter_localizations.dart";
 import "package:provider/provider.dart";
 import "core/providers/language_provider.dart";
 import "core/localization/app_localizations.dart";
+import "core/services/seo_service.dart";
 import "screens/landing_page.dart";
 
 void main() {
   // Ensure WebView platform is initialized properly
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize SEO for home page
+  SeoService.updatePageTitle('home');
   
   // Add error handling for uncaught exceptions
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -38,7 +42,7 @@ class AsimLandingApp extends StatelessWidget {
 
   Widget _buildMaterialApp(LanguageProvider languageProvider) {
     return MaterialApp(
-      title: "ASIM Platform - Professional eSIM Solutions",
+      title: "ASIM Platform - Professional eSIM Solutions for Afghanistan | Instant Mobile Data Plans",
       debugShowCheckedModeBanner: false,
       
       // Modern Material 3 Theme with ASIM brand colors
@@ -49,6 +53,12 @@ class AsimLandingApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         fontFamily: "Roboto",
+        // Add better text theme for SEO and accessibility
+        textTheme: const TextTheme().apply(
+          fontFamily: "Roboto",
+          bodyColor: const Color(0xFF212121),
+          displayColor: const Color(0xFF212121),
+        ),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,

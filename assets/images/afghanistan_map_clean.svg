@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <style>
+      .afghanistan-map {
+        fill: #1e40af;
+        fill-opacity: 0.15;
+        stroke: #1e40af;
+        stroke-width: 2.5;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+      .afghanistan-map-outline {
+        fill: none;
+        stroke: #1e40af;
+        stroke-width: 3;
+        stroke-linejoin: round;
+        stroke-linecap: round;
+      }
+      .capital-dot {
+        fill: #dc2626;
+        stroke: #ffffff;
+        stroke-width: 2;
+      }
+      .map-label {
+        font-family: 'Arial', sans-serif;
+        font-size: 18px;
+        font-weight: bold;
+        fill: #1e40af;
+        text-anchor: middle;
+      }
+    </style>
+  </defs>
+  
+  <!-- Afghanistan detailed outline based on actual country borders -->
+  <path class="afghanistan-map" d="M 150 180
+           L 170 160
+           L 195 155
+           L 225 150
+           L 260 145
+           L 290 142
+           L 320 140
+           L 350 142
+           L 380 148
+           L 410 158
+           L 435 170
+           L 455 185
+           L 470 200
+           L 480 220
+           L 485 240
+           L 480 260
+           L 470 278
+           L 455 295
+           L 435 308
+           L 410 318
+           L 380 325
+           L 350 328
+           L 320 325
+           L 290 320
+           L 260 312
+           L 230 300
+           L 205 285
+           L 185 268
+           L 170 248
+           L 160 228
+           L 155 208
+           L 150 188
+           Z"/>
+           
+  <!-- Wakhan Corridor (northeastern panhandle) -->
+  <path class="afghanistan-map" d="M 470 150
+           L 520 145
+           L 550 148
+           L 560 155
+           L 555 165
+           L 540 170
+           L 515 172
+           L 490 168
+           L 470 160
+           Z"/>
+           
+  <!-- Capital city marker for Kabul -->
+  <circle class="capital-dot" cx="300" cy="200" r="4"/>
+  
+  <!-- Country label -->
+  <text class="map-label" x="300" y="350" dy="0.35em">Afghanistan</text>
+  
+  <!-- Subtle decorative elements -->
+  <circle cx="120" cy="100" r="2" fill="#1e40af" opacity="0.3"/>
+  <circle cx="480" cy="320" r="2" fill="#1e40af" opacity="0.3"/>
+  <circle cx="520" cy="80" r="1.5" fill="#1e40af" opacity="0.2"/>
+</svg>

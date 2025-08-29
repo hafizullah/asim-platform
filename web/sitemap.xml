@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Main page -->
+  <url>
+    <loc>https://www.asim.af/</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.asim.af/"/>
+    <xhtml:link rel="alternate" hreflang="fa" href="https://www.asim.af/"/>
+    <xhtml:link rel="alternate" hreflang="ps" href="https://www.asim.af/"/>
+  </url>
+  
+  <!-- About Us page -->
+  <url>
+    <loc>https://www.asim.af/about</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Contact Us page -->
+  <url>
+    <loc>https://www.asim.af/contact</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Terms and Conditions page -->
+  <url>
+    <loc>https://www.asim.af/terms</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Afghanistan eSIM Plans -->
+  <url>
+    <loc>https://www.asim.af/afghanistan-esim-plans</loc>
+    <lastmod>2025-08-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+</urlset>

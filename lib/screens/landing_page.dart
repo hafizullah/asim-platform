@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import '../core/providers/language_provider.dart';
 import '../core/localization/app_localizations.dart';
 import '../core/services/esim_plan_service.dart';
+import '../core/services/analytics_service.dart';
+import '../core/services/seo_service.dart';
 import '../core/models/esim_plan.dart';
 import '../core/utils/plan_localization_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,6 +30,15 @@ class _LandingPageState extends State<LandingPage> {
   void initState() {
     super.initState();
     _loadAfghanistanPlans();
+    
+    // Track page view for analytics
+    AnalyticsService.trackPageView('home', parameters: {
+      'page_title': 'ASIM Platform Home',
+      'content_group1': 'landing_page',
+    });
+    
+    // Update SEO metadata
+    SeoService.updatePageTitle('home');
   }
 
   Future<void> _loadAfghanistanPlans() async {
@@ -399,6 +410,13 @@ class _LandingPageState extends State<LandingPage> {
 
   Future<void> _launchURL(String url) async {
     final localization = AppLocalizations.of(context);
+    
+    // Track plan view/purchase analytics
+    AnalyticsService.trackEvent('esim_plan_click', {
+      'plan_url': url,
+      'page': 'home',
+    });
+    
     try {
       // For web platform, always use external browser due to WebView limitations
       if (kIsWeb) {
