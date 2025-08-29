@@ -188,7 +188,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn() : super('en');
 
   @override
-  String get appName => 'Asim';
+  String get appName => 'sim.af';
 
   @override
   String get globalEsimSolutions => 'Global eSIM Solutions';
@@ -380,7 +380,7 @@ class AppLocalizationsEn extends AppLocalizations {
   
   // About Us page
   @override
-  String get aboutUsTitle => 'About Asim - Your Afghanistan eSIM Specialist';
+  String get aboutUsTitle => 'About sim.af - Your Afghanistan eSIM Specialist';
   
   @override
   String get ourMission => 'Our Mission';
@@ -392,10 +392,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pioneering => 'Pioneering Afghanistan Connectivity';
   
   @override
-  String get pioneeringDesc => 'Asim is proud to be the first eSIM provider dedicated exclusively to Afghanistan. We understand the unique connectivity challenges in the region and have developed specialized solutions to keep you connected wherever your journey takes you.';
+  String get pioneeringDesc => 'sim.af is proud to be the first eSIM provider dedicated exclusively to Afghanistan. We understand the unique connectivity challenges in the region and have developed specialized solutions to keep you connected wherever your journey takes you.';
   
   @override
-  String get whyChooseUs => 'Why Choose Asim?';
+  String get whyChooseUs => 'Why Choose sim.af?';
   
   @override
   String get dedicatedToAfghanistan => 'Dedicated to Afghanistan';
@@ -440,7 +440,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get firstEsimProvider => 'The First eSIM Provider for Afghanistan';
   
   @override
-  String get joinThousands => 'Join thousands of satisfied customers who trust Asim for their Afghanistan connectivity needs.';
+  String get joinThousands => 'Join thousands of satisfied customers who trust sim.af for their Afghanistan connectivity needs.';
   
   @override
   String get trustedByTravelers => 'Trusted by Travelers & Locals';
@@ -483,7 +483,7 @@ class AppLocalizationsFa extends AppLocalizations {
   AppLocalizationsFa() : super('fa');
 
   @override
-  String get appName => 'آسیم';
+  String get appName => 'sim.af';
 
   @override
   String get globalEsimSolutions => 'راه‌حل‌های جهانی ای‌سیم';
@@ -675,7 +675,7 @@ class AppLocalizationsFa extends AppLocalizations {
   
   // About Us page
   @override
-  String get aboutUsTitle => 'درباره آسیم - متخصص ای‌سیم افغانستان';
+  String get aboutUsTitle => 'درباره sim.af - متخصص ای‌سیم افغانستان';
   
   @override
   String get ourMission => 'مأموریت ما';
@@ -687,10 +687,10 @@ class AppLocalizationsFa extends AppLocalizations {
   String get pioneering => 'پیشگام در ارتباطات افغانستان';
   
   @override
-  String get pioneeringDesc => 'آسیم مفتخر است که اولین ارائه‌دهنده ای‌سیم است که به طور انحصاری به افغانستان اختصاص یافته است. ما چالش‌های منحصر به فرد ارتباطی در منطقه را درک می‌کنیم و راه‌حل‌های تخصصی برای حفظ ارتباط شما در هر کجا که سفر می‌کنید توسعه داده‌ایم.';
+  String get pioneeringDesc => 'sim.af مفتخر است که اولین ارائه‌دهنده ای‌سیم است که به طور انحصاری به افغانستان اختصاص یافته است. ما چالش‌های منحصر به فرد ارتباطی در منطقه را درک می‌کنیم و راه‌حل‌های تخصصی برای حفظ ارتباط شما در هر کجا که سفر می‌کنید توسعه داده‌ایم.';
   
   @override
-  String get whyChooseUs => 'چرا آسیم را انتخاب کنید؟';
+  String get whyChooseUs => 'چرا sim.af را انتخاب کنید؟';
   
   @override
   String get dedicatedToAfghanistan => 'اختصاص به افغانستان';
@@ -735,7 +735,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get firstEsimProvider => 'اولین ارائه‌دهنده ای‌سیم برای افغانستان';
   
   @override
-  String get joinThousands => 'به هزاران مشتری راضی بپیوندید که برای نیازهای ارتباطی افغانستان خود به آسیم اعتماد می‌کنند.';
+  String get joinThousands => 'به هزاران مشتری راضی بپیوندید که برای نیازهای ارتباطی افغانستان خود به sim.af اعتماد می‌کنند.';
   
   @override
   String get trustedByTravelers => 'مورد اعتماد مسافران و مردم محلی';
@@ -799,7 +799,7 @@ class AppLocalizationsPs extends AppLocalizations {
   AppLocalizationsPs() : super('ps');
 
   @override
-  String get appName => 'آسیم';
+  String get appName => 'sim.af';
 
   @override
   String get globalEsimSolutions => 'د نړیوالو ای‌سیم حلونه';
@@ -991,7 +991,7 @@ class AppLocalizationsPs extends AppLocalizations {
   
   // About Us page
   @override
-  String get aboutUsTitle => 'د آسیم په اړه - ستاسو د افغانستان ای‌سیم متخصص';
+  String get aboutUsTitle => 'د sim.af په اړه - ستاسو د افغانستان ای‌سیم متخصص';
   
   @override
   String get ourMission => 'زموږ ماموریت';
@@ -1003,10 +1003,10 @@ class AppLocalizationsPs extends AppLocalizations {
   String get pioneering => 'د افغانستان اړیکو کې مخکښ';
   
   @override
-  String get pioneeringDesc => 'آسیم په دې ویاړي چې د افغانستان لپاره لومړۍ ای‌سیم وړاندې کوونکی دی چې په ځانګړي توګه افغانستان ته وقف دی. موږ په سیمه کې د اړیکو ځانګړي ننګونې پوهیږو او ځانګړي حلونه موږ رامینځته کړي ترڅو تاسو په هر ځای کې چې سفر کوئ وصل وساتو.';
+  String get pioneeringDesc => 'sim.af په دې ویاړي چې د افغانستان لپاره لومړۍ ای‌سیم وړاندې کوونکی دی چې په ځانګړي توګه افغانستان ته وقف دی. موږ په سیمه کې د اړیکو ځانګړي ننګونې پوهیږو او ځانګړي حلونه موږ رامینځته کړي ترڅو تاسو په هر ځای کې چې سفر کوئ وصل وساتو.';
   
   @override
-  String get whyChooseUs => 'ولې آسیم وټاکئ؟';
+  String get whyChooseUs => 'ولې sim.af وټاکئ؟';
   
   @override
   String get dedicatedToAfghanistan => 'د افغانستان لپاره وقف';
@@ -1051,7 +1051,7 @@ class AppLocalizationsPs extends AppLocalizations {
   String get firstEsimProvider => 'د افغانستان لپاره لومړۍ ای‌سیم وړاندې کوونکی';
   
   @override
-  String get joinThousands => 'د زرګونو راضي پیرودونکو سره یوځای شئ چې د افغانستان د اړیکو اړتیاو لپاره آسیم ته اعتماد کوي.';
+  String get joinThousands => 'د زرګونو راضي پیرودونکو سره یوځای شئ چې د افغانستان د اړیکو اړتیاو لپاره sim.af ته اعتماد کوي.';
   
   @override
   String get trustedByTravelers => 'د مسافرینو او محلي خلکو لخوا د اعتماد وړ';

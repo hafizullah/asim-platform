@@ -50,10 +50,11 @@ class ContactUsScreen extends StatelessWidget {
                       const SizedBox(height: 50), // Reduced from 60 to 50
                       Hero(
                         tag: 'sim_logo',
-                        child: SimSvgLogo.large(),
+                        child: SimSvgLogo(width: 180, height: 60, variant: SimSvgLogoVariant.brand),
                       ),
                       const SizedBox(height: 20), // Reduced from 24 to 20
                       Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
                           color: colorScheme.primaryContainer,
@@ -65,11 +66,14 @@ class ContactUsScreen extends StatelessWidget {
                           children: [
                             const Text('📧', style: TextStyle(fontSize: 18)),
                             const SizedBox(width: 8),
-                            Text(
-                              'Contact Us',
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                color: colorScheme.onPrimaryContainer,
-                                fontWeight: FontWeight.bold,
+                            Flexible(
+                              child: Text(
+                                'Contact Us',
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  color: colorScheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -79,12 +83,29 @@ class ContactUsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Text(
-                          'Get in Touch with sim.af eSIM',
+                          'Get Professional Support',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
+                            fontSize: 22,
                           ),
                           textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Text(
+                          'We\'re here to help you stay connected',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onPrimary.withOpacity(0.9),
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],

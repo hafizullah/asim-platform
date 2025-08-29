@@ -51,10 +51,11 @@ class AboutUsScreen extends StatelessWidget {
                       const SizedBox(height: 60), // Account for app bar
                       Hero(
                         tag: 'sim_logo',
-                        child: SimSvgLogo.large(),
+                        child: SimSvgLogo(width: 180, height: 60, variant: SimSvgLogoVariant.brand),
                       ),
                       const SizedBox(height: 24),
                       Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
                           color: colorScheme.primaryContainer,
@@ -66,11 +67,14 @@ class AboutUsScreen extends StatelessWidget {
                           children: [
                             const Text('🥇', style: TextStyle(fontSize: 18)),
                             const SizedBox(width: 8),
-                            Text(
-                              localization.firstEsimProvider,
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                color: colorScheme.onPrimaryContainer,
-                                fontWeight: FontWeight.bold,
+                            Flexible(
+                              child: Text(
+                                localization.firstEsimProvider,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  color: colorScheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -84,8 +88,11 @@ class AboutUsScreen extends StatelessWidget {
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
+                            fontSize: 22,
                           ),
                           textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -650,7 +657,7 @@ class AboutUsScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            SimSvgLogo.medium(),
+            SimSvgLogo(width: 160, height: 50, variant: SimSvgLogoVariant.brand),
             const SizedBox(height: 16),
             Text(
               'Connecting Afghanistan to the World',
