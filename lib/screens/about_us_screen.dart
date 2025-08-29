@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../core/localization/app_localizations.dart';
-import '../core/widgets/asim_svg_logo.dart';
+import '../core/widgets/sim_svg_logo.dart';
 import 'contact_us_screen.dart';
 
 class AboutUsScreen extends StatelessWidget {
@@ -50,8 +50,8 @@ class AboutUsScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 60), // Account for app bar
                       Hero(
-                        tag: 'asim_logo',
-                        child: AsimSvgLogo.large(),
+                        tag: 'sim_logo',
+                        child: SimSvgLogo.large(),
                       ),
                       const SizedBox(height: 24),
                       Container(
@@ -584,7 +584,7 @@ class AboutUsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Experience the future of connectivity in Afghanistan with Asim eSIM',
+              'Experience the future of connectivity in Afghanistan with sim.af eSIM',
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: colorScheme.onPrimary.withOpacity(0.9),
               ),
@@ -650,7 +650,7 @@ class AboutUsScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
-            AsimSvgLogo.medium(),
+            SimSvgLogo.medium(),
             const SizedBox(height: 16),
             Text(
               'Connecting Afghanistan to the World',

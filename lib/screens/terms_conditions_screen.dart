@@ -41,19 +41,19 @@ class TermsConditionsScreen extends StatelessWidget {
             _buildSection(
               context,
               '1. Service Provider',
-              'ASIM ("we," "our," or "us") provides eSIM connectivity services through our platform. We act as an intermediary connecting customers to third-party eSIM providers and payment processors.',
+              'sim.af ("we," "our," or "us") provides eSIM connectivity services through our platform. We act as an intermediary connecting customers to third-party eSIM providers and payment processors.',
             ),
             
             _buildSection(
               context,
               '2. Third-Party Payment Processing',
-              'All payment transactions are processed by ESIMAccess, a third-party payment processor. ASIM does not process, store, or have access to any personal payment details, credit card information, or other sensitive financial data. All payment-related queries should be directed to ESIMAccess.',
+              'All payment transactions are processed by ESIMAccess, a third-party payment processor. sim.af does not process, store, or have access to any personal payment details, credit card information, or other sensitive financial data. All payment-related queries should be directed to ESIMAccess.',
             ),
             
             _buildSection(
               context,
               '3. Personal Data Protection',
-              'ASIM does not collect, process, or store personal details beyond what is necessary for service delivery. Your payment information, personal details, and financial data are handled exclusively by our third-party partners (ESIMAccess). We recommend reviewing their privacy policies for detailed information about data handling.',
+              'sim.af does not collect, process, or store personal details beyond what is necessary for service delivery. Your payment information, personal details, and financial data are handled exclusively by our third-party partners (ESIMAccess). We recommend reviewing their privacy policies for detailed information about data handling.',
             ),
             
             _buildSection(
@@ -65,13 +65,13 @@ class TermsConditionsScreen extends StatelessWidget {
             _buildSection(
               context,
               '5. Service Availability and Performance',
-              'eSIM services are provided through third-party network operators. ASIM cannot guarantee uninterrupted service, specific data speeds, or coverage in all areas. Service performance depends on local network conditions and third-party infrastructure beyond our control.',
+              'eSIM services are provided through third-party network operators. sim.af cannot guarantee uninterrupted service, specific data speeds, or coverage in all areas. Service performance depends on local network conditions and third-party infrastructure beyond our control.',
             ),
             
             _buildSection(
               context,
               '6. Limitation of Liability',
-              'ASIM\'s liability is limited to the maximum extent permitted by law. We are not liable for:\n• Service interruptions or network outages\n• Data loss or corruption\n• Indirect, incidental, or consequential damages\n• Issues arising from third-party services\n• Compatibility issues with devices\n• Force majeure events',
+              'sim.af\'s liability is limited to the maximum extent permitted by law. We are not liable for:\n• Service interruptions or network outages\n• Data loss or corruption\n• Indirect, incidental, or consequential damages\n• Issues arising from third-party services\n• Compatibility issues with devices\n• Force majeure events',
             ),
             
             _buildSection(
@@ -83,19 +83,19 @@ class TermsConditionsScreen extends StatelessWidget {
             _buildSection(
               context,
               '8. Intellectual Property',
-              'All trademarks, logos, and intellectual property displayed on our platform belong to their respective owners. The ASIM brand and platform are protected by applicable intellectual property laws.',
+              'All trademarks, logos, and intellectual property displayed on our platform belong to their respective owners. The sim.af brand and platform are protected by applicable intellectual property laws.',
             ),
             
             _buildSection(
               context,
               '9. Dispute Resolution',
-              'Any disputes arising from the use of our services will be resolved through:\n• First, direct communication with our customer support\n• If unresolved, binding arbitration under the laws of the jurisdiction where ASIM is registered\n• Customers waive the right to class action lawsuits',
+              'Any disputes arising from the use of our services will be resolved through:\n• First, direct communication with our customer support\n• If unresolved, binding arbitration under the laws of the jurisdiction where sim.af is registered\n• Customers waive the right to class action lawsuits',
             ),
             
             _buildSection(
               context,
               '10. Modifications to Terms',
-              'ASIM reserves the right to modify these terms at any time. Changes will be effective immediately upon posting on our platform. Continued use of our services constitutes acceptance of modified terms.',
+              'sim.af reserves the right to modify these terms at any time. Changes will be effective immediately upon posting on our platform. Continued use of our services constitutes acceptance of modified terms.',
             ),
             
             _buildSection(
@@ -107,7 +107,7 @@ class TermsConditionsScreen extends StatelessWidget {
             _buildSection(
               context,
               '12. Governing Law',
-              'These terms are governed by the laws of the jurisdiction where ASIM is registered, without regard to conflict of law principles.',
+              'These terms are governed by the laws of the jurisdiction where sim.af is registered, without regard to conflict of law principles.',
             ),
             
             _buildSection(
@@ -145,7 +145,7 @@ class TermsConditionsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'By using ASIM services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. You also acknowledge that ASIM acts as an intermediary and that payment processing is handled by third-party providers.',
+                    'By using sim.af services, you acknowledge that you have read, understood, and agree to be bound by these Terms and Conditions. You also acknowledge that sim.af acts as an intermediary and that payment processing is handled by third-party providers.',
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],

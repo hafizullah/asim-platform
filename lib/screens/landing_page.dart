@@ -33,7 +33,7 @@ class _LandingPageState extends State<LandingPage> {
     
     // Track page view for analytics
     AnalyticsService.trackPageView('home', parameters: {
-      'page_title': 'ASIM Platform Home',
+      'page_title': 'sim.af Platform Home',
       'content_group1': 'landing_page',
     });
     
@@ -86,11 +86,13 @@ class _LandingPageState extends State<LandingPage> {
           textDirection: TextDirection.ltr,
           child: Row(
             children: [
-              SvgPicture.asset(
-                'assets/images/brand_logo.svg',
-                width: 200,
-                height: 60,
-                fit: BoxFit.contain,
+              Flexible(
+                child: SvgPicture.asset(
+                  'assets/images/brand_logo.svg',
+                  width: 180,
+                  height: 50,
+                  fit: BoxFit.contain,
+                ),
               ),
             ],
           ),
@@ -158,31 +160,37 @@ class _LandingPageState extends State<LandingPage> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            _buildLanguageButton(
-                              context: context,
-                              languageCode: 'en',
-                              languageLabel: localization.english,
-                              isSelected: languageProvider.locale.languageCode == 'en',
-                              onPressed: () => languageProvider.setLanguage('en'),
-                              colorScheme: colorScheme,
+                            Flexible(
+                              child: _buildLanguageButton(
+                                context: context,
+                                languageCode: 'en',
+                                languageLabel: localization.english,
+                                isSelected: languageProvider.locale.languageCode == 'en',
+                                onPressed: () => languageProvider.setLanguage('en'),
+                                colorScheme: colorScheme,
+                              ),
                             ),
                             const SizedBox(width: 4),
-                            _buildLanguageButton(
-                              context: context,
-                              languageCode: 'fa',
-                              languageLabel: localization.dari,
-                              isSelected: languageProvider.locale.languageCode == 'fa',
-                              onPressed: () => languageProvider.setLanguage('fa'),
-                              colorScheme: colorScheme,
+                            Flexible(
+                              child: _buildLanguageButton(
+                                context: context,
+                                languageCode: 'fa',
+                                languageLabel: localization.dari,
+                                isSelected: languageProvider.locale.languageCode == 'fa',
+                                onPressed: () => languageProvider.setLanguage('fa'),
+                                colorScheme: colorScheme,
+                              ),
                             ),
                             const SizedBox(width: 4),
-                            _buildLanguageButton(
-                              context: context,
-                              languageCode: 'ps',
-                              languageLabel: localization.pashto,
-                              isSelected: languageProvider.locale.languageCode == 'ps',
-                              onPressed: () => languageProvider.setLanguage('ps'),
-                              colorScheme: colorScheme,
+                            Flexible(
+                              child: _buildLanguageButton(
+                                context: context,
+                                languageCode: 'ps',
+                                languageLabel: localization.pashto,
+                                isSelected: languageProvider.locale.languageCode == 'ps',
+                                onPressed: () => languageProvider.setLanguage('ps'),
+                                colorScheme: colorScheme,
+                              ),
                             ),
                           ],
                         ),
@@ -472,10 +480,10 @@ class _LandingPageState extends State<LandingPage> {
         borderRadius: BorderRadius.circular(20),
         child: Container(
           constraints: const BoxConstraints(
-            minWidth: 55,
-            maxWidth: 80,
+            minWidth: 45,
+            maxWidth: 70,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           decoration: BoxDecoration(
             color: isSelected ? colorScheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
@@ -611,7 +619,7 @@ class _LandingPageState extends State<LandingPage> {
 
             // Call to Action pointing to plans below
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
               decoration: BoxDecoration(
                 color: colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
@@ -619,25 +627,26 @@ class _LandingPageState extends State<LandingPage> {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.keyboard_arrow_down,
                     color: colorScheme.primary,
-                    size: 24,
+                    size: 20,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    localization.chooseYourPerfectPlan,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.primary,
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      localization.chooseYourPerfectPlan,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
+                        fontSize: 14,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: colorScheme.primary,
-                    size: 24,
                   ),
                 ],
               ),
@@ -888,7 +897,7 @@ class _LandingPageState extends State<LandingPage> {
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: () => _launchURL('https://asim.esimqr.link/'),
+                onPressed: () => _launchURL('https://sim.esimqr.link/'),
                 icon: const Icon(Icons.explore),
                 label: Text(localization.browseAllCountries),
                 style: FilledButton.styleFrom(

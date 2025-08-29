@@ -152,35 +152,35 @@ jobs:
           echo "🔍 Testing deployed site SEO..."
           
           # Test basic connectivity
-          if curl -I https://www.asim.af 2>/dev/null | grep -q "200 OK"; then
+          if curl -I https://www.sim.af 2>/dev/null | grep -q "200 OK"; then
             echo "✅ Site is accessible"
           else
             echo "❌ Site accessibility check failed"
           fi
           
           # Test robots.txt
-          if curl -s https://www.asim.af/robots.txt 2>/dev/null | grep -q "User-agent"; then
+          if curl -s https://www.sim.af/robots.txt 2>/dev/null | grep -q "User-agent"; then
             echo "✅ robots.txt is accessible"
           else
             echo "❌ robots.txt check failed"
           fi
           
           # Test sitemap.xml
-          if curl -s https://www.asim.af/sitemap.xml 2>/dev/null | grep -q "<urlset"; then
+          if curl -s https://www.sim.af/sitemap.xml 2>/dev/null | grep -q "<urlset"; then
             echo "✅ sitemap.xml is accessible"
           else
             echo "❌ sitemap.xml check failed"
           fi
           
           # Test manifest.json
-          if curl -s https://www.asim.af/manifest.json 2>/dev/null | grep -q "ASIM Platform"; then
+          if curl -s https://www.sim.af/manifest.json 2>/dev/null | grep -q "sim.af Platform"; then
             echo "✅ manifest.json is accessible"
           else
             echo "❌ manifest.json check failed"
           fi
           
           # Check HTML structure
-          HTML_CONTENT=$(curl -s https://www.asim.af 2>/dev/null || echo "")
+          HTML_CONTENT=$(curl -s https://www.sim.af 2>/dev/null || echo "")
           if echo "$HTML_CONTENT" | grep -q "og:title"; then
             echo "✅ Open Graph meta tags present"
           else

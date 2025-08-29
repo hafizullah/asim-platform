@@ -60,6 +60,6 @@
     
     <!-- Company text area (placeholder) -->
     <text x="0" y="140" text-anchor="middle" font-family="Arial, sans-serif" 
-          font-size="24" font-weight="bold" fill="#1a1a1a">ASIM</text>
+          font-size="24" font-weight="bold" fill="#1a1a1a">sim.af</text>
   </g>
 </svg>

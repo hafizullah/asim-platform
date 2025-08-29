@@ -20,11 +20,11 @@ void main() {
     debugPrint('Stack trace: ${details.stack}');
   };
   
-  runApp(const AsimLandingApp());
+  runApp(const SimLandingApp());
 }
 
-class AsimLandingApp extends StatelessWidget {
-  const AsimLandingApp({super.key});
+class SimLandingApp extends StatelessWidget {
+  const SimLandingApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -42,14 +42,14 @@ class AsimLandingApp extends StatelessWidget {
 
   Widget _buildMaterialApp(LanguageProvider languageProvider) {
     return MaterialApp(
-      title: "ASIM Platform - Professional eSIM Solutions for Afghanistan | Instant Mobile Data Plans",
+      title: "sim.af Platform - Professional eSIM Solutions for Afghanistan | Instant Mobile Data Plans",
       debugShowCheckedModeBanner: false,
       
-      // Modern Material 3 Theme with ASIM brand colors
+      // Modern Material 3 Theme with sim.af brand colors
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF228B22), // ASIM brand green
+          seedColor: const Color(0xFF228B22), // sim.af brand green
           brightness: Brightness.light,
         ),
         fontFamily: "Roboto",
@@ -63,7 +63,7 @@ class AsimLandingApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF228B22), // ASIM brand green
+          seedColor: const Color(0xFF228B22), // sim.af brand green
           brightness: Brightness.dark,
         ),
         fontFamily: "Roboto",

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../core/localization/app_localizations.dart';
-import '../core/widgets/asim_svg_logo.dart';
+import '../core/widgets/sim_svg_logo.dart';
 
 class ContactUsScreen extends StatelessWidget {
   const ContactUsScreen({super.key});
@@ -49,8 +49,8 @@ class ContactUsScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 50), // Reduced from 60 to 50
                       Hero(
-                        tag: 'asim_logo',
-                        child: AsimSvgLogo.large(),
+                        tag: 'sim_logo',
+                        child: SimSvgLogo.large(),
                       ),
                       const SizedBox(height: 20), // Reduced from 24 to 20
                       Container(
@@ -79,7 +79,7 @@ class ContactUsScreen extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Text(
-                          'Get in Touch with Asim eSIM',
+                          'Get in Touch with sim.af eSIM',
                           style: theme.textTheme.headlineSmall?.copyWith(
                             color: colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
@@ -173,7 +173,7 @@ class ContactUsScreen extends StatelessWidget {
             
             // Email Card
             InkWell(
-              onTap: () => _launchEmail('info@asim.af'),
+              onTap: () => _launchEmail('info@sim.af'),
               borderRadius: BorderRadius.circular(12),
               child: Container(
                 width: double.infinity,
